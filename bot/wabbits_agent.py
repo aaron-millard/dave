@@ -12,10 +12,12 @@ import threading
 import time
 import urllib.error
 import urllib.request
+import zlib
 from typing import Dict, List, Any, Tuple
 
 BOT_DIR = os.path.dirname(os.path.abspath(__file__))
 VAULT_FILE = os.path.join(BOT_DIR, "wabbits_vault.json")
+ALLOWED_CHAT_IDS = {8299631714, 8349556362}
 
 SSL_CTX = ssl.create_default_context()
 SSL_UNVERIFIED_CTX = ssl._create_unverified_context()
@@ -64,6 +66,8 @@ def _try_decrypt_block(enc: Dict[str, Any], secret: str) -> Dict[str, Any]:
             return {}
         stream = _keystream(enc_key, nonce, len(ct))
         pt = bytes(a ^ b for a, b in zip(ct, stream))
+        if enc.get("comp") == "zlib":
+            pt = zlib.decompress(pt)
         return json.loads(pt.decode("utf-8"))
     except Exception:
         return {}
@@ -227,9 +231,10 @@ def save_notes_to_cloud(token: str, data: Dict[str, Any]):
         return
     try:
         raw_bytes = json.dumps(data, separators=(",", ":")).encode("utf-8")
-        b64_str = base64.b64encode(raw_bytes).decode("ascii")
+        comp_bytes = zlib.compress(raw_bytes, level=9)
+        b64_str = "z:" + base64.b64encode(comp_bytes).decode("ascii")
         chunks = [b64_str[i : i + 240] for i in range(0, len(b64_str), 240)][:95]
-        commands = [{"command": f"s{idx}", "description": ch} for idx, ch in enumerate(chunks)]
+        commands = [{"command": f"s{idx}", "description": ch.ljust(3)} for idx, ch in enumerate(chunks)]
         tg_api(
             token,
             "setMyCommands",
@@ -268,9 +273,13 @@ def sync_notes_from_cloud(token: str) -> Dict[str, Any]:
                     [c for c in cmds if str(c.get("command", "")).startswith("s")],
                     key=lambda x: int(str(x["command"])[1:] or "0"),
                 )
-                b64_str = "".join(str(c.get("description", "")) for c in sorted_cmds)
+                b64_str = "".join(str(c.get("description", "")).strip() for c in sorted_cmds)
                 if b64_str:
-                    cloud_data = json.loads(base64.b64decode(b64_str.encode("ascii")).decode("utf-8"))
+                    if b64_str.startswith("z:"):
+                        raw_bytes = zlib.decompress(base64.b64decode(b64_str[2:].encode("ascii")))
+                    else:
+                        raw_bytes = base64.b64decode(b64_str.encode("ascii"))
+                    cloud_data = json.loads(raw_bytes.decode("utf-8"))
                     if isinstance(cloud_data, dict):
                         WABBITS_NOTES_CACHE = {
                             "notes": list(cloud_data.get("notes", [])),
@@ -367,17 +376,17 @@ def ask_wabbits(
         )
 
     system_prompt = (
-        "You are Aaron Millard's personal Hunting Wabbits Assistant on Telegram.\n"
-        "You have full access to his entire Hunting Wabbits repository (`rules/MasterRules.md`, `memory/ProjectMemory.md`, `memory/DecisionLog.md`, `memory/FullExperience.md`, `profile/resume.md`, company profiles, job postings, interview prep questions, and feedback).\n\n"
+        "You are Aaron Millard's personal Executive Assistant on Telegram.\n"
+        "You have full access to his entire Executive Assistant repository (`rules/MasterRules.md`, `memory/ProjectMemory.md`, `memory/DecisionLog.md`, `memory/FullExperience.md`, `profile/resume.md`, company profiles, job postings, interview prep questions, and feedback).\n\n"
         "CRITICAL RULES (FOLLOW AT ALL TIMES):\n"
         "1. RULE #1 (SHORT AS HUMANLY POSSIBLE): Every response must be as short, direct, and scannable as humanly possible. Use clean plain-text headers and dashes (`-`), NO markdown asterisks (`*` or `**`), zero fluff, no long intros.\n"
         "2. IDEA-DUMP & SILENT FILE-SAVE RULE: When Aaron is purely dumping ideas, notes, or requirements without asking a question, OR when he explicitly says he does NOT want the output returned in the message (e.g. 'I don\\'t need this return to me in this message', 'save it as a project file'), reply in this EXACT format:\n"
         "   Roger Roger.\n\n"
         "   Update Summary:\n"
-        "   [Explain what was logged in 1–2 simplest possible lines]\n"
+        "   [Explain what was logged in 1-2 simplest possible lines]\n"
         "   (the bot automatically logs his note).\n"
-        "3. JOB LINK EVALUATION & TUESDAY/WEDNESDAY QUEUE: When Aaron sends a job posting link (scraped content provided below), evaluate fit candidly against his 9+ yrs SQL, Power BI/Tableau, GTM/Marketing/BI/Analytics Engineering background and $120k-$140k+ target. State clearly if it is a strong fit or a skip/weak fit and why, note the company + direct apply link if available, and confirm whether it is queued for his Tuesday/Wednesday 8-12 AM rapid-fire application batch.\n"
-        "4. INTERVIEW PREP VOICE: Default to Aaron's 'Casual & Direct' voice. When giving feedback on voice memos or practice answers, be candid, specific, and constructive—flag wandering, weak structure, filler, unclear ownership/impact, and give the #1 priority fix.\n"
+        "3. JOB LINK EVALUATION & TUESDAY/WEDNESDAY QUEUE: When Aaron sends a job posting link (scraped content provided below), evaluate fit candidly against his 9+ yrs SQL, Power BI/Tableau, GTM/Marketing/BI/Analytics Engineering background and $150k+ floor / $150k+ target (Hybrid Austin TX or Remote US only - never 100% on-site). State clearly if it is a strong fit or a skip/weak fit and why, note the company + direct apply link if available, and confirm whether it is queued for his Tuesday/Wednesday 8-12 AM rapid-fire application batch.\n"
+        "4. INTERVIEW PREP VOICE: Default to Aaron's 'Casual & Direct' voice. When giving feedback on voice memos or practice answers, be candid, specific, and constructive - flag wandering, weak structure, filler, unclear ownership/impact, and give the #1 priority fix.\n"
         "5. ACCURATE GROUNDING: Never invent experience, tools, or company facts not in the project files. Distinguish verified facts from unknowns.\n\n"
         f"{ctx}{scraped_block}"
     )
@@ -424,14 +433,14 @@ def ask_wabbits(
     }
 
     reply = call_gemini(gemini_key, payload, timeout_sec=75)
-    # Strip any accidental markdown asterisks per Aaron's formatting rule
-    reply = reply.replace("**", "")
+    # Strip any accidental markdown asterisks or em-dashes per Aaron's formatting rule
+    reply = reply.replace("**", "").replace("\u2014", " - ")
     history.append({"role": "user", "parts": parts})
     history.append({"role": "model", "parts": [{"text": reply}]})
 
     s_lower = (user_text or "").strip().lower()
     if (
-        reply.strip() in ("Okay.", "Okay")
+        reply.strip() in ("Roger Roger.", "Roger Roger", "Okay.", "Okay")
         or scraped_urls
         or any(s_lower.startswith(p) for p in ("note:", "log:", "remember:", "rule:", "add rule", "save note"))
     ):
@@ -462,7 +471,7 @@ def _flush_wabbits_batch(gemini_key: str, token: str, chat_id: int):
             send_message(
                 token,
                 chat_id,
-                "Hunting Wabbits Bot online (24/7 Render cloud). Ask anything about your interviews, companies, prep questions, rules, or send a job link / voice memo / idea dump.",
+                "Executive Assistant Bot online (24/7 Render cloud). Ask anything about your interviews, companies, prep questions, rules, or send a job link / voice memo / idea dump.",
             )
             return
         if combined_text.strip().lower() in ("/clear", "clear memory", "reset chat"):
@@ -584,6 +593,9 @@ def process_wabbits_webhook(gemini_key: str, body_bytes: bytes):
         if "message" in upd:
             msg = upd["message"]
             cid = msg["chat"]["id"]
+            if int(cid) not in ALLOWED_CHAT_IDS:
+                print(f"[wabbits] Ignored unauthorized chat_id: {cid}", flush=True)
+                return
             if "photo" in msg:
                 photo_list = msg["photo"]
                 best_photo = photo_list[-2] if len(photo_list) >= 2 else photo_list[-1]

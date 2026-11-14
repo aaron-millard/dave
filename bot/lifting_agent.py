@@ -11,6 +11,7 @@ import threading
 import time
 import urllib.error
 import urllib.request
+import zlib
 from typing import Dict, List, Any, Tuple
 
 BOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -35,6 +36,7 @@ LIFTING_STATE_CACHE: Dict[str, Any] = {
 }
 LIFTING_VAULT_CACHE: Dict[str, Any] = {}
 LIFTING_SEEN_UPDATES = set()
+ALLOWED_CHAT_IDS = {8299631714, 8349556362}
 
 
 def _open_url(req, timeout: int = 25):
@@ -77,6 +79,11 @@ def load_vault(gemini_key: str) -> Dict[str, Any]:
             return {}
         stream = _keystream(enc_key, nonce, len(ct))
         pt = bytes(a ^ b for a, b in zip(ct, stream))
+        if enc.get("compressed"):
+            try:
+                pt = zlib.decompress(pt)
+            except Exception:
+                pass
         LIFTING_VAULT_CACHE = json.loads(pt.decode("utf-8"))
         return LIFTING_VAULT_CACHE
     except Exception as e:
@@ -123,9 +130,10 @@ def save_state_to_cloud(token: str, data: Dict[str, Any]):
         return
     try:
         raw_bytes = json.dumps(data, separators=(",", ":")).encode("utf-8")
-        b64_str = base64.b64encode(raw_bytes).decode("ascii")
+        compressed = zlib.compress(raw_bytes, level=9)
+        b64_str = base64.b64encode(compressed).decode("ascii")
         chunks = [b64_str[i : i + 240] for i in range(0, len(b64_str), 240)][:95]
-        commands = [{"command": f"s{idx}", "description": ch} for idx, ch in enumerate(chunks)]
+        commands = [{"command": f"s{idx}", "description": ch.ljust(3)} for idx, ch in enumerate(chunks)]
         tg_api(
             token,
             "setMyCommands",
@@ -164,9 +172,14 @@ def sync_state_from_cloud(token: str) -> Dict[str, Any]:
                     [c for c in cmds if str(c.get("command", "")).startswith("s")],
                     key=lambda x: int(str(x["command"])[1:] or "0"),
                 )
-                b64_str = "".join(str(c.get("description", "")) for c in sorted_cmds)
+                b64_str = "".join(str(c.get("description", "")).strip() for c in sorted_cmds)
                 if b64_str:
-                    cloud_data = json.loads(base64.b64decode(b64_str.encode("ascii")).decode("utf-8"))
+                    raw_bytes = base64.b64decode(b64_str.encode("ascii"))
+                    try:
+                        json_bytes = zlib.decompress(raw_bytes)
+                    except Exception:
+                        json_bytes = raw_bytes
+                    cloud_data = json.loads(json_bytes.decode("utf-8"))
                     if isinstance(cloud_data, dict):
                         LIFTING_STATE_CACHE = {
                             "notes": list(cloud_data.get("notes", [])),
@@ -181,6 +194,46 @@ def sync_state_from_cloud(token: str) -> Dict[str, Any]:
     return LIFTING_STATE_CACHE
 
 
+def _merge_cloud_state_into_workout_data(w_data: Dict[str, Any], state: Dict[str, Any]) -> Dict[str, Any]:
+    curr = w_data.setdefault("current_targets_and_maxes", {})
+    nov_base = w_data.setdefault("baselines_nov_8_2026", {})
+
+    for k, v in state.get("workout_updates", {}).items():
+        if isinstance(v, dict) and isinstance(curr.get(k), dict):
+            curr[k].update(v)
+        else:
+            curr[k] = v
+
+    for k, v in state.get("machine_updates", {}).items():
+        if isinstance(v, dict) and isinstance(w_data.get("machine_settings", {}).get(k), dict):
+            w_data.setdefault("machine_settings", {})[k].update(v)
+        else:
+            w_data.setdefault("machine_settings", {})[k] = v
+
+    existing_logs = {json.dumps(x, sort_keys=True) for x in w_data.get("workout_logs", [])}
+    for log_entry in state.get("workout_logs", []):
+        if not isinstance(log_entry, dict):
+            continue
+        s_log = json.dumps(log_entry, sort_keys=True)
+        if s_log not in existing_logs:
+            w_data.setdefault("workout_logs", []).append(log_entry)
+            existing_logs.add(s_log)
+        ex_key = log_entry.get("exercise")
+        ex_val = log_entry.get("value")
+        notes_low = str(log_entry.get("notes", "")).lower()
+        if ex_key and isinstance(ex_val, (int, float)):
+            if ex_key in curr and isinstance(curr[ex_key], dict):
+                curr[ex_key]["value"] = float(ex_val)
+            if "updated starting baseline" in notes_low and ex_key in nov_base and isinstance(nov_base[ex_key], dict):
+                nov_base[ex_key]["value"] = float(ex_val)
+
+    bw_obj = w_data.setdefault("bodyweight", {})
+    bw_curr_val = (curr.get("bodyweight") or {}).get("value")
+    if isinstance(bw_curr_val, (int, float)):
+        bw_obj["current"] = float(bw_curr_val)
+    return w_data
+
+
 def build_context(gemini_key: str, token: str) -> str:
     vault = load_vault(gemini_key)
     files: Dict[str, str] = dict(vault.get("files", {}))
@@ -190,16 +243,7 @@ def build_context(gemini_key: str, token: str) -> str:
     if "data/workout_data.json" in files:
         try:
             w_data = json.loads(files["data/workout_data.json"])
-            for k, v in state.get("workout_updates", {}).items():
-                w_data.setdefault("current_targets_and_maxes", {})[k] = v
-            for k, v in state.get("machine_updates", {}).items():
-                w_data.setdefault("machine_settings", {})[k] = v
-            existing_logs = {json.dumps(x, sort_keys=True) for x in w_data.get("workout_logs", [])}
-            for log_entry in state.get("workout_logs", []):
-                s_log = json.dumps(log_entry, sort_keys=True)
-                if s_log not in existing_logs:
-                    w_data.setdefault("workout_logs", []).append(log_entry)
-                    existing_logs.add(s_log)
+            w_data = _merge_cloud_state_into_workout_data(w_data, state)
             files["data/workout_data.json"] = json.dumps(w_data, indent=2)
         except Exception:
             pass
@@ -483,6 +527,8 @@ def process_lifting_webhook(gemini_key: str, body_bytes: bytes):
         if "message" in upd:
             msg = upd["message"]
             cid = msg["chat"]["id"]
+            if int(cid) not in ALLOWED_CHAT_IDS:
+                return
             if "photo" in msg:
                 photo_list = msg["photo"]
                 best_photo = photo_list[-2] if len(photo_list) >= 2 else photo_list[-1]
@@ -531,16 +577,7 @@ def get_live_workout_json(gemini_key: str) -> str:
     raw_json = files.get("data/workout_data.json", "{}")
     try:
         w_data = json.loads(raw_json)
-        for k, v in state.get("workout_updates", {}).items():
-            w_data.setdefault("current_targets_and_maxes", {})[k] = v
-        for k, v in state.get("machine_updates", {}).items():
-            w_data.setdefault("machine_settings", {})[k] = v
-        existing_logs = {json.dumps(x, sort_keys=True) for x in w_data.get("workout_logs", [])}
-        for log_entry in state.get("workout_logs", []):
-            s_log = json.dumps(log_entry, sort_keys=True)
-            if s_log not in existing_logs:
-                w_data.setdefault("workout_logs", []).append(log_entry)
-                existing_logs.add(s_log)
+        w_data = _merge_cloud_state_into_workout_data(w_data, state)
         return json.dumps(w_data, indent=2)
     except Exception:
         return raw_json

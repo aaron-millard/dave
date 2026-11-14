@@ -24,7 +24,10 @@ This document tracks all long-term project context, governance rules, action com
 
 ## 2. Numbered Action Command System
 
-Typing the number (1-7) or trigger phrase runs the action:
+Typing the number (0-6) or trigger phrase runs the action:
+
+- [0] list actions (or 0 / actions):
+  Displays this numbered menu anytime.
 
 - [1] pull backlog (or 1):
   Displays current exploratory ideas and Telegram dumps from memory/ProjectMemory.md.
@@ -36,16 +39,13 @@ Typing the number (1-7) or trigger phrase runs the action:
   The official green light. Applies all staged changes across files and configs.
 
 - [4] sync all (or 4):
-  Multi-level full sync across local files, GitHub, Telegram cloud, and Render.
+  Multi-level full sync across local files, GitHub, Telegram cloud, and Render. Replies strictly with "Sync Complete."
 
 - [5] pull error log (or 5):
   Displays the top recurring mistakes and guardrails from memory/ErrorLog.md.
 
 - [6] status (or 6):
   Quick 3-bullet summary of project health, active files, and last sync timestamp.
-
-- [7] list actions (or 7):
-  Displays this numbered menu anytime.
 
 ---
 

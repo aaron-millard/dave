@@ -1,6 +1,6 @@
 import base64
 from datetime import datetime
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 import os
 import random
@@ -11,6 +11,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+import zlib
 from typing import Dict, List, Tuple, Any
 try:
     from bot import wabbits_agent
@@ -57,6 +58,7 @@ BATCH_DELAY_SEC = 2.0
 # Cloud sync flag so Render containers automatically restore Telegram-side inventory edits on wakeup
 CLOUD_SYNC_DONE = False
 CLOUD_SYNC_LOCK = threading.Lock()
+ALLOWED_CHAT_IDS = {8299631714, 8349556362}
 
 
 def get_token() -> str:
@@ -135,9 +137,10 @@ def save_overrides_to_telegram_cloud(ov: Dict[str, Any]):
         return
     try:
         raw_bytes = json.dumps(ov, separators=(",", ":")).encode("utf-8")
-        b64_str = base64.b64encode(raw_bytes).decode("ascii")
+        compressed = zlib.compress(raw_bytes, level=9)
+        b64_str = base64.b64encode(compressed).decode("ascii")
         chunks = [b64_str[i : i + 240] for i in range(0, len(b64_str), 240)][:95]
-        commands = [{"command": f"s{idx}", "description": ch} for idx, ch in enumerate(chunks)]
+        commands = [{"command": f"s{idx}", "description": ch.ljust(3)} for idx, ch in enumerate(chunks)]
         res = tg_api(
             token,
             "setMyCommands",
@@ -184,9 +187,14 @@ def sync_overrides_from_telegram_cloud() -> Dict[str, Any]:
                     [c for c in cmds if str(c.get("command", "")).startswith("s")],
                     key=lambda x: int(x["command"][1:]) if x["command"][1:].isdigit() else 0,
                 )
-                b64_str = "".join(c.get("description", "") for c in cmds_sorted)
+                b64_str = "".join(str(c.get("description", "")).strip() for c in cmds_sorted)
                 if b64_str:
-                    cloud_ov = json.loads(base64.b64decode(b64_str.encode("ascii")).decode("utf-8"))
+                    raw_bytes = base64.b64decode(b64_str.encode("ascii"))
+                    try:
+                        json_bytes = zlib.decompress(raw_bytes)
+                    except Exception:
+                        json_bytes = raw_bytes
+                    cloud_ov = json.loads(json_bytes.decode("utf-8"))
                     # Merge cloud_ov and local_ov
                     for key in ["removed", "likes", "dislikes"]:
                         existing_low = {x.lower() for x in local_ov.get(key, [])}
@@ -288,6 +296,25 @@ def load_all_context() -> Tuple[str, str, List[Dict[str, Any]]]:
             inv_json = new_inv_json
             json_dirty = True
 
+    # Restore any cloud-persisted likes/dislikes into MasterRules.md if missing after container restart
+    rules_dirty = False
+    like_marker = "### 👍 Foods & Meals I Like (Favorites / Go-Tos)"
+    for lk in ov.get("likes", []):
+        if isinstance(lk, str) and lk.strip() and like_marker in rules_md and lk.lower() not in rules_md.lower():
+            rules_md = rules_md.replace(like_marker, f"{like_marker}\n- {lk.strip()}", 1)
+            rules_dirty = True
+    dislike_marker = "### 👎 Foods I Don't Like (Never Suggest)"
+    for dlk in ov.get("dislikes", []):
+        if isinstance(dlk, str) and dlk.strip() and dislike_marker in rules_md and dlk.lower() not in rules_md.lower():
+            rules_md = rules_md.replace(dislike_marker, f"{dislike_marker}\n- {dlk.strip()}", 1)
+            rules_dirty = True
+    if rules_dirty:
+        try:
+            with open(RULES_FILE, "w", encoding="utf-8") as f:
+                f.write(rules_md)
+        except Exception:
+            pass
+
     if md_dirty:
         try:
             with open(INV_MD_FILE, "w", encoding="utf-8") as f:
@@ -378,12 +405,31 @@ def lookup_usda_macros(food_name: str) -> Dict[str, Any]:
         foods = data.get("foods", [])
         if foods:
             f0 = foods[0]
-            nutrients = {n.get("nutrientName", "").lower(): n.get("value", 0.0) for n in f0.get("foodNutrients", [])}
-            cal = float(nutrients.get("energy", 100.0))
+            nutrients = {}
+            cal_kcal = None
+            cal_kj = None
+            for n in f0.get("foodNutrients", []):
+                n_name = str(n.get("nutrientName", "")).lower()
+                n_val = float(n.get("value", 0.0) or 0.0)
+                n_unit = str(n.get("unitName", "")).upper()
+                if "energy" in n_name:
+                    if n_unit == "KCAL":
+                        cal_kcal = n_val
+                    elif n_unit == "KJ":
+                        cal_kj = n_val
+                else:
+                    nutrients[n_name] = n_val
+            if cal_kcal is not None:
+                cal = cal_kcal
+            elif cal_kj is not None:
+                cal = cal_kj / 4.184
+            else:
+                cal = 100.0
             p = float(nutrients.get("protein", 5.0))
             fat = float(nutrients.get("total lipid (fat)", 2.0))
-            carbs = float(nutrients.get("carbohydrate, by difference", 15.0))
+            carbs_total = float(nutrients.get("carbohydrate, by difference", 15.0))
             fib = float(nutrients.get("fiber, total dietary", 1.0))
+            net_carbs = max(0.0, carbs_total - fib)
             serv_size = f0.get("servingSize")
             serv_unit = f0.get("servingSizeUnit", "g")
             portion = f"{int(serv_size)}{serv_unit}" if serv_size else "100g"
@@ -392,7 +438,7 @@ def lookup_usda_macros(food_name: str) -> Dict[str, Any]:
                 "calories": round(cal, 1),
                 "protein_g": round(p, 1),
                 "fat_g": round(fat, 1),
-                "carbs_g": round(carbs, 1),
+                "carbs_g": round(net_carbs, 1),
                 "fiber_g": round(fib, 1),
             }
     except Exception:
@@ -402,7 +448,7 @@ def lookup_usda_macros(food_name: str) -> Dict[str, Any]:
         "calories": 120.0,
         "protein_g": 8.0,
         "fat_g": 3.0,
-        "carbs_g": 15.0,
+        "carbs_g": 13.0,
         "fiber_g": 2.0,
     }
 
@@ -667,7 +713,6 @@ def process_inventory_photo(
         "'OLD EL PASO GREEN ENCHILA' -> 'Green Chile Enchilada Sauce'). Ignore non-food items, taxes, coupons, or totals.\n"
         "2. Compare each decoded food against EXISTING INVENTORY ITEMS above:\n"
         "   - If the same product is already in the existing inventory (e.g. 'PREMIUM BANANAS' matches 'Fresh Bananas (Raw)', "
-        "'FAIRLIFE MILK FAT FREE' matches 'Fairlife Fat-Free Ultra-Filtered Lactose-Free Milk', "
         "'FP CF DT COKE CN' / 'FP SPRITE ZERO CN' match 'Zero-Calorie Diet Soda (A&W Zero Sugar Root Beer, etc.)'), put its clean name in `already_in_inventory`.\n"
         "   - If it is NOT in the existing inventory (or is a distinct variety with different macros not yet in the list, such as 'Bush\\'s Zero Sugar Added Baked Beans' vs regular 'Bush\\'s Original / Homestyle Baked Beans', or 'Hershey\\'s Special Dark Chocolate Chips' vs 'Semi-Sweet'), include it in `added`.\n"
         "3. For every item in `added`, provide accurate nutrition facts per standard serving (with `serving_size` starting with exact grams `Xg`, and `carbs_g` as Net Carbs = Total Carbs minus Fiber to match Cronometer).\n"
@@ -867,7 +912,7 @@ def ask_gemini(user_text: str, chat_id: int, image_paths: List[str] = None) -> s
         "   - Look at the whole day holistically!\n"
         "   - If his current plan is ALREADY high in calories (e.g. ~1,900-2,060 kcal) or if adding a snack would push calories over ~1,950 kcal while leaving protein short, OR whenever Aaron says you can adjust other stuff in his day: DO NOT just dump 5 extra snacks on top! Instead, adjust the gram weights or swap items in his existing planned meals on the screenshot so the whole day lands right on ~1,900 kcal | 175-185g P | 150-180g C | ~50g F.\n"
         "   - OBEY ALL USER LOCKS & NON-DECREASE FLOORS: If Aaron says e.g. 'remove/adjust anything except the steak', 'do not decrease the sourdough amount (126g)', and 'keep yogurt/granola and cereal', treat those as 100% locked constraints! Never lower total daily sourdough below 126g (you can split the 126g across Pre-Workout and Breakfast/Lunch), never change the locked steak amount, and keep his yogurt+granola and cereal bowl. Free up fats/carbs by removing or adjusting UNLOCKED items (like dropping butter or removing/reducing unlocked fruit/extras) so there is room for a real Dinner side with the steak!\n"
-        "   - TOP-TIER PRE-WORKOUT MEALS: When Aaron asks for an early-morning Pre-Workout meal, create a `Pre-Workout` slot at the top using fast-digesting carbs + lean protein + minimal fat (e.g., part of his locked Sourdough Toast with Strawberry Jelly/Jam, Banana, or PBfit + Fairlife Milk / Whey / Greek Yogurt).\n"
+        "   - TOP-TIER PRE-WORKOUT MEALS: When Aaron asks for an early-morning Pre-Workout meal, create a `Pre-Workout` slot at the top using fast-digesting carbs + lean protein + minimal fat (e.g., part of his locked Sourdough Toast with Strawberry Jelly/Jam, Banana, or PBfit + Whey / Greek Yogurt).\n"
         "   - DAILY SUPER LOW-CAL VEGGIE SNACKS (EVERY SINGLE DAY — NEVER SKIP): Aaron wants to incorporate his super low-calorie veggie options as snacks every single day — currently `Fresh Celery Sticks`, `Fresh Bagged Sugar Snap Peas`, and `Fresh Whole / Baby Carrots`. Whenever building a full-day plan, filling in the remaining day from a Cronometer screenshot (unless already logged on the screenshot), or suggesting `Snacks`, ALWAYS include at least one or a combination of `Fresh Celery Sticks`, `Fresh Bagged Sugar Snap Peas`, and `Fresh Whole / Baby Carrots` (in exact grams `Xg`) in his `Snacks` every single day!\n"
         "   - If he has calories/macros open and asks for options to fill a slot/day, make sure EVERY option you give is scaled so that choosing it actually hits his 170-185g P and ~1,900 kcal goals.\n"
         "4. DINNER PAIRING OPTIONS VS. SINGLE SWAP (NEVER REPEAT ASSUMED STEAK IN EVERY OPTION):\n"
@@ -879,7 +924,7 @@ def ask_gemini(user_text: str, chat_id: int, image_paths: List[str] = None) -> s
         "   - IDEA-DUMP & SAVE-TO-PROJECT-FILE RULE (CRITICAL): Whenever Aaron is purely dumping ideas, notes, or project requirements for when he gets back to his computer without asking a question, OR whenever he explicitly says he does NOT want the answer returned in the chat message (e.g. 'I don\\'t need this return to me in this message', 'save it as a project file'), reply ONLY `Roger Roger` (zero other words, never dump a long document in chat when he told you not to!).\n"
         "   - When he asks a 'why' or general question (including about a screenshot he sent), answer it directly in 1–2 ultra-short sentences with zero fluff.\n"
         "6. WIDE KITCHEN VARIETY & ZERO REPEATS:\n"
-        "   - Actively use the full kitchen inventory! Draw from his frozen meats/shrimp/chicken strips/meatballs, rotisserie chicken, canned tuna/chicken, edamame, protein bars, beef sticks, cheeses, breads, bagels, tortillas, beans, rices, pastas, fruits, and snacks.\n"
+        "   - Actively use the full kitchen inventory! Draw from his frozen meats/shrimp/chicken strips/meatballs, canned tuna/chicken, edamame, protein bars, beef sticks, cheeses, breads, bagels, tortillas, beans, rices, pastas, fruits, and snacks.\n"
         "   - Here is a randomized spotlight of items from his inventory to consider rotating in if they fit his macros:\n"
         f"     [{spotlight_text}]\n"
         "   - NEVER repeat any option, meal, or food combo that appears in 'RECENTLY SUGGESTED IN THIS CHAT' below when Aaron asks for more options or alternatives.\n\n"
@@ -888,8 +933,8 @@ def ask_gemini(user_text: str, chat_id: int, image_paths: List[str] = None) -> s
         "   - Items that come in individual serving cups or packages MUST be written in whole units (1 or 2, NEVER weird fractional weights like '250g Greek Yogurt' — even if an earlier message had 250g, change it to 1 cup (150g) or 2 cups (300g)!) with grams in parentheses:\n"
         "     * Greek Yogurt Cups: `- 1 cup (150g) Oikos Triple Zero 15g Protein Greek Yogurt (Vanilla)` (or `2 cups (300g)`)\n"
         "     * Bagels / Bars / Packets / Sticks / Bowls: `- 1 bagel (85g) Sola Soft Bagels: Cinnamon & Raisin`, `- 1 bar (60g) Kirkland Signature Protein Bar`, `- 1 packet (43g) H-E-B Protein Instant Oatmeal`, `- 1 stick (32g) Kirkland Grass-Fed Beef Stick`, `- 1 bowl (210g) Bibigo Cooked Sticky White Rice`, `- 1 pouch (140g) Ben's Original Ready Rice`.\n"
-        "2. MILK -> ALWAYS IN CUPS + (Xg):\n"
-        "   - Always tell milk in cups with grams in parentheses (never raw '240g Fairlife Milk'): `- 1 cup (240g) Fairlife Fat-Free Ultra-Filtered Lactose-Free Milk` (or `- 1/2 cup (120g)`, `- 1.5 cups (360g)`).\n"
+        "2. MILK -> ALWAYS IN CUPS + (Xg) WHEN IN STOCK:\n"
+        "   - When milk is in inventory, always tell milk in cups with grams in parentheses: `- 1 cup (240g) Milk` (or `- 1/2 cup (120g)`).\n"
         "3. PROTEIN SHAKES -> ALWAYS IN WHOLE SHAKES/BOTTLES + (Xg):\n"
         "   - Always tell ready-to-drink protein shakes as whole shakes/bottles with grams in parentheses (never raw '341g Premier Protein'):\n"
         "     * `- 1 shake (341g) Premier Protein 30g Chocolate Protein Shakes`\n"
@@ -968,7 +1013,9 @@ def tg_api(token: str, method: str, payload: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def send_message(token: str, chat_id: int, text: str):
-    chunks = [text[i : i + 3900] for i in range(0, len(text), 3900)] or [text]
+    clean_text = re.sub(r"\*\*([^*]+)\*\*", r"\1", text or "")
+    clean_text = re.sub(r"\*([^*]+)\*", r"\1", clean_text)
+    chunks = [clean_text[i : i + 3900] for i in range(0, len(clean_text), 3900)] or [clean_text]
     for chunk in chunks:
         payload: Dict[str, Any] = {"chat_id": chat_id, "text": chunk}
         tg_api(token, "sendMessage", payload)
@@ -1114,6 +1161,8 @@ def process_update(token: str, upd: Dict[str, Any]):
     if "message" in upd:
         msg = upd["message"]
         cid = msg["chat"]["id"]
+        if int(cid) not in ALLOWED_CHAT_IDS:
+            return
         if "photo" in msg:
             photo_list = msg["photo"]
             best_photo = photo_list[-2] if len(photo_list) >= 2 else photo_list[-1]
@@ -1149,7 +1198,12 @@ class BotHTTPHandler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(body)
             return
-        if self.path.startswith("/sleep-tracker-data.json") or self.path.startswith("/sleep-data.json"):
+        if (
+            self.path.startswith("/sleep-tracker-data.json")
+            or self.path.startswith("/sleep-data.json")
+            or self.path.startswith("/health-tracker-data.json")
+            or self.path.startswith("/health-data.json")
+        ):
             body = sleep_agent.get_live_sleep_json(get_gemini_key()).encode("utf-8")
             self.send_response(200)
             self.send_header("Content-Type", "application/json; charset=utf-8")
@@ -1157,7 +1211,12 @@ class BotHTTPHandler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(body)
             return
-        if self.path.startswith("/sleep-tracker") or self.path.startswith("/sleep"):
+        if (
+            self.path.startswith("/sleep-tracker")
+            or self.path.startswith("/sleep")
+            or self.path.startswith("/health-tracker")
+            or self.path.startswith("/health")
+        ):
             body = sleep_agent.get_dashboard_html(get_gemini_key()).encode("utf-8")
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
@@ -1174,7 +1233,7 @@ class BotHTTPHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.end_headers()
         self.wfile.write(b"OK")
-        if self.path.startswith("/wabbits-webhook"):
+        if self.path.startswith("/wabbits-webhook") or self.path.startswith("/executive-assistant-webhook"):
             threading.Thread(
                 target=wabbits_agent.process_wabbits_webhook,
                 args=(get_gemini_key(), body),
@@ -1188,7 +1247,12 @@ class BotHTTPHandler(BaseHTTPRequestHandler):
                 daemon=True,
             ).start()
             return
-        if self.path.startswith("/sleep-tracker-webhook") or self.path.startswith("/sleep-webhook"):
+        if (
+            self.path.startswith("/sleep-tracker-webhook")
+            or self.path.startswith("/sleep-webhook")
+            or self.path.startswith("/health-tracker-webhook")
+            or self.path.startswith("/health-webhook")
+        ):
             threading.Thread(
                 target=sleep_agent.process_sleep_webhook,
                 args=(get_gemini_key(), body),
@@ -1237,7 +1301,7 @@ def run_bot():
     port = int(os.environ.get("PORT", "10000"))
     external_url = os.environ.get("RENDER_EXTERNAL_URL", "").rstrip("/")
 
-    server = HTTPServer(("0.0.0.0", port), BotHTTPHandler)
+    server = ThreadingHTTPServer(("0.0.0.0", port), BotHTTPHandler)
     threading.Thread(target=server.serve_forever, daemon=True).start()
 
     if external_url:

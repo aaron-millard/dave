@@ -12,6 +12,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+import zlib
 from typing import Dict, List, Any, Optional
 
 BOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -34,12 +35,15 @@ SLEEP_STATE_CACHE: Dict[str, Any] = {
     "notes": [],
     "rules": [],
     "hunger_logs": {},
+    "alcohol_logs": {},
+    "nicotine_logs": {},
     "oura_tokens": {},
     "oura_cache": {},
 }
 SLEEP_VAULT_CACHE: Dict[str, Any] = {}
 SLEEP_SEEN_UPDATES = set()
 OURA_SYNC_RUNNING = False
+ALLOWED_CHAT_IDS = {8299631714, 8349556362}
 
 
 def now_cst() -> datetime:
@@ -92,6 +96,11 @@ def load_vault(gemini_key: str) -> Dict[str, Any]:
             return {}
         stream = _keystream(enc_key, nonce, len(ct))
         pt = bytes(a ^ b for a, b in zip(ct, stream))
+        if enc.get("compressed"):
+            try:
+                pt = zlib.decompress(pt)
+            except Exception:
+                pass
         SLEEP_VAULT_CACHE = json.loads(pt.decode("utf-8"))
         return SLEEP_VAULT_CACHE
     except Exception as e:
@@ -127,7 +136,8 @@ def save_state_to_cloud(token: str, data: Dict[str, Any]):
     # Keep setMyCommands compact & within Telegram's size limits by excluding large oura_cache (kept in RAM & vault)
     compact_data = {k: v for k, v in data.items() if k != "oura_cache"}
     raw_bytes = json.dumps(compact_data, separators=(",", ":")).encode("utf-8")
-    b64_str = base64.b64encode(raw_bytes).decode("ascii")
+    compressed = zlib.compress(raw_bytes, level=9)
+    b64_str = base64.b64encode(compressed).decode("ascii")
     chunks = [b64_str[i : i + 240] for i in range(0, len(b64_str), 240)][:95]
     # Telegram BotCommand description must be 3-256 chars; pad short trailing chunks
     commands = [{"command": f"s{idx}", "description": ch.ljust(3)} for idx, ch in enumerate(chunks)]
@@ -172,13 +182,20 @@ def sync_state_from_cloud(token: str) -> Dict[str, Any]:
                 )
                 b64_str = "".join(str(c.get("description", "")).strip() for c in sorted_cmds)
                 if b64_str:
-                    cloud_data = json.loads(base64.b64decode(b64_str.encode("ascii")).decode("utf-8"))
+                    raw_bytes = base64.b64decode(b64_str.encode("ascii"))
+                    try:
+                        json_bytes = zlib.decompress(raw_bytes)
+                    except Exception:
+                        json_bytes = raw_bytes
+                    cloud_data = json.loads(json_bytes.decode("utf-8"))
                     if isinstance(cloud_data, dict):
                         SLEEP_STATE_CACHE = {
                             "medication_logs": list(cloud_data.get("medication_logs", [])),
                             "notes": list(cloud_data.get("notes", [])),
                             "rules": list(cloud_data.get("rules", [])),
                             "hunger_logs": dict(cloud_data.get("hunger_logs", {})),
+                            "alcohol_logs": dict(cloud_data.get("alcohol_logs", {})),
+                            "nicotine_logs": dict(cloud_data.get("nicotine_logs", {})),
                             "oura_tokens": dict(cloud_data.get("oura_tokens", {})),
                             "oura_cache": dict(cloud_data.get("oura_cache", {})),
                         }
@@ -306,9 +323,13 @@ def parse_and_record_dose(text: str, gemini_key: str, token: str) -> Optional[st
     traz_val = f"{traz_mg}mg" if traz_mg is not None else "0mg"
     quet_val = f"{quet_mg}mg" if quet_mg is not None else "0mg"
 
-    # Dose logged at night belongs to tonight (night_of = now, date = next morning)
-    night_of_str = now.strftime("%Y-%m-%d")
-    date_str = (now + timedelta(days=1)).strftime("%Y-%m-%d") if now.hour >= 16 else now.strftime("%Y-%m-%d")
+    # Dose logged at night (or past midnight before noon) belongs to that sleep night
+    if now.hour >= 12:
+        night_of_str = now.strftime("%Y-%m-%d")
+        date_str = (now + timedelta(days=1)).strftime("%Y-%m-%d")
+    else:
+        night_of_str = (now - timedelta(days=1)).strftime("%Y-%m-%d")
+        date_str = now.strftime("%Y-%m-%d")
 
     state = sync_state_from_cloud(token)
     new_entry = {
@@ -461,6 +482,10 @@ def sync_oura_cloud(gemini_key: str, token: str) -> str:
                 entry["rem_sleep_seconds"] = rem
                 entry["rem_sleep_formatted"] = format_seconds(rem)
                 entry["rem_sleep_pct"] = round((rem / dur * 100), 1) if dur > 0 else 0
+                light = session.get("light_sleep_duration", 0)
+                entry["light_sleep_seconds"] = light
+                entry["light_sleep_formatted"] = format_seconds(light)
+                entry["light_sleep_pct"] = round((light / dur * 100), 1) if dur > 0 else 0
                 awake = session.get("awake_time", 0)
                 entry["awake_seconds"] = awake
                 entry["awake_formatted"] = format_seconds(awake)
@@ -541,6 +566,10 @@ def build_context(gemini_key: str, token: str) -> str:
         sections.append("=== Cloud Synced Notes ===\n" + json.dumps(state.get("notes"), indent=2))
     if state.get("hunger_logs"):
         sections.append("=== Cloud Synced Night Hunger ===\n" + json.dumps(state.get("hunger_logs"), indent=2))
+    if state.get("alcohol_logs"):
+        sections.append("=== Cloud Synced Alcohol Logs ===\n" + json.dumps(state.get("alcohol_logs"), indent=2))
+    if state.get("nicotine_logs"):
+        sections.append("=== Cloud Synced Nicotine Logs ===\n" + json.dumps(state.get("nicotine_logs"), indent=2))
 
     return "\n\n".join(sections)
 
@@ -626,15 +655,17 @@ def _calc_custom_scores_py(oura: Dict[str, Any], hunger_val: Optional[str]) -> D
         min(30, (deep_pct / 20) * 30)
         + min(25, (rem_pct / 20) * 25)
         + min(25, (hrv / 80) * 25)
-        + max(0, min(20, 20 - max(0, low_hr - 44) * 1.1))
+        + max(0, min(20, (60 - low_hr) * 2))
     )
 
     eff = oura.get("sleep_efficiency") if oura.get("sleep_efficiency") is not None else 85
-    tot_hrs = round((oura.get("total_sleep_seconds") or 0) / 3600, 1)
+    tot_hrs = oura.get("total_sleep_hours")
+    if tot_hrs is None:
+        tot_hrs = round((oura.get("total_sleep_seconds") or 0) / 3600, 1)
     bal = (
-        min(30, (eff / 92) * 30)
+        (eff / 100) * 30
         + min(25, (tot_hrs / 8.0) * 25)
-        + max(0, 25 - (wakeups * 2.8) - max(0, awake_mins - 25) * 0.25)
+        + max(0, 25 - (wakeups * 3.5))
         + min(20, (hrv / 75) * 20)
     )
 
@@ -662,9 +693,9 @@ def format_sleep_status_reply(text: str, gemini_key: str, token: str) -> Optiona
     t_clean = text.strip()
     t_low = t_clean.lower()
 
-    is_cmd = bool(re.match(r"^/(?:sleep|lastnight|status)\b", t_low))
+    is_cmd = bool(re.match(r"^/(?:sleep|health|lastnight|status)\b", t_low))
     is_phrase = bool(
-        re.match(r"^(?:sleep\s*status|last\s*night(?:\s+sleep)?|how\s+did\s+i\s+sleep(?:\s+(?:last\s+night|on\s+.+))?|sleep\s+report|status(?:\s+[\d/\-]+)?)$", t_low)
+        re.match(r"^(?:(?:sleep|health)\s*status|last\s*night(?:\s+sleep)?|how\s+did\s+i\s+sleep(?:\s+(?:last\s+night|on\s+.+))?|(?:sleep|health)\s+report|status(?:\s+[\d/\-]+)?)$", t_low)
     )
     if not (is_cmd or is_phrase):
         return None
@@ -749,7 +780,7 @@ def format_sleep_status_reply(text: str, gemini_key: str, token: str) -> Optiona
     if not oura:
         return (
             f"Roger Roger.\n\n"
-            f"Sleep Status — Night of {target_night_of} (Oura Pending)\n"
+            f"Health Tracker Status — Night of {target_night_of} (Oura Pending)\n"
             f"- Meds: Traz {traz} / Quet {quet} @ {med_time}\n"
             f"- Hunger: {hunger} | Alcohol: {alcohol} | Nicotine: {nicotine}\n"
             f"- Oura data for {wakeup_date} is not synced yet."
@@ -785,7 +816,7 @@ def format_sleep_status_reply(text: str, gemini_key: str, token: str) -> Optiona
 
     return (
         f"Roger Roger.\n\n"
-        f"Sleep Status — Night of {target_night_of} (Wake {wakeup_date})\n"
+        f"Health Tracker Status — Night of {target_night_of} (Wake {wakeup_date})\n"
         f"- Scores: Sleep {oura.get('sleep_score', '—')} | Continuity {custom['continuity'] if custom['continuity'] is not None else '—'} | Restoration {custom['restoration'] if custom['restoration'] is not None else '—'} | Balanced {custom['balanced'] if custom['balanced'] is not None else '—'}\n"
         f"- Restfulness: {restfulness} | Efficiency: {oura.get('sleep_efficiency', '—')}%\n"
         f"- Sleep: {oura.get('total_sleep_formatted', '—')} | Wakeups: {oura.get('wakeups', '—')} | Awake: {oura.get('awake_mins', '—')}m\n"
@@ -875,12 +906,12 @@ def _handle_sleep_batch(gemini_key: str, token: str, chat_id: int):
 
     # Question or conversation turn
     system_inst = (
-        "You are Aaron's personal Sleep Tracker AI Assistant. "
+        "You are Aaron's personal Health Tracker (Sleep & Biometrics) AI Assistant. "
         "Strict rules:\n"
         "1. Be as short, direct, and scannable as humanly possible.\n"
         "2. Use brief bullet points with dashes (-). Zero fluff.\n"
         "3. NEVER use markdown asterisks (* or **). No bolding asterisks.\n"
-        "4. Focus exclusively on sleep tracking, Trazodone & Quetiapine dosages, awakenings, and Oura biometrics.\n"
+        "4. Focus exclusively on health & sleep tracking, Trazodone & Quetiapine dosages, awakenings, and Oura / biometric data.\n"
         "5. Affirmations are always 'Roger Roger.'\n\n"
         + build_context(gemini_key, token)
     )
@@ -919,6 +950,8 @@ def process_sleep_webhook(gemini_key: str, body_bytes: bytes):
         if "message" in upd:
             msg = upd["message"]
             cid = msg["chat"]["id"]
+            if int(cid) not in ALLOWED_CHAT_IDS:
+                return
             if "text" in msg:
                 _enqueue_sleep(gemini_key, token, cid, text=msg["text"])
     except Exception as e:
@@ -946,7 +979,7 @@ def get_dashboard_html(gemini_key: str) -> str:
     token = get_sleep_token(gemini_key)
     state = sync_state_from_cloud(token)
     files: Dict[str, str] = vault.get("files", {})
-    html = files.get("dashboard.html", "<h1>Sleep Dashboard not found in vault</h1>")
+    html = files.get("dashboard.html", "<h1>Health Tracker Dashboard not found in vault</h1>")
     hunger_map = state.get("hunger_logs", {})
     alcohol_map = state.get("alcohol_logs", {})
     nicotine_map = state.get("nicotine_logs", {})
@@ -976,9 +1009,30 @@ def get_live_sleep_json(gemini_key: str) -> str:
     raw_oura = files.get("data/oura_cache.json", "{}")
     try:
         med_dict = json.loads(raw_meds)
-        meds = med_dict.get("logs", []) if isinstance(med_dict, dict) else med_dict
-        meds.extend(state.get("medication_logs", []))
+        meds = list(med_dict.get("logs", [])) if isinstance(med_dict, dict) else list(med_dict)
+        for dose in state.get("medication_logs", []):
+            if not isinstance(dose, dict):
+                continue
+            d_date = dose.get("date")
+            d_night = dose.get("night_of")
+            existing = next(
+                (l for l in meds if (d_date and l.get("date") == d_date) or (d_night and l.get("night_of") == d_night)),
+                None,
+            )
+            if existing is None:
+                meds.append(dose)
+            else:
+                existing.update({k: v for k, v in dose.items() if v is not None})
         oura = state.get("oura_cache") or json.loads(raw_oura)
-        return json.dumps({"medication_logs": meds, "oura_cache": oura, "hunger_logs": state.get("hunger_logs", {})}, indent=2)
+        return json.dumps(
+            {
+                "medication_logs": meds,
+                "oura_cache": oura,
+                "hunger_logs": state.get("hunger_logs", {}),
+                "alcohol_logs": state.get("alcohol_logs", {}),
+                "nicotine_logs": state.get("nicotine_logs", {}),
+            },
+            indent=2,
+        )
     except Exception:
         return raw_meds

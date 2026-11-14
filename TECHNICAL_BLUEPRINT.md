@@ -57,14 +57,14 @@ project-root/
 - Only execute when Aaron explicitly replies "go", "execute", or "3".
 
 ### B. Numbered Action Command System
-Typing the number (1-7) or trigger phrase runs the action immediately:
+Typing the number (0-6) or trigger phrase runs the action immediately:
+- [0] list actions (or 0 / actions): Displays this numbered menu anytime.
 - [1] pull backlog (or 1): Displays current exploratory ideas and Telegram dumps from memory/ProjectMemory.md.
 - [2] pull staging (or 2): Displays concrete pending changes that are planned, designed, and strictly paused waiting for approval.
 - [3] execute staging (or 3): The official green light. Applies all staged changes across files and configs.
-- [4] sync all (or 4): Multi-level full sync across local files, GitHub, Telegram cloud, and Render.
+- [4] sync all (or 4): Multi-level full sync across local files, GitHub, Telegram cloud, and Render. Replies strictly with "Sync Complete."
 - [5] pull error log (or 5): Displays the top recurring mistakes and guardrails from memory/ErrorLog.md.
 - [6] status (or 6): Quick 3-bullet summary of project health, active files, and last sync timestamp.
-- [7] list actions (or 7): Displays this numbered menu anytime.
 
 ### C. Continuous Error Logging
 - Whenever Aaron corrects the agent or flags an issue, append it immediately to `memory/ErrorLog.md` before replying.

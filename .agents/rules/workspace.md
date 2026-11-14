@@ -29,7 +29,10 @@
 
 ## 2. Numbered Action Command System
 
-Typing the number (1-7) or the exact phrase triggers the action immediately:
+Typing the number (0-6) or the exact phrase triggers the action immediately:
+
+- [0] list actions (or 0 / actions):
+  Displays this numbered menu anytime.
 
 - [1] pull backlog (or 1):
   Displays current exploratory ideas and Telegram dumps from memory/ProjectMemory.md.
@@ -41,13 +44,10 @@ Typing the number (1-7) or the exact phrase triggers the action immediately:
   The official green light. Applies all staged changes across files and configs.
 
 - [4] sync all (or 4):
-  Multi-level full sync. Ensures all layers are updated: local files <-> cloud bot/Render <-> Telegram cloud <-> GitHub.
+  Multi-level full sync. Ensures all layers are updated: local files <-> cloud bot/Render <-> Telegram cloud <-> GitHub. Replies strictly with "Sync Complete."
 
 - [5] pull error log (or 5):
   Displays the top recurring mistakes and guardrails from memory/ErrorLog.md.
 
 - [6] status (or 6):
   Quick 3-bullet summary of project health, active files, and last sync timestamp.
-
-- [7] list actions (or 7):
-  Displays this numbered menu anytime.

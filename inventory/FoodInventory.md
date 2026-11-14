@@ -14,11 +14,9 @@
 - Boneless Skinless Chicken Breast Fillets (Frozen)
 
 # Dairy & Refrigerated
-- Costco Hand Pulled Rotisserie Chicken Breast Meat
 - H-E-B Honey Turkey Breast Deli Meat (Sliced)
 - H-E-B Thick Cut / Center Cut Bacon
 - USDA Large Whole Eggs
-- Fairlife Fat-Free Ultra-Filtered Lactose-Free Milk
 - Fairlife Nutrition Plan 30g Chocolate Protein Shakes
 - Premier Protein 30g Chocolate Protein Shakes
 - Oikos Pro 20g Protein Cultured Ultra-Filtered Yogurt (Strawberry)
@@ -51,6 +49,7 @@
 - Fresh Cilantro Leaves
 
 # Bakery & Bread
+- H-E-B Hill Country Fare Hamburger Buns 8ct
 - Sola Soft Bagels: Cinnamon & Raisin (120 Cal)
 - Sara Lee Delightful 45-Calorie Keto-Friendly Bread
 - H-E-B Higher Harvest Low-Carb Lifestyle Wheat Bread
@@ -69,7 +68,6 @@
 - Ben's Original Ready Rice: Roasted Chicken
 - Ben's Original Ready Rice: Whole Grain Brown
 - Ben's Original Ready Rice: Spanish Style
-- Ben's Original Ready Rice: Jasmine Rice
 - Ben's Original Ready Rice: Garden Vegetable
 - Barilla Protein+ (10g Protein) Thin Spaghetti Pasta
 - Banza Chickpea Pasta Cheddar Mac & Cheese Shells (16g Protein)
@@ -107,12 +105,10 @@
 - Quest Tortilla Style Protein Chips
 - Hill Country Fare Microwave Popcorn: Light Butter
 - Hill Country Fare Microwave Popcorn: Kettle Corn
-- Raw / Roasted Cashews
 - Mixed Trail Mix
 - Seedless Raisins
 - Halo Top Light Ice Cream: Vanilla Bean
 - H-E-B Creamy Creations Orange Sherbet
-- Hershey's Milk Chocolate Kisses
 - Hershey's Semi-Sweet Chocolate Chips
 - Hershey's Special Dark Chocolate Chips
 - Lindt Excellence 90% Cocoa Supreme Dark Chocolate Bar

@@ -19,14 +19,14 @@ Before performing any task, writing any code, or returning any answer, I **must*
   - **Staging:** Concrete pending changes that are planned, designed, and ready to implement, but strictly paused waiting for Aaron's "go", "execute", or "3".
 
 - **1e. Numbered Action Command System:**
-  - Typing the number (1-7) or trigger phrase triggers the action immediately:
+  - Typing the number (0-6) or trigger phrase triggers the action immediately:
+    - [0] list actions (or 0 / actions): Displays this numbered menu anytime.
     - [1] pull backlog (or 1): Displays current exploratory ideas and Telegram dumps.
     - [2] pull staging (or 2): Displays concrete pending changes paused for approval.
     - [3] execute staging (or 3): The official green light. Applies all staged changes.
-    - [4] sync all (or 4): Multi-level full sync across local, GitHub, Telegram cloud, and Render.
+    - [4] sync all (or 4): Multi-level full sync across local, GitHub, Telegram cloud, and Render. Replies strictly with "Sync Complete."
     - [5] pull error log (or 5): Displays top recurring mistakes and guardrails.
     - [6] status (or 6): Quick 3-bullet summary of project health, active files, and last sync.
-    - [7] list actions (or 7): Displays this numbered menu anytime.
 
 - **1a.** Before performing any task, writing any code, or returning any answer, I must read **[MasterRules.md](MasterRules.md)** and **fully review [FoodInventory.md](../inventory/FoodInventory.md)** (along with **[InventoryData.json](../inventory/InventoryData.json)**) from top to bottom every single time.
 - **1b. Categorized Project Folders:**
@@ -47,8 +47,8 @@ Before performing any task, writing any code, or returning any answer, I **must*
   1. **Individual Pre-Packaged Cups / Containers / Bars / Packets / Bagels:** Always use **whole units** (never awkward partial cups like `250g Greek Yogurt`) and write the **unit count first + grams in parentheses**:
      - Greek Yogurt Cups: `- 1 cup (150g) Oikos Triple Zero 15g Protein Greek Yogurt (Vanilla)` (or `2 cups (300g)`)
      - Bagels / Bars / Sticks / Packets / Bowls: `- 1 bagel (85g) Sola Soft Bagels: Cinnamon & Raisin`, `- 1 bar (60g) Kirkland Signature Protein Bar`, `- 1 stick (32g) Kirkland Grass-Fed Beef Stick`, `- 1 packet (43g) H-E-B Protein Instant Oatmeal`, `- 1 bowl (210g) Bibigo Cooked Sticky White Rice`, `- 1 pouch (140g) Ben's Original Ready Rice`, `- 1 packet (21g) Tillamook Sharp Cheddar`.
-  2. **Milk:** Always tell milk in **cups + grams in parentheses**:
-     - `- 1 cup (240g) Fairlife Fat-Free Ultra-Filtered Lactose-Free Milk` (or `- 1/2 cup (120g)`, `- 1.5 cups (360g)`).
+  2. **Milk (When in Stock):** Always tell milk in **cups + grams in parentheses**:
+     - `- 1 cup (240g) Milk` (or `- 1/2 cup (120g)`, `- 1.5 cups (360g)`).
   3. **Ready-to-Drink Protein Shakes:** Always tell protein shakes in **whole shakes/bottles/cartons + grams in parentheses**:
      - `- 1 shake (341g) Premier Protein 30g Chocolate Protein Shakes`
      - `- 1 shake (340g) Fairlife Nutrition Plan 30g Chocolate Protein Shakes`
@@ -92,7 +92,7 @@ Before performing any task, writing any code, or returning any answer, I **must*
 - **3d. Strictly Obey User Locks, Non-Decrease Floors & Pre-Workout Meal Requests:**
   - Whenever Aaron locks specific items or sets a floor (e.g., *"adjust anything except the steak"*, *"do not decrease the sourdough amount"*, *"looking forward to yogurt/granola and cereal"*), treat those as **hard constraints**: never remove them and never reduce a locked minimum weight (you can split the locked `126g` sourdough across `Pre-Workout` and `Breakfast`/`Lunch`, as long as the daily sourdough total stays `>= 126g`).
   - To make macro room for new requests (like lowering fats, adding a **Pre-Workout** slot, and swapping in a real **Dinner side** with the steak), drop or trim **unlocked** items (e.g., remove butter/added fats, or remove/adjust unlocked items like the apple).
-  - For an early-morning **Pre-Workout** meal, prioritize **fast-digesting carbs + lean protein + very low fat** (e.g., Sourdough Toast with Strawberry Jam/Jelly, Banana, or PBfit, plus Fairlife Milk or Whey) so it digests quickly before training.
+  - For an early-morning **Pre-Workout** meal, prioritize **fast-digesting carbs + lean protein + very low fat** (e.g., Sourdough Toast with Strawberry Jam/Jelly, Banana, or PBfit, plus Whey or Greek Yogurt) so it digests quickly before training.
 - **3e. Daily Super Low-Calorie Veggie Snacks (Every Single Day):**
   - Aaron wants to incorporate his **super low-calorie options as snacks every single day** — currently **`Fresh Celery Sticks`**, **`Fresh Bagged Sugar Snap Peas`**, and **`Fresh Whole / Baby Carrots`**.
   - Whenever planning a full day, filling in the remaining day from a Cronometer screenshot (unless already logged on the screenshot), or suggesting snack options, **always incorporate** at least one (or a combination) of **`Fresh Celery Sticks`**, **`Fresh Bagged Sugar Snap Peas`**, and **`Fresh Whole / Baby Carrots`** in the `Snacks` slot every single day.
@@ -190,7 +190,6 @@ Before performing any task, writing any code, or returning any answer, I **must*
 - Chicken Teriyaki
 - Soy-flavored dishes (anything with soy sauce / teriyaki / savory Asian-style seasoning)
 - Greek Yogurt and Granola (`Purely Elizabeth`)
-- Milk (`Fairlife Fat-Free Ultra-Filtered Milk`)
 - Cereal (`Kashi GO Protein + Fiber Cereal`, `Cheerios Protein`)
 - Peanut Butter and Jelly Sandwiches (including with PBfit or Creamy Peanut Butter)
 - white rice

@@ -33,17 +33,6 @@
     "fiber_g": 0.0
   },
   {
-    "name": "Costco Hand Pulled Rotisserie Chicken Breast Meat",
-    "category": "Dairy & Refrigerated",
-    "tags": "Good Protein Options",
-    "serving_size": "85g (3 oz)",
-    "calories": 120.0,
-    "protein_g": 22.4,
-    "fat_g": 2.8,
-    "carbs_g": 0.0,
-    "fiber_g": 0.0
-  },
-  {
     "name": "H-E-B Honey Turkey Breast Deli Meat (Sliced)",
     "category": "Dairy & Refrigerated",
     "tags": "Good Protein Options",
@@ -184,17 +173,6 @@
     "protein_g": 6.0,
     "fat_g": 5.0,
     "carbs_g": 0.0,
-    "fiber_g": 0.0
-  },
-  {
-    "name": "Fairlife Fat-Free Ultra-Filtered Lactose-Free Milk",
-    "category": "Dairy & Refrigerated",
-    "tags": "Good Protein Options",
-    "serving_size": "240g (1 cup / 240ml)",
-    "calories": 80.0,
-    "protein_g": 13.0,
-    "fat_g": 0.0,
-    "carbs_g": 6.0,
     "fiber_g": 0.0
   },
   {
@@ -649,17 +627,6 @@
     "fiber_g": 2.0
   },
   {
-    "name": "Ben's Original Ready Rice: Jasmine Rice",
-    "category": "Pantry & Canned",
-    "tags": "Good Carb Options",
-    "serving_size": "140g (1 cup)",
-    "calories": 251.0,
-    "protein_g": 5.0,
-    "fat_g": 2.5,
-    "carbs_g": 51.0,
-    "fiber_g": 1.0
-  },
-  {
     "name": "Ben's Original Ready Rice: Garden Vegetable",
     "category": "Pantry & Canned",
     "tags": "Good Carb Options",
@@ -892,7 +859,7 @@
   },
   {
     "name": "Purely Elizabeth Ancient Grain Granola: Chocolate Sea Salt",
-    "category": "Spices & Seasonings",
+    "category": "Desserts, Candy & Snacks",
     "tags": "Good Fat Options, Good Carb Options",
     "serving_size": "30g (1/3 cup)",
     "calories": 130.0,
@@ -903,7 +870,7 @@
   },
   {
     "name": "Quaker Lightly Salted Rice Cakes",
-    "category": "Spices & Seasonings",
+    "category": "Desserts, Candy & Snacks",
     "tags": "Good Carb Options",
     "serving_size": "18g (2 cakes)",
     "calories": 70.0,
@@ -979,17 +946,6 @@
     "fiber_g": 2.0
   },
   {
-    "name": "Raw / Roasted Cashews",
-    "category": "Desserts, Candy & Snacks",
-    "tags": "Good Fat Options",
-    "serving_size": "28g (1 oz)",
-    "calories": 149.2,
-    "protein_g": 5.1,
-    "fat_g": 12.3,
-    "carbs_g": 7.6,
-    "fiber_g": 0.9
-  },
-  {
     "name": "Mixed Trail Mix",
     "category": "Desserts, Candy & Snacks",
     "tags": "Good Fat Options",
@@ -1045,17 +1001,6 @@
     "fiber_g": 0.0
   },
   {
-    "name": "Hershey's Milk Chocolate Kisses",
-    "category": "Desserts, Candy & Snacks",
-    "tags": "",
-    "serving_size": "41g (9 pieces)",
-    "calories": 200.0,
-    "protein_g": 3.0,
-    "fat_g": 12.0,
-    "carbs_g": 24.0,
-    "fiber_g": 1.0
-  },
-  {
     "name": "Hershey's Semi-Sweet Chocolate Chips",
     "category": "Desserts, Candy & Snacks",
     "tags": "",
@@ -1090,7 +1035,7 @@
   },
   {
     "name": "Lindt Excellence Caramel with a Touch of Sea Salt Dark Chocolate Bar",
-    "category": "Spices & Seasonings",
+    "category": "Desserts, Candy & Snacks",
     "tags": "",
     "serving_size": "30g (3 squares)",
     "calories": 150.0,
@@ -1101,7 +1046,7 @@
   },
   {
     "name": "Unsweetened / Cinnamon Applesauce",
-    "category": "Spices & Seasonings",
+    "category": "Produce",
     "tags": "Good Carb Options, Good Fiber Options",
     "serving_size": "113g (1 cup / pouch)",
     "calories": 50.0,
@@ -1746,6 +1691,17 @@
     "protein_g": 1.0,
     "fat_g": 4.5,
     "carbs_g": 8.0,
+    "fiber_g": 1.0
+  },
+  {
+    "name": "H-E-B Hill Country Fare Hamburger Buns 8ct",
+    "category": "Bakery & Bread",
+    "tags": "Bakery, Buns",
+    "serving_size": "50g (1 bun)",
+    "calories": 140.0,
+    "protein_g": 4.0,
+    "fat_g": 2.0,
+    "carbs_g": 26.0,
     "fiber_g": 1.0
   }
 ]
