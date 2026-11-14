@@ -209,3 +209,10 @@ Before performing any task, writing any code, or returning any answer, I **must*
   - **1 Unified Filter:** Categories (`Frozen`, `Dairy`, `Pantry`, etc.) + Macro/Goal Options (`High Protein Options`, `High Fiber Options`, `Good Carb Options`, `Good Fat Options`, etc.).
   - **Table Columns:** `Category` | `Item` | `Remove Button` | `Calories per serving` | `Protein` | `Carbs` | `Fats` | `Fiber`.
   - **1 Chatbox:** Attach receipts, talk-to-text, or type to add/remove items from inventory.
+
+---
+
+## 10. Mandatory Internal "Why" Verification Rule (Universal Standard)
+- Before finalizing any meal option, gram weight adjustment, inventory match, or macro calculation, perform an explicit internal verification in your thinking step justifying **why** that item and gram weight were chosen using concrete evidence (verifying the item is active in `InventoryData.json`, not in `removed`/`dislikes`, and that exact decimal math hits 170-185g P, 150-180g Net Carbs, ~50g F, and ~1,900 kcal).
+- Reject unverified foods or guessed macros rather than hallucinating.
+- **Silent in Chat:** Do NOT output the internal "Why" justification in standard chat responses unless Aaron explicitly asks for it. Keep chat responses ultra-short, clean, and free of filler.

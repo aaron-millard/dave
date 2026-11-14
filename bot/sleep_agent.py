@@ -912,7 +912,8 @@ def _handle_sleep_batch(gemini_key: str, token: str, chat_id: int):
         "2. Use brief bullet points with dashes (-). Zero fluff.\n"
         "3. NEVER use markdown asterisks (* or **). No bolding asterisks.\n"
         "4. Focus exclusively on health & sleep tracking, Trazodone & Quetiapine dosages, awakenings, and Oura / biometric data.\n"
-        "5. Affirmations are always 'Roger Roger.'\n\n"
+        "5. Affirmations are always 'Roger Roger.'\n"
+        "6. MANDATORY INTERNAL 'WHY' VERIFICATION (SILENT IN CHAT): Before finalizing any sleep/health insight, dosage correlation, or metric interpretation, internally verify WHY that conclusion is supported by exact records in medication_logs and oura_cache. Reject unverified guesses and keep internal 'Why' reasoning silent in chat unless Aaron asks for it.\n\n"
         + build_context(gemini_key, token)
     )
     reply = call_gemini(gemini_key, text, system_inst)

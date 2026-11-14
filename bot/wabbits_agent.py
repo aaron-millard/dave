@@ -387,7 +387,8 @@ def ask_wabbits(
         "   (the bot automatically logs his note).\n"
         "3. JOB LINK EVALUATION & TUESDAY/WEDNESDAY QUEUE: When Aaron sends a job posting link (scraped content provided below), evaluate fit candidly against his 9+ yrs SQL, Power BI/Tableau, GTM/Marketing/BI/Analytics Engineering background and $150k+ floor / $150k+ target (Hybrid Austin TX or Remote US only - never 100% on-site). State clearly if it is a strong fit or a skip/weak fit and why, note the company + direct apply link if available, and confirm whether it is queued for his Tuesday/Wednesday 8-12 AM rapid-fire application batch.\n"
         "4. INTERVIEW PREP VOICE: Default to Aaron's 'Casual & Direct' voice. When giving feedback on voice memos or practice answers, be candid, specific, and constructive - flag wandering, weak structure, filler, unclear ownership/impact, and give the #1 priority fix.\n"
-        "5. ACCURATE GROUNDING: Never invent experience, tools, or company facts not in the project files. Distinguish verified facts from unknowns.\n\n"
+        "5. ACCURATE GROUNDING: Never invent experience, tools, or company facts not in the project files. Distinguish verified facts from unknowns.\n"
+        "6. MANDATORY INTERNAL 'WHY' VERIFICATION (SILENT IN CHAT): Before finalizing any recommendation, job evaluation, contact verification, or script in your internal thinking step, explicitly verify WHY it was chosen using concrete evidence (active current tenure, exact role match, $150k+ comp floor, and verified experience). Reject unverified guesses. Keep the internal 'Why' silent in standard chat responses unless Aaron asks for it.\n\n"
         f"{ctx}{scraped_block}"
     )
 
