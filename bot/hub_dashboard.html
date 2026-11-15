@@ -126,6 +126,12 @@
       box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.45);
     }
 
+    .tab-btn.active[data-tab="interviews"] {
+      background: rgba(52, 211, 153, 0.18);
+      color: var(--green);
+      box-shadow: inset 0 0 0 1px rgba(52, 211, 153, 0.45);
+    }
+
     .sub-pill-wrap {
       display: inline-flex;
       align-items: center;
@@ -245,6 +251,14 @@
       <div class="tab-group">
         <button class="tab-btn" data-tab="architecture" onclick="switchTab('architecture')">3. System Architecture</button>
       </div>
+
+      <div class="tab-group">
+        <button class="tab-btn" data-tab="interviews" onclick="switchTab('interviews')">4. Active Interviews</button>
+        <div class="sub-pill-wrap">
+          <button class="sub-pill active" id="pillKnownwell" onclick="switchInterviewCompany('knownwell')">Knownwell</button>
+          <button class="sub-pill" id="pillHippo" onclick="switchInterviewCompany('hippo')">Hippo</button>
+        </div>
+      </div>
     </div>
 
     <div class="nav-right">
@@ -260,6 +274,7 @@
     <iframe id="frame-health" class="hub-frame active" title="Health Tracker"></iframe>
     <iframe id="frame-lifting" class="hub-frame" title="Weightlifting Tracker"></iframe>
     <iframe id="frame-architecture" class="hub-frame" title="System Architecture"></iframe>
+    <iframe id="frame-interviews" class="hub-frame" title="Active Interviews"></iframe>
   </main>
 
   <script>
@@ -270,20 +285,23 @@
         return {
           health: "../health-tracker/dashboard.html",
           lifting: "../weightlifting-tracker/dashboard.html",
-          architecture: "./architecture.html"
+          architecture: "./architecture.html",
+          interviews: "./interviews.html"
         };
       }
       return {
         health: "/embed/health",
         lifting: "/embed/lifting",
-        architecture: "/embed/architecture"
+        architecture: "/embed/architecture",
+        interviews: "/embed/interviews"
       };
     }
 
     const URLS = getBaseUrls();
-    const loadedTabs = { health: false, lifting: false, architecture: false };
+    const loadedTabs = { health: false, lifting: false, architecture: false, interviews: false };
     let activeTab = "health";
     let activeHealthSubtab = "oura";
+    let activeInterviewCompany = "knownwell";
 
     function updateEnvBadge() {
       const txt = document.getElementById("envStatusText");
@@ -309,17 +327,34 @@
       return base;
     }
 
+    function updateInterviewPills(company) {
+      activeInterviewCompany = company === "hippo" ? "hippo" : "knownwell";
+      document.getElementById("pillKnownwell").classList.toggle("active", activeInterviewCompany === "knownwell");
+      document.getElementById("pillHippo").classList.toggle("active", activeInterviewCompany === "hippo");
+    }
+
+    function buildInterviewsUrl(company) {
+      const base = URLS.interviews;
+      return base + (base.includes("?") ? "&" : "?") + "company=" + (company === "hippo" ? "hippo" : "knownwell");
+    }
+
     function ensureLoaded(tabName, forceReload = false) {
       const frame = document.getElementById("frame-" + tabName);
       if (!frame) return;
       if (!loadedTabs[tabName] || forceReload) {
-        frame.src = tabName === "health" ? buildHealthUrl(activeHealthSubtab) : URLS[tabName];
+        if (tabName === "health") {
+          frame.src = buildHealthUrl(activeHealthSubtab);
+        } else if (tabName === "interviews") {
+          frame.src = buildInterviewsUrl(activeInterviewCompany);
+        } else {
+          frame.src = URLS[tabName];
+        }
         loadedTabs[tabName] = true;
       }
     }
 
     function switchTab(tabName) {
-      const target = (tabName === "lifting" || tabName === "architecture") ? tabName : "health";
+      const target = (tabName === "lifting" || tabName === "architecture" || tabName === "interviews") ? tabName : "health";
       activeTab = target;
 
       document.querySelectorAll(".tab-btn").forEach((btn) => {
@@ -345,6 +380,18 @@
       }
     }
 
+    function switchInterviewCompany(company) {
+      const normalized = company === "hippo" ? "hippo" : "knownwell";
+      updateInterviewPills(normalized);
+      switchTab("interviews");
+
+      const frame = document.getElementById("frame-interviews");
+      if (frame) {
+        frame.src = buildInterviewsUrl(normalized);
+        loadedTabs.interviews = true;
+      }
+    }
+
     function reloadActiveFrame() {
       ensureLoaded(activeTab, true);
     }
@@ -360,6 +407,9 @@
       if (qSub === "garmin" || injected === "garmin" || qTab === "garmin" || hash === "garmin") {
         updateHealthSubtabPills("garmin");
         return "health";
+      }
+      if (qTab === "interviews" || injected === "interviews" || hash === "interviews" || path.includes("interviews")) {
+        return "interviews";
       }
       if (qTab === "lifting" || injected === "lifting" || hash === "lifting" || path.includes("lifting") || path.includes("weightlifting")) {
         return "lifting";

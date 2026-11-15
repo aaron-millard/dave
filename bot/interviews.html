@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Active Interviews - Knownwell & Hippo Insurance</title>
+  <style>
+    :root {
+      --bg: #070b13;
+      --card: #0d1424;
+      --card-alt: #111a2e;
+      --border: #1e293b;
+      --border-bright: #334155;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --blue: #38bdf8;
+      --purple: #c084fc;
+      --green: #34d399;
+      --amber: #fbbf24;
+      --rose: #fb7185;
+      --code-bg: #050811;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      padding: 20px 24px 48px;
+    }
+
+    .container {
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    /* Company Switcher Header */
+    .company-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 20px;
+      padding: 12px 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+
+    .company-bar-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .company-bar-title h1 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+
+    .count-pill {
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.14);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: var(--blue);
+    }
+
+    .company-tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .company-tab {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 16px;
+      border-radius: 10px;
+      background: #080d18;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .company-tab:hover {
+      color: #fff;
+      border-color: var(--border-bright);
+    }
+
+    .company-tab.active[data-company="knownwell"] {
+      background: rgba(52, 211, 153, 0.14);
+      border-color: rgba(52, 211, 153, 0.5);
+      color: #fff;
+    }
+
+    .company-tab.active[data-company="hippo"] {
+      background: rgba(192, 132, 252, 0.16);
+      border-color: rgba(192, 132, 252, 0.5);
+      color: #fff;
+    }
+
+    .tab-stage-tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--muted);
+    }
+
+    .company-tab.active[data-company="knownwell"] .tab-stage-tag {
+      background: rgba(52, 211, 153, 0.22);
+      color: var(--green);
+    }
+
+    .company-tab.active[data-company="hippo"] .tab-stage-tag {
+      background: rgba(192, 132, 252, 0.24);
+      color: var(--purple);
+    }
+
+    .company-panel {
+      display: none;
+    }
+
+    .company-panel.active {
+      display: block;
+    }
+
+    /* Hero Card */
+    .hero-card {
+      background: linear-gradient(145deg, var(--card), #0a101d);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px 24px;
+      margin-bottom: 18px;
+    }
+
+    .hero-top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .hero-company {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+
+    .hero-role {
+      font-size: 0.96rem;
+      color: var(--blue);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .badge {
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 5px 11px;
+      border-radius: 8px;
+      background: #080d18;
+      border: 1px solid var(--border-bright);
+      color: var(--text);
+    }
+
+    .badge-green {
+      border-color: rgba(52, 211, 153, 0.45);
+      background: rgba(52, 211, 153, 0.12);
+      color: var(--green);
+    }
+
+    .badge-amber {
+      border-color: rgba(251, 191, 36, 0.45);
+      background: rgba(251, 191, 36, 0.12);
+      color: var(--amber);
+    }
+
+    .badge-purple {
+      border-color: rgba(192, 132, 252, 0.45);
+      background: rgba(192, 132, 252, 0.12);
+      color: var(--purple);
+    }
+
+    /* Pipeline Stepper */
+    .pipeline {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 10px;
+    }
+
+    .step {
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #080d18;
+      border: 1px solid var(--border);
+    }
+
+    .step.done {
+      border-color: rgba(52, 211, 153, 0.35);
+      background: rgba(52, 211, 153, 0.06);
+    }
+
+    .step.current {
+      border-color: rgba(56, 189, 248, 0.65);
+      background: rgba(56, 189, 248, 0.1);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.25);
+    }
+
+    .step-label {
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+
+    .step.done .step-label { color: var(--green); }
+    .step.current .step-label { color: var(--blue); }
+
+    .step-name {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .step-sub {
+      font-size: 0.74rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* Section Sub-tabs */
+    .section-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .sec-btn {
+      padding: 8px 14px;
+      border-radius: 9px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .sec-btn:hover {
+      color: #fff;
+      border-color: var(--border-bright);
+    }
+
+    .sec-btn.active {
+      background: rgba(56, 189, 248, 0.16);
+      border-color: rgba(56, 189, 248, 0.5);
+      color: var(--blue);
+    }
+
+    .sec-panel {
+      display: none;
+    }
+
+    .sec-panel.active {
+      display: block;
+    }
+
+    /* Content Grid & Cards */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
+
+    .card h2 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .card h3 {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--blue);
+      margin: 14px 0 6px;
+    }
+
+    .card h3:first-of-type {
+      margin-top: 4px;
+    }
+
+    ul.clean-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    ul.clean-list li {
+      position: relative;
+      padding-left: 16px;
+      font-size: 0.86rem;
+      color: #cbd5e1;
+    }
+
+    ul.clean-list li::before {
+      content: "-";
+      position: absolute;
+      left: 0;
+      color: var(--blue);
+      font-weight: 800;
+    }
+
+    .callout {
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: rgba(251, 113, 133, 0.08);
+      border: 1px solid rgba(251, 113, 133, 0.35);
+      margin-bottom: 12px;
+      font-size: 0.86rem;
+      color: #fecdd3;
+    }
+
+    .callout-title {
+      font-weight: 800;
+      color: var(--rose);
+      margin-bottom: 4px;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .callout-win {
+      background: rgba(52, 211, 153, 0.08);
+      border-color: rgba(52, 211, 153, 0.35);
+      color: #d1fae5;
+    }
+
+    .callout-win .callout-title {
+      color: var(--green);
+    }
+
+    .quote-box {
+      padding: 12px 14px;
+      border-left: 3px solid var(--purple);
+      background: #080d18;
+      border-radius: 0 10px 10px 0;
+      font-size: 0.85rem;
+      color: #e2e8f0;
+      margin: 8px 0 12px;
+    }
+
+    /* SQL Code Blocks */
+    .sql-wrap {
+      position: relative;
+      margin-top: 8px;
+      margin-bottom: 16px;
+    }
+
+    .sql-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 12px;
+      background: #0a1222;
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: 10px 10px 0 0;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--blue);
+    }
+
+    .copy-btn {
+      background: rgba(56, 189, 248, 0.14);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: var(--blue);
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .copy-btn:hover {
+      background: rgba(56, 189, 248, 0.25);
+    }
+
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 0 0 10px 10px;
+      padding: 12px 14px;
+      overflow-x: auto;
+      font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
+      font-size: 0.79rem;
+      line-height: 1.48;
+      color: #e2e8f0;
+    }
+
+    .kv-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .kv-item {
+      background: #080d18;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+
+    .kv-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+    }
+
+    .kv-val {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #fff;
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Top Company Switcher -->
+    <div class="company-bar">
+      <div class="company-bar-title">
+        <h1>Active Interviews</h1>
+        <span class="count-pill">2 Active Pipelines</span>
+      </div>
+
+      <div class="company-tabs">
+        <button class="company-tab active" data-company="knownwell" onclick="switchCompany('knownwell')">
+          <span>Knownwell</span>
+          <span class="tab-stage-tag">R2 SQL - Thu Nov 19</span>
+        </button>
+        <button class="company-tab" data-company="hippo" onclick="switchCompany('hippo')">
+          <span>Hippo Insurance</span>
+          <span class="tab-stage-tag">R3 Tech SQL</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== KNOWNWELL PANEL ==================== -->
+    <section id="panel-knownwell" class="company-panel active">
+      <div class="hero-card">
+        <div class="hero-top">
+          <div>
+            <div class="hero-company">Knownwell</div>
+            <div class="hero-role">Senior Data Analyst (Remote US)</div>
+          </div>
+          <div class="hero-badges">
+            <span class="badge badge-green">Next: Round 2 CoderPad SQL (Thu Nov 19)</span>
+            <span class="badge">$100k - $120k Base + Bonus/Equity (Floor: $120k)</span>
+            <span class="badge">~200 Employees (3x Growth)</span>
+          </div>
+        </div>
+
+        <div class="pipeline">
+          <div class="step done">
+            <div class="step-label">Completed</div>
+            <div class="step-name">Round 1: Recruiter</div>
+            <div class="step-sub">Thomas Workman (Nov 13)</div>
+          </div>
+          <div class="step current">
+            <div class="step-label">Up Next - Nov 19</div>
+            <div class="step-name">Round 2: Live SQL</div>
+            <div class="step-sub">60m CoderPad w/ Derek & Morgan</div>
+          </div>
+          <div class="step">
+            <div class="step-label">Final Stage</div>
+            <div class="step-name">Round 3: Stakeholders</div>
+            <div class="step-sub">Clinical Ops & Leadership</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-tabs" data-company="knownwell">
+        <button class="sec-btn active" onclick="switchSection('knownwell', 'overview', this)">Overview & Team</button>
+        <button class="sec-btn" onclick="switchSection('knownwell', 'sql', this)">Round 2 SQL Prep</button>
+        <button class="sec-btn" onclick="switchSection('knownwell', 'feedback', this)">R1 Debrief & Fixes</button>
+        <button class="sec-btn" onclick="switchSection('knownwell', 'questions', this)">Questions & Framing</button>
+      </div>
+
+      <!-- Knownwell: Overview -->
+      <div id="kw-overview" class="sec-panel active">
+        <div class="grid-2">
+          <div class="card">
+            <h2>Company & Business Model</h2>
+            <div class="kv-grid">
+              <div class="kv-item">
+                <div class="kv-label">Industry</div>
+                <div class="kv-val">Metabolic Healthcare & Telehealth</div>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Scale</div>
+                <div class="kv-val">~200 Employees (Doubling Next Yr)</div>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Work Mode</div>
+                <div class="kv-val">100% Remote (US)</div>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Care Model</div>
+                <div class="kv-val">Physical Clinics + Virtual Care</div>
+              </div>
+            </div>
+            <ul class="clean-list">
+              <li>Weight-inclusive metabolic healthcare and obesity management provider combining physical clinics with telehealth.</li>
+              <li>Startup mode: rapid 3x recent growth, planning to double again next year.</li>
+              <li>Core business levers: patient acquisition funnel (ad click to booked visit), provider/clinic capacity, appointment retention, and clinical outcomes.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h2>Data Team & Key Interviewers</h2>
+            <ul class="clean-list">
+              <li>Derek (Senior Data Manager - Hiring Manager): Looking for a consultative Data Analyst who partners directly with non-technical clinical ops and business teams.</li>
+              <li>Morgan (Data Scientist): Co-interviewer for Round 2 live SQL & analytical discussion.</li>
+              <li>1 Data Engineer currently on team.</li>
+              <li>Round 1 Contact: Thomas Workman (Talent / Recruiting, Eastern Time).</li>
+            </ul>
+            <h3>Role Boundary (Important)</h3>
+            <ul class="clean-list">
+              <li>Strictly a Data Analyst role rather than a Data Engineer role.</li>
+              <li>Must anchor on partnering with clinicians to define metrics, uncover operational opportunities, and translate data into Monday-morning decisions.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Knownwell: SQL Prep -->
+      <div id="kw-sql" class="sec-panel">
+        <div class="card">
+          <h2>Round 2 Format: 60-Min Technical CoderPad (Thu Nov 19)</h2>
+          <ul class="clean-list">
+            <li>40 minutes: Live SQL exercise in CoderPad on a small healthcare dataset simulating Knownwell patient/visit operations.</li>
+            <li>20 minutes: Q&A and analytical discussion with Derek (Sr. Data Manager) and Morgan (Data Scientist).</li>
+            <li>CoderPad Habits: Clarify table grain first, ask about NULLs/duplicate visits, outline CTE steps aloud before typing SQL.</li>
+          </ul>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <h2>Healthcare Funnel & Visit Conversion</h2>
+            <div class="sql-wrap">
+              <div class="sql-header">
+                <span>Patient Lead -> Booked -> Completed Visit</span>
+                <button class="copy-btn" onclick="copySql(this)">Copy</button>
+              </div>
+              <pre>WITH first_visit AS (
+    SELECT
+        patient_id,
+        MIN(CASE WHEN status = 'completed' THEN visit_date END) AS first_completed_dt,
+        COUNT(CASE WHEN status = 'completed' THEN 1 END) AS completed_visits
+    FROM appointments
+    GROUP BY patient_id
+)
+SELECT
+    p.acquisition_channel,
+    COUNT(DISTINCT p.patient_id) AS total_leads,
+    COUNT(DISTINCT fv.first_completed_dt) AS converted_patients,
+    ROUND(100.0 * COUNT(DISTINCT fv.first_completed_dt) / COUNT(DISTINCT p.patient_id), 1) AS conv_pct
+FROM patients p
+LEFT JOIN first_visit fv
+    ON p.patient_id = fv.patient_id
+GROUP BY p.acquisition_channel;</pre>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Cohort Retention & Repeat Visits (LAG / Window)</h2>
+            <div class="sql-wrap">
+              <div class="sql-header">
+                <span>Days Between Completed Appointments</span>
+                <button class="copy-btn" onclick="copySql(this)">Copy</button>
+              </div>
+              <pre>WITH ordered_visits AS (
+    SELECT
+        patient_id,
+        visit_id,
+        visit_date,
+        ROW_NUMBER() OVER (PARTITION BY patient_id ORDER BY visit_date) AS visit_num,
+        LAG(visit_date) OVER (PARTITION BY patient_id ORDER BY visit_date) AS prev_visit_date
+    FROM appointments
+    WHERE status = 'completed'
+)
+SELECT
+    visit_num,
+    COUNT(*) AS patient_count,
+    AVG(DATEDIFF('day', prev_visit_date, visit_date)) AS avg_days_since_prior
+FROM ordered_visits
+WHERE prev_visit_date IS NOT NULL
+GROUP BY visit_num
+ORDER BY visit_num;</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Knownwell: Feedback -->
+      <div id="kw-feedback" class="sec-panel">
+        <div class="callout">
+          <div class="callout-title">#1 Priority Fix for Round 2 (Derek & Morgan)</div>
+          Stop saying "dashboarding jobs are going away" or "I want to move into data engineering." In Round 1, that triggered Thomas to gently clarify Derek needs a Data Analyst, not a Data Engineer. Frame AI and MCP as automating repetitive formatting so you have MORE time for deep SQL modeling and consultative clinical partnership.
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <h2>Round 1 Wins (Nov 13 w/ Thomas Workman)</h2>
+            <ul class="clean-list">
+              <li>Strong recovery jumping back in to highlight working with 40-50 non-technical clients and giving the Pebl MQL reconciliation story.</li>
+              <li>Clean explanation of 3-pillar stack (ADF ingestion, SQL modeling, Power BI + MCP).</li>
+              <li>Confirmed $120k bare minimum alignment within Knownwell's $100k-$120k base band.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h2>Secondary Delivery Adjustments</h2>
+            <ul class="clean-list">
+              <li>Answer EVERY part of multi-part questions (on R1 dashboard question, explicitly address how you tracked adoption/usage and translated for non-technical users).</li>
+              <li>Use the Swish Dental 15+ clinic location story for Derek & Morgan — maps 1:1 to Knownwell's hybrid clinic + telehealth capacity model.</li>
+              <li>Keep opening background walkthrough under 90 seconds; eliminate "um / kind of" filler.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Knownwell: Questions -->
+      <div id="kw-questions" class="sec-panel">
+        <div class="grid-2">
+          <div class="card">
+            <h2>Smart Questions for Derek & Morgan</h2>
+            <ul class="clean-list">
+              <li>"How are clinical and EHR data currently integrated with patient acquisition and CRM data in the warehouse?"</li>
+              <li>"What are the biggest analytical blind spots the clinical operations or leadership teams are trying to solve over the next two quarters?"</li>
+              <li>"How does the data team balance immediate ad-hoc requests from clinic leaders with building reusable, tested SQL/dbt models?"</li>
+              <li>"What separates someone who is merely good at SQL in this role from someone who truly moves the needle for Knownwell's care model?"</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h2>Core Story Positioning</h2>
+            <h3>Swish Dental (Multi-Location Clinic Ops)</h3>
+            <div class="quote-box">
+              "For Swish Dental across 15+ clinics, I connected digital ad spend directly to clinic appointment bookings and chair capacity, creating business-day pacing logic so regional managers could track Cost per New Patient Booked and reallocate spend to under-booked clinics."
+            </div>
+            <h3>Pebl (Conflicting Metric Governance)</h3>
+            <div class="quote-box">
+              "Marketing and Sales were reporting conflicting MQL numbers. I audited the funnel from ad click to Salesforce, aligned both teams on 3 clear stages (Inbound, MQL, SAL), and locked the logic into SQL views."
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== HIPPO INSURANCE PANEL ==================== -->
+    <section id="panel-hippo" class="company-panel">
+      <div class="hero-card">
+        <div class="hero-top">
+          <div>
+            <div class="hero-company">Hippo Insurance</div>
+            <div class="hero-role">Senior Data Analyst (Sales, Marketing & Growth Analytics)</div>
+          </div>
+          <div class="hero-badges">
+            <span class="badge badge-purple">Next: Round 3 (30m Technical SQL Screen)</span>
+            <span class="badge">$130k Floor / $150k Goal</span>
+            <span class="badge">Austin 5th St (Hybrid Tue/Wed - Free Lunch)</span>
+          </div>
+        </div>
+
+        <div class="pipeline">
+          <div class="step done">
+            <div class="step-label">Completed</div>
+            <div class="step-name">R1: Recruiter</div>
+            <div class="step-sub">Nov 5, 2026</div>
+          </div>
+          <div class="step done">
+            <div class="step-label">Completed</div>
+            <div class="step-name">R2: Hiring Manager</div>
+            <div class="step-sub">Jakub Sienkiel (Nov 12)</div>
+          </div>
+          <div class="step current">
+            <div class="step-label">Up Next</div>
+            <div class="step-name">R3: Technical SQL</div>
+            <div class="step-sub">30m Live w/ Sr. Analyst</div>
+          </div>
+          <div class="step">
+            <div class="step-label">Stage 4</div>
+            <div class="step-name">Case Study</div>
+            <div class="step-sub">Take-Home & Exec Deck</div>
+          </div>
+          <div class="step">
+            <div class="step-label">Stage 5</div>
+            <div class="step-name">Austin Finals</div>
+            <div class="step-sub">In-Person w/ Jakub & VP</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-tabs" data-company="hippo">
+        <button class="sec-btn active" onclick="switchSection('hippo', 'overview', this)">Overview & Stack</button>
+        <button class="sec-btn" onclick="switchSection('hippo', 'sql', this)">Round 3 SQL Cheat Sheet</button>
+        <button class="sec-btn" onclick="switchSection('hippo', 'feedback', this)">R2 Debrief & Fixes</button>
+        <button class="sec-btn" onclick="switchSection('hippo', 'questions', this)">Insight Framework & Qs</button>
+      </div>
+
+      <!-- Hippo: Overview -->
+      <div id="hp-overview" class="sec-panel active">
+        <div class="grid-2">
+          <div class="card">
+            <h2>Organization & Role Context</h2>
+            <div class="kv-grid">
+              <div class="kv-item">
+                <div class="kv-label">Hiring Manager</div>
+                <div class="kv-val">Jakub Sienkiel (Sr. Mgr)</div>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Company Size</div>
+                <div class="kv-val">~500 Employees</div>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Office Location</div>
+                <div class="kv-val">5th St Downtown Austin (3 blocks away)</div>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Growth Catalyst</div>
+                <div class="kv-val">Launching Major New Product Line</div>
+              </div>
+            </div>
+            <ul class="clean-list">
+              <li>Centralized ~1 year ago into a single analytics + data engineering team supporting Sales, Marketing, Pricing, Actuarial, and Underwriting.</li>
+              <li>Jakub currently has 1 dedicated Sales/Marketing Sr. Analyst and needs a 2nd dedicated Sr. Analyst to co-lead acquisition analytics for a major upcoming product launch.</li>
+              <li>Hybrid policy: Tuesdays & Wednesdays in Austin office with free catered lunches; Jakub lives in Dallas and visits monthly.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h2>Tech Stack & AI Roadmap</h2>
+            <ul class="clean-list">
+              <li>Warehouse: Migrating from legacy setup to Databricks next year; actively building a centralized semantic layer to stop rogue SQL definitions.</li>
+              <li>AI & Automation: Daily power users of Claude AI and Devin.</li>
+              <li>Dashboarding Shift: Moving heavily toward Claude-generated interactive HTML dashboards for rapid executive prototyping rather than traditional drag-and-drop BI tools.</li>
+              <li>Philosophy: Analysts must operate as strategic business consultants rather than reactive dashboard ticket-takers.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hippo: SQL Cheat Sheet -->
+      <div id="hp-sql" class="sec-panel">
+        <div class="card">
+          <h2>Questions to Ask Immediately When Tables Appear</h2>
+          <ul class="clean-list">
+            <li>"Is this quotes table one row per quote, or can a customer show up multiple times?"</li>
+            <li>"Can one quote have multiple policies attached, or is it strictly one-to-one?"</li>
+            <li>"Which timestamp counts as the bind: bound date or policy start date?"</li>
+            <li>"For status, is 'active' the only bind status, or do we count 'pending'?"</li>
+          </ul>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <h2>1. Quote-to-Bind Funnel (30-Day Window)</h2>
+            <div class="sql-wrap">
+              <div class="sql-header">
+                <span>LEFT JOIN w/ Date Window in ON Clause</span>
+                <button class="copy-btn" onclick="copySql(this)">Copy</button>
+              </div>
+              <pre>SELECT
+    q.channel,
+    COUNT(DISTINCT q.quote_id) AS total_quotes,
+    COUNT(DISTINCT p.policy_id) AS total_binds,
+    COUNT(DISTINCT p.policy_id) * 1.0 / COUNT(DISTINCT q.quote_id) AS bind_rate,
+    SUM(p.annual_premium) AS total_premium
+FROM quotes q
+LEFT JOIN policies p
+    ON q.quote_id = p.quote_id
+   AND p.bound_ts &gt;= q.quote_ts
+   AND p.bound_ts &lt; DATEADD(day, 30, q.quote_ts)
+WHERE q.quote_ts &gt;= '2026-07-01'
+  AND q.quote_ts &lt; '2026-10-01'
+GROUP BY q.channel;</pre>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>2. Last-Touch Ad Attribution (ROW_NUMBER)</h2>
+            <div class="sql-wrap">
+              <div class="sql-header">
+                <span>Most Recent Click Within 14 Days</span>
+                <button class="copy-btn" onclick="copySql(this)">Copy</button>
+              </div>
+              <pre>WITH ranked_clicks AS (
+    SELECT
+        q.quote_id, q.user_id, q.quote_ts,
+        c.channel, c.campaign_id, c.click_ts,
+        ROW_NUMBER() OVER (
+            PARTITION BY q.quote_id
+            ORDER BY c.click_ts DESC
+        ) AS rn
+    FROM quotes q
+    LEFT JOIN ad_clicks c
+        ON q.user_id = c.user_id
+       AND c.click_ts &lt;= q.quote_ts
+       AND c.click_ts &gt;= DATEADD(day, -14, q.quote_ts)
+)
+SELECT quote_id, user_id, channel AS last_touch_channel, campaign_id
+FROM ranked_clicks
+WHERE rn = 1;</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>3. Multi-Table Spend & Binds Without Fan-Out (CAC / ROAS)</h2>
+          <div class="sql-wrap">
+            <div class="sql-header">
+              <span>Pre-Aggregate to Matching Grain Before Joining</span>
+              <button class="copy-btn" onclick="copySql(this)">Copy</button>
+            </div>
+            <pre>WITH monthly_spend AS (
+    SELECT DATE_TRUNC('month', spend_date) AS cohort_month, channel, SUM(spend) AS total_spend
+    FROM daily_ad_spend
+    GROUP BY 1, 2
+),
+monthly_binds AS (
+    SELECT DATE_TRUNC('month', p.bound_date) AS cohort_month, s.channel,
+           COUNT(DISTINCT p.policy_id) AS total_binds, SUM(p.annual_premium) AS total_premium
+    FROM policies p
+    JOIN (SELECT DISTINCT campaign_id, channel FROM daily_ad_spend) s
+        ON p.campaign_id = s.campaign_id
+    GROUP BY 1, 2
+)
+SELECT ms.cohort_month, ms.channel, ms.total_spend, mb.total_binds,
+       ms.total_spend / NULLIF(mb.total_binds, 0) AS cost_per_bind,
+       mb.total_premium / NULLIF(ms.total_spend, 0) AS roas
+FROM monthly_spend ms
+LEFT JOIN monthly_binds mb
+    ON ms.cohort_month = mb.cohort_month AND ms.channel = mb.channel
+ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hippo: Feedback -->
+      <div id="hp-feedback" class="sec-panel">
+        <div class="callout">
+          <div class="callout-title">#1 Priority Fix from Round 2 (Analytical Insights vs. Plumbing)</div>
+          When Jakub asked what insights you uncovered beyond the Brooklyn Nets dashboard, you looped back to dynamic pacing plumbing. For Round 3 and Case Study, ALWAYS separate the pipeline from the business discovery using the 3-Part Insight Framework (Question -> Data Finding -> Business Action).
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <h2>Round 2 Wins (Nov 12 w/ Jakub Sienkiel)</h2>
+            <ul class="clean-list">
+              <li>Standout punchline: "I prefer transformations at the SQL level... I am the data engineer."</li>
+              <li>AI differentiation: Jakub took notes on MCP & automated QA validation to research immediately.</li>
+              <li>Pebl MQL discrepancy story nailed cross-functional metric alignment.</li>
+              <li>Natural Austin rapport: Living 3 blocks from 5th St office + shared Colorado skiing background.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h2>Practitioner Lines to Drop in Round 3</h2>
+            <ul class="clean-list">
+              <li>"The first thing I check when conversion drops is if an upstream form or CRM tracking field broke before assuming it is an ad issue."</li>
+              <li>"Cost per Bind is what matters here. Cheap quotes mean nothing if they do not convert."</li>
+              <li>"I lock metric definitions into modular SQL views so nobody downstream pulls conflicting numbers."</li>
+              <li>"Since y'all are moving toward Claude HTML dashboards, pushing transformations upstream into SQL keeps the UI layer super clean."</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hippo: Questions & Framing -->
+      <div id="hp-questions" class="sec-panel">
+        <div class="grid-2">
+          <div class="card">
+            <h2>3-Part Analytical Insight Answer (Fixing R2 Miss)</h2>
+            <div class="quote-box">
+              1. Business Question: "With the Brooklyn Nets, we wanted to know why heavy paid media spend across Meta and Google wasn't driving proportional ticket sales for weekday games."<br><br>
+              2. Data Finding: "Joining ad spend with Ticketmaster sales showed weekday lower-tier games were completely price- and ad-inelastic, while weekend marquee matchups were under-funded."<br><br>
+              3. Business Action: "I recommended reallocating 25% of paid budget from weekday games into weekend marquee games, lifting gross ticket revenue by 14% with zero extra ad spend."
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Smart Questions for Round 3 Senior Analyst</h2>
+            <ul class="clean-list">
+              <li>"What is the messiest or most fragmented data source your team has to model in the warehouse right now?"</li>
+              <li>"When marketing wants to launch a new campaign or tweak a step in the quote funnel, how early does analytics get brought in?"</li>
+              <li>"With the Databricks migration coming up next year, which core Sales/Marketing tables are highest priority for the new semantic layer?"</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    function switchCompany(company) {
+      document.querySelectorAll(".company-tab").forEach((btn) => {
+        btn.classList.toggle("active", btn.getAttribute("data-company") === company);
+      });
+      document.querySelectorAll(".company-panel").forEach((panel) => {
+        panel.classList.toggle("active", panel.id === "panel-" + company);
+      });
+    }
+
+    function switchSection(company, section, btnEl) {
+      const prefix = company === "knownwell" ? "kw-" : "hp-";
+      const panel = document.getElementById("panel-" + company);
+      panel.querySelectorAll(".sec-btn").forEach((b) => b.classList.remove("active"));
+      btnEl.classList.add("active");
+      panel.querySelectorAll(".sec-panel").forEach((p) => {
+        p.classList.toggle("active", p.id === prefix + section);
+      });
+    }
+
+    function copySql(btn) {
+      const pre = btn.closest(".sql-wrap").querySelector("pre");
+      navigator.clipboard.writeText(pre.textContent).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = "Copied!";
+        setTimeout(() => { btn.textContent = orig; }, 1400);
+      });
+    }
+
+    // Allow deep-linking via ?company=hippo or #hippo
+    (function initFromUrl() {
+      const params = new URLSearchParams(window.location.search || "");
+      const c = (params.get("company") || window.location.hash.replace("#", "") || "").toLowerCase();
+      if (c === "hippo" || c === "knownwell") {
+        switchCompany(c);
+      }
+    })();
+  </script>
+</body>
+</html>

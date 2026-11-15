@@ -1239,6 +1239,19 @@ class BotHTTPHandler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(arch_html.encode("utf-8"))
             return
+        if path == "/embed/interviews" or (path == "/interviews" and qs.get("embed") == ["1"]):
+            int_path = resolve_path("interviews.html", "bot")
+            if os.path.exists(int_path):
+                with open(int_path, "r", encoding="utf-8") as f:
+                    int_html = f.read()
+            else:
+                int_html = "<h1>Active Interviews page not found</h1>"
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            self.wfile.write(int_html.encode("utf-8"))
+            return
 
         hub_routes = (
             "/",
@@ -1250,6 +1263,8 @@ class BotHTTPHandler(BaseHTTPRequestHandler):
             "/lifting",
             "/weightlifting-tracker",
             "/architecture",
+            "/interviews",
+            "/active-interviews",
         )
         if path in hub_routes:
             subtab_q = (qs.get("subtab", [""])[0] or "").strip().lower()
@@ -1260,9 +1275,11 @@ class BotHTTPHandler(BaseHTTPRequestHandler):
                 initial_tab = "lifting"
             elif path == "/architecture":
                 initial_tab = "architecture"
+            elif path in ("/interviews", "/active-interviews"):
+                initial_tab = "interviews"
             elif path in ("/health", "/health-tracker", "/sleep", "/sleep-tracker"):
                 initial_tab = "health"
-            elif tab_q in ("health", "garmin", "lifting", "architecture"):
+            elif tab_q in ("health", "garmin", "lifting", "architecture", "interviews"):
                 initial_tab = tab_q
             else:
                 initial_tab = "health"
