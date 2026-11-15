@@ -579,7 +579,11 @@ def call_gemini(gemini_key: str, prompt: str, system_inst: str) -> str:
     payload = {
         "system_instruction": {"parts": [{"text": system_inst}]},
         "contents": [{"role": "user", "parts": [{"text": prompt}]}],
-        "generationConfig": {"temperature": 0.2, "maxOutputTokens": 600}
+        "generationConfig": {
+            "temperature": 0.2,
+            "maxOutputTokens": 2048,
+            "thinkingConfig": {"thinkingBudget": 0}
+        }
     }
     for model in models:
         try:
@@ -693,11 +697,25 @@ def format_sleep_status_reply(text: str, gemini_key: str, token: str) -> Optiona
     t_clean = text.strip()
     t_low = t_clean.lower()
 
-    is_cmd = bool(re.match(r"^/(?:sleep|health|lastnight|status)\b", t_low))
+    is_cmd = bool(re.match(r"^/(?:sleep|health|lastnight|status|score)\b", t_low))
     is_phrase = bool(
         re.match(r"^(?:(?:sleep|health)\s*status|last\s*night(?:\s+sleep)?|how\s+did\s+i\s+sleep(?:\s+(?:last\s+night|on\s+.+))?|(?:sleep|health)\s+report|status(?:\s+[\d/\-]+)?)$", t_low)
     )
-    if not (is_cmd or is_phrase):
+    sleep_inquiry_patterns = [
+        r"^/(?:sleep|health|lastnight|status|score)\b",
+        r"\bhow\s+(?:was|did)\s+(?:my\s+|the\s+)?sleep\b",
+        r"\bhow\s+did\s+i\s+sleep\b",
+        r"\bhow\s+was\s+(?:last\s+night|yesterday)\b",
+        r"\b(?:sleep|health)\s*(?:stats|status|score|report)\b",
+        r"\blast\s*night(?:\s+sleep)?\b",
+        r"\b(?:i\s+want\s+)?all\s+(?:the\s+)?stats\b",
+        r"\bwhat\s+(?:was|were)\s+(?:my\s+)?sleep\s+stats\b",
+        r"\bgive\s+me\s+(?:all\s+)?(?:the\s+)?(?:sleep\s+)?stats\b",
+        r"\bmy\s+sleep\b",
+        r"\bsleep\s+score\b",
+    ]
+    matched = bool(is_cmd or is_phrase or any(re.search(pat, t_low) for pat in sleep_inquiry_patterns))
+    if not matched:
         return None
 
     now = now_cst()
@@ -744,6 +762,12 @@ def format_sleep_status_reply(text: str, gemini_key: str, token: str) -> Optiona
         daily_records = _collect_records()
 
     oura = daily_records.get(wakeup_date)
+    # If today's wakeup record hasn't synced yet and no specific date was queried, gracefully use latest available
+    if not oura and not m_iso and not m_md and daily_records:
+        latest_avail_wake = sorted(daily_records.keys())[-1]
+        oura = daily_records[latest_avail_wake]
+        wakeup_date = latest_avail_wake
+        target_night_of = (datetime.strptime(wakeup_date, "%Y-%m-%d") - timedelta(days=1)).strftime("%Y-%m-%d")
 
     # Merge medication logs
     med_by_night = {}
@@ -813,6 +837,44 @@ def format_sleep_status_reply(text: str, gemini_key: str, token: str) -> Optiona
     restfulness = (oura.get("sleep_contributors") or {}).get("restfulness")
     if restfulness is None:
         restfulness = oura.get("restfulness", "—")
+
+    sleep_score = oura.get("sleep_score", "—")
+    readiness_score = oura.get("readiness_score", "—")
+    dur = oura.get("total_sleep_formatted", "—")
+    eff = oura.get("sleep_efficiency", "—")
+    deep_fmt = oura.get("deep_sleep_formatted") or (f"{round((oura.get('deep_sleep_seconds') or 0)/3600, 1)}h" if oura.get("deep_sleep_seconds") else "—")
+    deep_pct = oura.get("deep_sleep_pct", "—")
+    rem_fmt = oura.get("rem_sleep_formatted") or (f"{round((oura.get('rem_sleep_seconds') or 0)/3600, 1)}h" if oura.get("rem_sleep_seconds") else "—")
+    rem_pct = oura.get("rem_sleep_pct", "—")
+    awake_fmt = oura.get("awake_formatted") or (f"{oura.get('awake_mins')}m" if oura.get("awake_mins") is not None else "—")
+    wakeups = oura.get("wakeups", "—")
+    rhr = oura.get("resting_heart_rate", "—")
+    low_hr = oura.get("lowest_heart_rate", "—")
+    hrv = oura.get("average_hrv", "—")
+
+    try:
+        dt_night = datetime.strptime(target_night_of, "%Y-%m-%d")
+        friendly_night = dt_night.strftime("%b %d").replace(" 0", " ")
+    except Exception:
+        friendly_night = target_night_of
+
+    med_date_str = f"Taken {friendly_night} at {med_time}" if med_time != "—" else f"Night of {friendly_night}"
+    med_dose_str = f"{traz} Trazodone + {quet} Quetiapine ({med_date_str})" if (traz != "—" or quet != "—") else "No medication logged"
+
+    # If Aaron asked specifically for sleep stats / how was my sleep / all the stats, return the clean 9-bullet vertical breakdown
+    is_sleep_specific = bool(re.search(r"\b(?:how\s+(?:was|did)\s+(?:my\s+|the\s+)?sleep|how\s+did\s+i\s+sleep|all\s+(?:the\s+)?stats|sleep\s+stats|my\s+sleep)\b", t_low))
+    if is_sleep_specific:
+        return (
+            f"- Latest Sleep Score: {sleep_score} (Night of {friendly_night})\n"
+            f"- Latest Readiness Score: {readiness_score}\n"
+            f"- Total Sleep: {dur} (Efficiency: {eff}%)\n"
+            f"- Deep Sleep: {deep_fmt} ({deep_pct}%)\n"
+            f"- REM Sleep: {rem_fmt} ({rem_pct}%)\n"
+            f"- Awake Time: {awake_fmt} across {wakeups} awakenings\n"
+            f"- Resting Heart Rate: {rhr} bpm (Lowest HR: {low_hr} bpm)\n"
+            f"- Average HRV: {hrv} ms\n"
+            f"- Last Medication Dosage: {med_dose_str}"
+        )
 
     return (
         f"Roger Roger.\n\n"
@@ -913,7 +975,17 @@ def _handle_sleep_batch(gemini_key: str, token: str, chat_id: int):
         "3. NEVER use markdown asterisks (* or **). No bolding asterisks.\n"
         "4. Focus exclusively on health & sleep tracking, Trazodone & Quetiapine dosages, awakenings, and Oura / biometric data.\n"
         "5. Affirmations are always 'Roger Roger.'\n"
-        "6. MANDATORY INTERNAL 'WHY' VERIFICATION (SILENT IN CHAT): Before finalizing any sleep/health insight, dosage correlation, or metric interpretation, internally verify WHY that conclusion is supported by exact records in medication_logs and oura_cache. Reject unverified guesses and keep internal 'Why' reasoning silent in chat unless Aaron asks for it.\n\n"
+        "6. MANDATORY INTERNAL 'WHY' VERIFICATION (SILENT IN CHAT): Before finalizing any sleep/health insight, dosage correlation, or metric interpretation, internally verify WHY that conclusion is supported by exact records in medication_logs and oura_cache. Reject unverified guesses and keep internal 'Why' reasoning silent in chat unless Aaron asks for it.\n"
+        "7. FULL SLEEP STATS STANDARD: Whenever Aaron asks how he slept, how last night was, or asks for sleep stats/scores, ALWAYS provide the complete breakdown across all 9 metrics:\n"
+        "- Latest Sleep Score (with Readiness)\n"
+        "- Total Sleep (with Sleep Efficiency %)\n"
+        "- Deep Sleep (duration & %)\n"
+        "- REM Sleep (duration & %)\n"
+        "- Awake Time (duration & awakenings)\n"
+        "- Resting Heart Rate & Lowest HR\n"
+        "- Average HRV\n"
+        "- Last Medication Dosage (with time taken and night of)\n"
+        "Never truncate or provide an incomplete subset of metrics.\n\n"
         + build_context(gemini_key, token)
     )
     reply = call_gemini(gemini_key, text, system_inst)
