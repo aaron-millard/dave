@@ -903,8 +903,10 @@ def format_sleep_status_reply(text: str, gemini_key: str, token: str) -> Optiona
     deep_pct = oura.get("deep_sleep_pct", "—")
     rem_fmt = oura.get("rem_sleep_formatted") or (f"{round((oura.get('rem_sleep_seconds') or 0)/3600, 1)}h" if oura.get("rem_sleep_seconds") else "—")
     rem_pct = oura.get("rem_sleep_pct", "—")
-    awake_fmt = oura.get("awake_formatted") or (f"{oura.get('awake_mins')}m" if oura.get("awake_mins") is not None else "—")
+    awake_mins_val = oura.get("awake_mins")
+    awake_fmt = f"{awake_mins_val}m" if awake_mins_val is not None else (oura.get("awake_formatted") or "—")
     wakeups = oura.get("wakeups", "—")
+    avg_hr = oura.get("average_heart_rate") or oura.get("resting_heart_rate", "—")
     rhr = oura.get("resting_heart_rate", "—")
     low_hr = oura.get("lowest_heart_rate", "—")
     hrv = oura.get("average_hrv", "—")
@@ -918,31 +920,122 @@ def format_sleep_status_reply(text: str, gemini_key: str, token: str) -> Optiona
     med_date_str = f"Taken {friendly_night} at {med_time}" if med_time != "—" else f"Night of {friendly_night}"
     med_dose_str = f"{traz} Trazodone + {quet} Quetiapine ({med_date_str})" if (traz != "—" or quet != "—") else "No medication logged"
 
-    # If Aaron asked specifically for sleep stats / how was my sleep / all the stats, return the clean 9-bullet vertical breakdown
-    is_sleep_specific = bool(re.search(r"\b(?:how\s+(?:was|did)\s+(?:my\s+|the\s+)?sleep|how\s+did\s+i\s+sleep|all\s+(?:the\s+)?stats|sleep\s+stats|my\s+sleep)\b", t_low))
-    if is_sleep_specific:
-        return (
-            f"- Latest Sleep Score: {sleep_score} (Night of {friendly_night})\n"
-            f"- Latest Readiness Score: {readiness_score}\n"
-            f"- Total Sleep: {dur} (Efficiency: {eff}%)\n"
-            f"- Deep Sleep: {deep_fmt} ({deep_pct}%)\n"
-            f"- REM Sleep: {rem_fmt} ({rem_pct}%)\n"
-            f"- Awake Time: {awake_fmt} across {wakeups} awakenings\n"
-            f"- Resting Heart Rate: {rhr} bpm (Lowest HR: {low_hr} bpm)\n"
-            f"- Average HRV: {hrv} ms\n"
-            f"- Last Medication Dosage: {med_dose_str}"
-        )
+    # Check dashboard.html for pre-calculated OURA_CACHE with time_awake_day
+    dash_cache = {}
+    dash_html_str = files.get("dashboard.html", "")
+    if dash_html_str:
+        try:
+            m_dash = re.search(r"const OURA_CACHE\s*=\s*(\{.+?\});", dash_html_str, re.DOTALL)
+            if m_dash:
+                dash_cache = json.loads(m_dash.group(1))
+        except Exception:
+            pass
 
+    o_dash = dash_cache.get(wakeup_date, {})
+    time_awake_day = o_dash.get("time_awake_day") or "—"
+    if time_awake_day == "—" and b_start:
+        sorted_wake_dates = sorted([d for d in daily_records.keys() if d < wakeup_date])
+        if sorted_wake_dates:
+            prev_wake = daily_records[sorted_wake_dates[-1]]
+            if prev_wake.get("bedtime_end"):
+                try:
+                    p_end = datetime.fromisoformat(prev_wake["bedtime_end"])
+                    b_st = datetime.fromisoformat(b_start)
+                    diff_m = round((b_st - p_end).total_seconds() / 60)
+                    if 0 < diff_m < 24 * 60:
+                        time_awake_day = f"{diff_m // 60}h {diff_m % 60:02d}m"
+                except Exception:
+                    pass
+
+    # Calculate exact custom scores matching dashboard
+    hunger_p_cont, hunger_p_bal = 0, 0
+    if hunger and hunger != "—":
+        hl = str(hunger).lower()
+        if hl == "high":
+            hunger_p_cont, hunger_p_bal = 15, 10
+        elif hl in ("medium", "med"):
+            hunger_p_cont, hunger_p_bal = 8, 5
+        elif hl == "low":
+            hunger_p_cont, hunger_p_bal = 3, 2
+
+    continuity = "—"
+    if wakeups != "—" and awake_fmt != "—":
+        try:
+            w_cnt = float(wakeups)
+            a_m = float(oura.get("awake_mins") if oura.get("awake_mins") is not None else 0)
+            c = 100.0 - (w_cnt * 8.0)
+            if a_m > 20:
+                c -= (a_m - 20) * 0.5
+            if lat_mins is not None and lat_mins != "—" and float(lat_mins) > 10:
+                c -= (float(lat_mins) - 10) * 0.5
+            if restfulness != "—":
+                c += (float(restfulness) - 70) * 0.3
+            c -= hunger_p_cont
+            continuity = str(round(max(0, min(100, c))))
+        except Exception:
+            pass
+
+    restoration = "—"
+    if deep_pct != "—" and rem_pct != "—" and hrv != "—" and low_hr != "—":
+        try:
+            deep_pts = min(30.0, (float(deep_pct) / 20.0) * 30.0)
+            rem_pts = min(25.0, (float(rem_pct) / 20.0) * 25.0)
+            hrv_pts = min(25.0, (float(hrv) / 80.0) * 25.0)
+            hr_pts = max(0.0, min(20.0, (60.0 - float(low_hr)) * 2.0))
+            restoration = str(round(max(0, min(100, deep_pts + rem_pts + hrv_pts + hr_pts))))
+        except Exception:
+            pass
+
+    balanced = "—"
+    tot_hrs = o_dash.get("total_sleep_hours")
+    if not tot_hrs and oura.get("total_sleep_seconds"):
+        tot_hrs = round(oura["total_sleep_seconds"] / 3600.0, 1)
+    if eff != "—" and tot_hrs and wakeups != "—" and hrv != "—":
+        try:
+            eff_pts = (float(eff) / 100.0) * 30.0
+            dur_pts = min(25.0, (float(tot_hrs) / 8.0) * 25.0)
+            wake_pts = max(0.0, 25.0 - (float(wakeups) * 3.5))
+            hrv_pts = min(20.0, (float(hrv) / 75.0) * 20.0)
+            b = eff_pts + dur_pts + wake_pts + hrv_pts - hunger_p_bal
+            balanced = str(round(max(0, min(100, b))))
+        except Exception:
+            pass
+
+    traz_col = f"{med.get('trazodone_mg')} mg" if med.get("trazodone_mg") is not None else "—"
+    quet_col = f"{med.get('quetiapine_mg')} mg" if med.get("quetiapine_mg") is not None else "—"
+
+    # Return complete 28-stat breakdown matching dashboard table
     return (
-        f"Roger Roger.\n\n"
-        f"Health Tracker Status — Night of {target_night_of} (Wake {wakeup_date})\n"
-        f"- Total Scores: Oura {oura.get('sleep_score', '—')} | Weighted {custom['total_weighted'] if custom['total_weighted'] is not None else '—'} | Bottleneck {custom['total_bottleneck'] if custom['total_bottleneck'] is not None else '—'} | Personal {custom['total_personal'] if custom['total_personal'] is not None else '—'}\n"
-        f"- Sub-Scores: Continuity {custom['continuity'] if custom['continuity'] is not None else '—'} | Restoration {custom['restoration'] if custom['restoration'] is not None else '—'} | Restfulness {restfulness} | Efficiency {oura.get('sleep_efficiency', '—')}%\n"
-        f"- Sleep: {oura.get('total_sleep_formatted', '—')} | Wakeups: {oura.get('wakeups', '—')} | Awake: {oura.get('awake_mins', '—')}m\n"
-        f"- Timing: Med {med_time} -> Bed {bedtime_str} -> Asleep {sleep_time_str} -> Wake {wake_str}\n"
-        f"- Latency: {lat_mins}m | Med-to-Sleep: {med_to_sleep}\n"
-        f"- Recovery: Deep {round(oura.get('deep_sleep_pct') or 0)}% | REM {round(oura.get('rem_sleep_pct') or 0)}% | Avg HR {oura.get('average_heart_rate', '—')} | Low HR {oura.get('lowest_heart_rate', '—')} | HRV {oura.get('average_hrv', '—')}ms\n"
-        f"- Inputs: Traz {traz} / Quet {quet} | Hunger: {hunger} | Alcohol: {alcohol} | Nicotine: {nicotine}"
+        f"Health Tracker — Complete Sleep & Awakening Stats\n"
+        f"Night of {friendly_night} ({target_night_of})\n\n"
+        f"- Night Of: {target_night_of}\n"
+        f"- Trazodone: {traz_col}\n"
+        f"- Quetiapine: {quet_col}\n"
+        f"- Sleep Score: {sleep_score}\n"
+        f"- Continuity: {continuity}\n"
+        f"- Restoration: {restoration}\n"
+        f"- Balanced: {balanced}\n"
+        f"- Time Taken: {med_time}\n"
+        f"- Bedtime: {bedtime_str}\n"
+        f"- Sleep Time: {sleep_time_str}\n"
+        f"- Time Falling Asleep: {lat_mins}m\n"
+        f"- Med to Sleep: {med_to_sleep}\n"
+        f"- Efficiency: {eff}%\n"
+        f"- Wake-Up: {wake_str}\n"
+        f"- Hours of Sleep: {dur}\n"
+        f"- Wakeups: {wakeups} wakeups\n"
+        f"- Awake Time: {awake_fmt}\n"
+        f"- Restfulness: {restfulness}\n"
+        f"- Deep: {round(float(deep_pct)) if deep_pct != '—' else '—'}%\n"
+        f"- REM: {round(float(rem_pct)) if rem_pct != '—' else '—'}%\n"
+        f"- Avg HR: {avg_hr} bpm\n"
+        f"- Lowest HR: {low_hr} bpm\n"
+        f"- Avg HRV: {hrv} ms\n"
+        f"- Time Awake: {time_awake_day}\n"
+        f"- Night Hunger: {hunger}\n"
+        f"- Alcohol: {alcohol}\n"
+        f"- Nicotine: {nicotine}\n"
+        f"- Readiness Score: {readiness_score}"
     )
 
 
