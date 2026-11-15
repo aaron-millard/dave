@@ -6,6 +6,9 @@ Full cross-workspace SQLite archive: random-fun/data/project_logs.db (104 dedupl
 
 | Timestamp | Action | Target / Files | Reason |
 | --- | --- | --- | --- |
+| 2026-11-15 16:49 | run_workflow | git commit & push (sleep_agent.py, sleep_vault.json, memory/ActionLog.md) | Deploy Health Tracker 2-tier sleep scoring & alcohol auto-No defaults to Render |
+| 2026-11-15 16:48 | edit_file | diet-macro-assistant/bot/sleep_agent.py | Implement 2-tier sleep scores with JS half-up rounding, alcohol auto-No defaults, and updated /status reply |
+| 2026-11-15 16:47 | run_workflow | diet-macro-assistant/bot/sleep_vault.json | Rebuild encrypted vault from health-tracker/bot/sync_to_render.py |
 | 2026-11-14 18:34 | edit_file | diet-macro-assistant/bot/telegram_agent.py | User request: go |
 | 2026-11-14 18:17 | edit_file | diet-macro-assistant/bot/telegram_agent.py | User request: fuck it why not |
 | 2026-11-14 18:08 | run_command | python -m py_compile "C:\Users\aaron\OneDrive\Desktop\My Projects\random-fun\scripts\co... | Compile control_center.py, copy hub HTMLs, verify HTML integrity |

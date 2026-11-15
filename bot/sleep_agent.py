@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 import hashlib
 import hmac
 import json
+import math
 import os
 import re
 import ssl
@@ -332,15 +333,29 @@ def parse_and_record_dose(text: str, gemini_key: str, token: str) -> Optional[st
         date_str = now.strftime("%Y-%m-%d")
 
     state = sync_state_from_cloud(token)
+    med_logs = state.setdefault("medication_logs", [])
+    existing_entry = next(
+        (m for m in med_logs if m.get("night_of") == night_of_str or m.get("date") == date_str),
+        None,
+    )
+    alc_val = (state.get("alcohol_logs") or {}).get(night_of_str) or (existing_entry or {}).get("alcohol") or "No"
+    if "alcohol" in text_lower:
+        alc_val = "No" if re.search(r"\b(?:no|none|0|false)\b", text_lower) else "Yes"
+    state.setdefault("alcohol_logs", {})[night_of_str] = alc_val
+
     new_entry = {
         "date": date_str,
         "night_of": night_of_str,
         "trazodone_mg": traz_mg or 0,
         "quetiapine_mg": quet_mg or 0,
         "time_taken": time_taken_str,
+        "alcohol": alc_val,
         "notes": f"Logged via cloud webhook: {text_clean}"
     }
-    med_logs = state.setdefault("medication_logs", [])
+    if existing_entry:
+        for k in ("hunger_level", "nicotine"):
+            if existing_entry.get(k):
+                new_entry[k] = existing_entry[k]
     replaced = False
     for i, existing in enumerate(med_logs):
         if existing.get("night_of") == night_of_str or existing.get("date") == date_str:
@@ -637,72 +652,114 @@ def _calc_med_to_sleep_str(med_time_str: str, sleep_time_str: str) -> str:
     return f"{diff}m"
 
 
-def _calc_custom_scores_py(oura: Dict[str, Any], hunger_val: Optional[str]) -> Dict[str, Optional[int]]:
-    if not oura:
-        return {"continuity": None, "restoration": None, "balanced": None}
-    wakeups = oura.get("wakeups") if oura.get("wakeups") is not None else 0
-    awake_mins = oura.get("awake_mins") if oura.get("awake_mins") is not None else 0
-    latency = oura.get("latency_mins") if oura.get("latency_mins") is not None else 10
-    restfulness = (oura.get("sleep_contributors") or {}).get("restfulness")
-    if restfulness is None:
-        restfulness = oura.get("restfulness")
+def _js_round(val: float) -> int:
+    """Match JavaScript Math.round() half-up rounding for non-negative scores."""
+    return int(math.floor(float(val) + 0.5))
 
-    cont = 100 - (wakeups * 8) - max(0, awake_mins - 20) * 0.5 - max(0, latency - 10) * 0.5
-    if restfulness is not None:
-        cont += (restfulness - 70) * 0.3
 
-    deep_pct = round(oura.get("deep_sleep_pct") or 0)
-    rem_pct = round(oura.get("rem_sleep_pct") or 0)
-    hrv = oura.get("average_hrv") if oura.get("average_hrv") is not None else 50
-    low_hr = oura.get("lowest_heart_rate") if oura.get("lowest_heart_rate") is not None else 50
-    rest = (
-        min(30, (deep_pct / 20) * 30)
-        + min(25, (rem_pct / 20) * 25)
-        + min(25, (hrv / 80) * 25)
-        + max(0, min(20, (60 - low_hr) * 2))
-    )
-
-    eff = oura.get("sleep_efficiency") if oura.get("sleep_efficiency") is not None else 85
+def _extract_sleep_features_py(oura: Dict[str, Any]) -> Dict[str, float]:
     tot_hrs = oura.get("total_sleep_hours")
     if tot_hrs is None:
         tot_hrs = round((oura.get("total_sleep_seconds") or 0) / 3600, 1)
-    bal = (
-        (eff / 100) * 30
-        + min(25, (tot_hrs / 8.0) * 25)
-        + max(0, 25 - (wakeups * 3.5))
-        + min(20, (hrv / 75) * 20)
+    safe_hrs = max(1.0, float(tot_hrs or 0))
+    eff = float(oura.get("sleep_efficiency") if oura.get("sleep_efficiency") is not None else 85)
+    wakeups = float(oura.get("wakeups") if oura.get("wakeups") is not None else 0)
+    awake_mins = float(oura.get("awake_mins") if oura.get("awake_mins") is not None else 0)
+    deep = float(_js_round(oura.get("deep_sleep_pct") or 0))
+    rem = float(_js_round(oura.get("rem_sleep_pct") or 0))
+    hrv = float(oura.get("average_hrv") if oura.get("average_hrv") is not None else 50)
+    low_hr = float(oura.get("lowest_heart_rate") if oura.get("lowest_heart_rate") is not None else 50)
+    return {
+        "hrs": float(tot_hrs or 0),
+        "eff": eff,
+        "wu_rate": wakeups / safe_hrs,
+        "aw_rate": awake_mins / safe_hrs,
+        "deep": deep,
+        "rem": rem,
+        "hrv": hrv,
+        "low_hr": low_hr,
+    }
+
+
+def _calc_custom_scores_py(
+    oura: Dict[str, Any],
+    all_records: Optional[Dict[str, Dict[str, Any]]] = None,
+) -> Dict[str, Optional[int]]:
+    if not oura:
+        return {
+            "total_weighted": None,
+            "total_bottleneck": None,
+            "total_personal": None,
+            "continuity": None,
+            "restoration": None,
+        }
+
+    f = _extract_sleep_features_py(oura)
+    wu_pts = max(0.0, min(40.0, 40.0 - f["wu_rate"] * 28.0))
+    aw_pts = max(0.0, min(40.0, 40.0 - max(0.0, f["aw_rate"] - 2.0) * 3.5))
+    eff_pts = max(0.0, min(20.0, ((f["eff"] - 75.0) / 20.0) * 20.0))
+    continuity_raw = wu_pts + aw_pts + eff_pts
+
+    restoration_raw = (
+        min(30.0, (f["deep"] / 20.0) * 30.0)
+        + min(25.0, (f["rem"] / 20.0) * 25.0)
+        + min(25.0, (f["hrv"] / 80.0) * 25.0)
+        + max(0.0, min(20.0, (60.0 - f["low_hr"]) * 2.0))
     )
 
-    if hunger_val:
-        hl = hunger_val.lower()
-        if hl == "high":
-            cont -= 15
-            bal -= 10
-        elif hl in ("medium", "med"):
-            cont -= 8
-            bal -= 5
-        elif hl == "low":
-            cont -= 3
-            bal -= 2
+    p_qty = 0.6 * min(100.0, (f["hrs"] / 8.0) * 100.0) + 0.4 * max(0.0, min(100.0, ((f["eff"] - 75.0) / 20.0) * 100.0))
+    p_cont = continuity_raw
+    p_arch = 0.5 * min(100.0, (f["deep"] / 23.0) * 100.0) + 0.5 * min(100.0, (f["rem"] / 25.0) * 100.0)
+    p_auto = 0.6 * min(100.0, (f["hrv"] / 95.0) * 100.0) + 0.4 * max(0.0, min(100.0, ((65.0 - f["low_hr"]) / 20.0) * 100.0))
+
+    weighted_raw = (p_qty + p_cont + p_arch + p_auto) / 4.0
+    geom = (max(1.0, p_qty) * max(1.0, p_cont) * max(1.0, p_arch) * max(1.0, p_auto)) ** 0.25
+    bottleneck_raw = 0.75 * geom + 0.25 * min(p_qty, p_cont, p_arch, p_auto)
+
+    personal_score = 75
+    if all_records:
+        feats_list = [
+            _extract_sleep_features_py(rec)
+            for d_k, rec in sorted(all_records.items())
+            if d_k >= "2026-11-03" and rec and ((rec.get("total_sleep_seconds") or 0) > 0 or (rec.get("total_sleep_hours") or 0) > 0)
+        ]
+        if len(feats_list) >= 2:
+            specs = [
+                ("hrs", 1.0), ("eff", 1.0), ("wu_rate", -1.0), ("aw_rate", -1.0),
+                ("deep", 1.0), ("rem", 1.0), ("hrv", 1.0), ("low_hr", -1.0),
+            ]
+            zs = []
+            for key, sign in specs:
+                vals = [item[key] for item in feats_list]
+                mean = sum(vals) / len(vals)
+                var = sum((v - mean) ** 2 for v in vals) / len(vals)
+                sd = var ** 0.5
+                z = ((f[key] - mean) / sd) * sign if sd > 0 else 0.0
+                zs.append(max(-2.5, min(2.5, z)))
+            personal_score = max(0, min(100, _js_round(75.0 + (sum(zs) / len(zs)) * 15.0)))
 
     return {
-        "continuity": max(0, min(100, round(cont))),
-        "restoration": max(0, min(100, round(rest))),
-        "balanced": max(0, min(100, round(bal))),
+        "total_weighted": max(0, min(100, _js_round(weighted_raw))),
+        "total_bottleneck": max(0, min(100, _js_round(bottleneck_raw))),
+        "total_personal": personal_score,
+        "continuity": max(0, min(100, _js_round(continuity_raw))),
+        "restoration": max(0, min(100, _js_round(restoration_raw))),
     }
 
 
 def format_sleep_status_reply(text: str, gemini_key: str, token: str) -> Optional[str]:
-    """Handle /sleep, /lastnight, 'sleep status', 'last night', or '/sleep MM-DD' queries."""
+    """Handle 9, /sleep, /lastnight, 'sleep status', 'last night', or '/sleep MM-DD' queries."""
     t_clean = text.strip()
     t_low = t_clean.lower()
 
-    is_cmd = bool(re.match(r"^/(?:sleep|health|lastnight|status|score)\b", t_low))
+    is_nine = bool(re.match(r"^/?9(?:\.|$)", t_clean) or t_low in ["9", "9."])
+    is_cmd = bool(re.match(r"^/(?:sleep|health|lastnight|status|score|today)\b", t_low))
     is_phrase = bool(
         re.match(r"^(?:(?:sleep|health)\s*status|last\s*night(?:\s+sleep)?|how\s+did\s+i\s+sleep(?:\s+(?:last\s+night|on\s+.+))?|(?:sleep|health)\s+report|status(?:\s+[\d/\-]+)?)$", t_low)
     )
     sleep_inquiry_patterns = [
-        r"^/(?:sleep|health|lastnight|status|score)\b",
+        r"^/?9(?:\.|$)",
+        r"^/(?:sleep|health|lastnight|status|score|today)\b",
         r"\bhow\s+(?:was|did)\s+(?:my\s+|the\s+)?sleep\b",
         r"\bhow\s+did\s+i\s+sleep\b",
         r"\bhow\s+was\s+(?:last\s+night|yesterday)\b",
@@ -714,7 +771,7 @@ def format_sleep_status_reply(text: str, gemini_key: str, token: str) -> Optiona
         r"\bmy\s+sleep\b",
         r"\bsleep\s+score\b",
     ]
-    matched = bool(is_cmd or is_phrase or any(re.search(pat, t_low) for pat in sleep_inquiry_patterns))
+    matched = bool(is_nine or is_cmd or is_phrase or any(re.search(pat, t_low) for pat in sleep_inquiry_patterns))
     if not matched:
         return None
 
@@ -783,7 +840,7 @@ def format_sleep_status_reply(text: str, gemini_key: str, token: str) -> Optiona
 
     med = med_by_night.get(target_night_of, {})
     hunger = (state.get("hunger_logs") or {}).get(target_night_of) or med.get("hunger_level") or "—"
-    alcohol = (state.get("alcohol_logs") or {}).get(target_night_of) or med.get("alcohol") or "—"
+    alcohol = (state.get("alcohol_logs") or {}).get(target_night_of) or med.get("alcohol") or "No"
     nicotine = (state.get("nicotine_logs") or {}).get(target_night_of) or med.get("nicotine") or "—"
 
     if not oura and not med:
@@ -833,7 +890,7 @@ def format_sleep_status_reply(text: str, gemini_key: str, token: str) -> Optiona
             pass
 
     med_to_sleep = _calc_med_to_sleep_str(med_time, sleep_time_str)
-    custom = _calc_custom_scores_py(oura, None if hunger == "—" else hunger)
+    custom = _calc_custom_scores_py(oura, daily_records)
     restfulness = (oura.get("sleep_contributors") or {}).get("restfulness")
     if restfulness is None:
         restfulness = oura.get("restfulness", "—")
@@ -879,8 +936,8 @@ def format_sleep_status_reply(text: str, gemini_key: str, token: str) -> Optiona
     return (
         f"Roger Roger.\n\n"
         f"Health Tracker Status — Night of {target_night_of} (Wake {wakeup_date})\n"
-        f"- Scores: Sleep {oura.get('sleep_score', '—')} | Continuity {custom['continuity'] if custom['continuity'] is not None else '—'} | Restoration {custom['restoration'] if custom['restoration'] is not None else '—'} | Balanced {custom['balanced'] if custom['balanced'] is not None else '—'}\n"
-        f"- Restfulness: {restfulness} | Efficiency: {oura.get('sleep_efficiency', '—')}%\n"
+        f"- Total Scores: Oura {oura.get('sleep_score', '—')} | Weighted {custom['total_weighted'] if custom['total_weighted'] is not None else '—'} | Bottleneck {custom['total_bottleneck'] if custom['total_bottleneck'] is not None else '—'} | Personal {custom['total_personal'] if custom['total_personal'] is not None else '—'}\n"
+        f"- Sub-Scores: Continuity {custom['continuity'] if custom['continuity'] is not None else '—'} | Restoration {custom['restoration'] if custom['restoration'] is not None else '—'} | Restfulness {restfulness} | Efficiency {oura.get('sleep_efficiency', '—')}%\n"
         f"- Sleep: {oura.get('total_sleep_formatted', '—')} | Wakeups: {oura.get('wakeups', '—')} | Awake: {oura.get('awake_mins', '—')}m\n"
         f"- Timing: Med {med_time} -> Bed {bedtime_str} -> Asleep {sleep_time_str} -> Wake {wake_str}\n"
         f"- Latency: {lat_mins}m | Med-to-Sleep: {med_to_sleep}\n"
@@ -945,11 +1002,17 @@ def _handle_sleep_batch(gemini_key: str, token: str, chat_id: int):
             elif "none" in text_lower or "non" in text_lower or "zero" in text_lower or "no hunger" in text_lower:
                 level = "None"
             state.setdefault("hunger_logs", {})[night_of_key] = level
+            for m in state.get("medication_logs", []):
+                if m.get("night_of") == night_of_key:
+                    m["hunger_level"] = level
             logged_msgs.append(f"Logged Night Hunger: {level}")
 
         if "alcohol" in text_lower:
             alc_val = "No" if re.search(r"\b(?:no|none|0|false)\b", text_lower) else "Yes"
             state.setdefault("alcohol_logs", {})[night_of_key] = alc_val
+            for m in state.get("medication_logs", []):
+                if m.get("night_of") == night_of_key:
+                    m["alcohol"] = alc_val
             logged_msgs.append(f"Logged Alcohol ({night_of_key}): {alc_val}")
 
         if "nicotine" in text_lower:
@@ -960,6 +1023,9 @@ def _handle_sleep_batch(gemini_key: str, token: str, chat_id: int):
             else:
                 nic_val = "Yes"
             state.setdefault("nicotine_logs", {})[night_of_key] = nic_val
+            for m in state.get("medication_logs", []):
+                if m.get("night_of") == night_of_key:
+                    m["nicotine"] = nic_val
             logged_msgs.append(f"Logged Nicotine ({night_of_key}): {nic_val}")
 
         save_state_to_cloud(token, state)
@@ -985,7 +1051,9 @@ def _handle_sleep_batch(gemini_key: str, token: str, chat_id: int):
         "- Resting Heart Rate & Lowest HR\n"
         "- Average HRV\n"
         "- Last Medication Dosage (with time taken and night of)\n"
-        "Never truncate or provide an incomplete subset of metrics.\n\n"
+        "Never truncate or provide an incomplete subset of metrics.\n"
+        "8. Alcohol automatically defaults to 'No' every night unless Aaron explicitly says otherwise.\n"
+        "9. Custom Sleep Scores use two tiers: 3 Total Sleep Score formulations (Weighted, Bottleneck, Personal Baseline alongside Oura Sleep Score) plus specific sub-scores (Continuity, Restoration, Restfulness).\n\n"
         + build_context(gemini_key, token)
     )
     reply = call_gemini(gemini_key, text, system_inst)
@@ -1096,6 +1164,9 @@ def get_live_sleep_json(gemini_key: str) -> str:
                 meds.append(dose)
             else:
                 existing.update({k: v for k, v in dose.items() if v is not None})
+        for m in meds:
+            if isinstance(m, dict) and not m.get("alcohol"):
+                m["alcohol"] = "No"
         oura = state.get("oura_cache") or json.loads(raw_oura)
         return json.dumps(
             {
