@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>System Architecture - Dave7</title>
+  <title>System Architecture - Dave</title>
   <style>
     :root {
       --bg: #090d16;
@@ -631,7 +631,7 @@
             <g class="node-group" data-id="random_ws" data-layer="workspace" onclick="selectNode('random_ws')">
               <rect class="node-box" x="16" y="308" width="165" height="80" rx="10" fill="#131c31" stroke="#38bdf8" stroke-width="1.5" />
               <text x="28" y="334" fill="#fff" font-size="12.5" font-weight="700">random-fun</text>
-              <text x="28" y="352" fill="#38bdf8" font-size="10.5">Dave7 Control Hub</text>
+              <text x="28" y="352" fill="#38bdf8" font-size="10.5">Dave Control Hub</text>
               <text x="28" y="370" fill="#9ca3af" font-size="10.5">control_center + AHK v2</text>
             </g>
 
@@ -681,7 +681,7 @@
             <g class="node-group" data-id="render_host" data-layer="cloud" onclick="selectNode('render_host')">
               <rect class="node-box" x="507" y="462" width="178" height="76" rx="10" fill="#11242b" stroke="#34d399" stroke-width="1.5" />
               <text x="519" y="488" fill="#fff" font-size="12.5" font-weight="700">Render 24/7 Server</text>
-              <text x="519" y="507" fill="#34d399" font-size="10.5">dave7 Cloud Host</text>
+              <text x="519" y="507" fill="#34d399" font-size="10.5">dave-pocl.onrender.com</text>
               <text x="519" y="524" fill="#9ca3af" font-size="10.5">4 Webhooks + Web Hub</text>
             </g>
 
@@ -709,7 +709,7 @@
           <ul class="insp-list" id="inspList">
             <li>Zero external CDN runtime dependencies on the hub</li>
             <li>All 5 local projects connected via scripts/control_center.py</li>
-            <li>Live Render hosting via github.com/aaron-millard/dave7</li>
+            <li>Live Render hosting via github.com/aaron-millard/dave</li>
           </ul>
         </div>
         <div>
@@ -767,7 +767,7 @@
             <tr>
               <td class="mono">diet-macro-assistant</td>
               <td>Kitchen macro planner, USDA FoodData Central lookup, Food Inventory, 24/7 Render multi-bot server</td>
-              <td class="mono">aaron-millard/dave7 (ThreadingHTTPServer)</td>
+              <td class="mono">aaron-millard/dave (ThreadingHTTPServer)</td>
             </tr>
           </tbody>
         </table>
@@ -815,7 +815,7 @@
         color: "#38bdf8",
         title: "random-fun (Central PC Control Center)",
         path: "C:\\Users\\aaron\\OneDrive\\Desktop\\My Projects\\random-fun",
-        desc: "Your master orchestration project on Windows. Runs the multi-project sync script, hosts the Unified Dave7 Hub & Architecture Guide, and binds Numpad1 to Windows Voice Typing via AutoHotkey v2.",
+        desc: "Your master orchestration project on Windows. Runs the multi-project sync script, hosts the Unified Dave Hub & Architecture Guide, and binds Numpad1 to Windows Voice Typing via AutoHotkey v2.",
         items: [
           "scripts/control_center.py: Executes [0-6] actions & syncs all 5 repos",
           "dashboard.html & architecture.html: Unified Web Hub & visual blueprint",
@@ -982,14 +982,14 @@
         desc: "Stores all code, rules, and encrypted vaults cleanly with zero raw API keys, .m4a audio files, or temporary scrape dumps (.gitignore protected). Pushing diet-macro-assistant triggers Render deploy.",
         items: [
           "Raw keys (.gemini_key, .openrouter_key, .telegram_token) never touch GitHub",
-          "Auto-deploys Dave7 Render server in ~60 seconds on push to aaron-millard/dave7 main"
+          "Auto-deploys Dave Render server in ~60 seconds on push to aaron-millard/dave main"
         ],
         links: ["sync_vault", "render_host"]
       },
       render_host: {
         badge: "24/7 Cloud Hosting",
         color: "#34d399",
-        title: "Render Cloud Host (Dave7)",
+        title: "Render Cloud Host (Dave)",
         path: "diet-macro-assistant/bot/telegram_agent.py (ThreadingHTTPServer)",
         desc: "A single free-tier Render Web Service hosting all 4 Telegram bot webhooks plus your Unified Multi-Tab Web Hub (/ for Hub, /embed/health, /embed/lifting, /embed/architecture).",
         items: [
@@ -1029,7 +1029,7 @@
         tagColor: "#c084fc",
         title: "Webhooks (Instant Push Notifications)",
         tldr: "Telegram knocks on Render's front door the instant you send a message, instead of your server polling every second.",
-        body: "When you text a photo or voice memo to any of your 4 Telegram bots, Telegram immediately sends an HTTP POST request to your Dave7 Render server on that bot's specific route (/webhook, /wabbits-webhook, /health-webhook, or /lifting-webhook). ThreadingHTTPServer handles it in parallel.",
+        body: "When you text a photo or voice memo to any of your 4 Telegram bots, Telegram immediately sends an HTTP POST request to your Dave Render server on that bot's specific route (/webhook, /wabbits-webhook, /health-webhook, or /lifting-webhook). ThreadingHTTPServer handles it in parallel.",
         analogy: "Polling is checking your mailbox every 10 seconds. A webhook is your doorbell ringing the exact moment a package arrives.",
         where: "Where used: diet-macro-assistant/bot/telegram_agent.py"
       },

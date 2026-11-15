@@ -1291,7 +1291,7 @@ class BotHTTPHandler(BaseHTTPRequestHandler):
 
         self.send_response(200)
         self.end_headers()
-        self.wfile.write(b"OK - Dave7 Cloud Host is awake")
+        self.wfile.write(b"OK - Dave Cloud Host is awake")
 
     def do_POST(self):
         length = int(self.headers.get("Content-Length", "0"))

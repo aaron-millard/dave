@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dave7 - Health, Lifting & System Architecture</title>
+  <title>Dave - Health, Lifting & System Architecture</title>
   <style>
     :root {
       --bg: #070b13;
@@ -225,8 +225,8 @@
 <body>
   <nav class="hub-navbar">
     <div class="brand">
-      <div class="brand-mark">D7</div>
-      <div class="brand-text">Dave7</div>
+      <div class="brand-mark">D</div>
+      <div class="brand-text">Dave</div>
     </div>
 
     <div class="tab-bar">
@@ -288,10 +288,10 @@
     function updateEnvBadge() {
       const txt = document.getElementById("envStatusText");
       if (isFileMode) {
-        txt.textContent = "Dave7 Local PC Mode (5 Repos)";
+        txt.textContent = "Dave Local PC Mode (5 Repos)";
       } else {
-        const host = window.location.host || "dave7";
-        txt.textContent = "Dave7 Live (" + host + ")";
+        const host = window.location.host || "dave-pocl.onrender.com";
+        txt.textContent = "Dave Live (" + host + ")";
       }
     }
 
