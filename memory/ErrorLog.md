@@ -26,9 +26,9 @@ The following standard trigger commands are codified for this workspace:
 ### Entry 1: Cross-Project Pollution on `0` Shorthand Command (Code Red)
 - **Date / Timestamp:** 2026-11-09 13:50:54 UTC
 - **What Went Wrong & Aaron's Quote:**
-  > *"Whoa, this is kind of a code red. I don't know what's going on, absolutely need to be fixed immediately. I sent Telegram messages to my diet macro assistant about this project. For some reason when I got home, you're talking about my hunting wabbits project, which is a different project. You're talking about learning book notes and cover letters, all of that is an entirely separate project. Why did this happen and make it never happen again?"*
+  > *"Whoa, this is kind of a code red. I don't know what's going on, absolutely need to be fixed immediately. I sent Telegram messages to my diet macro assistant about this project. For some reason when I got home, you're talking about my executive-assistant project, which is a different project. You're talking about learning book notes and cover letters, all of that is an entirely separate project. Why did this happen and make it never happen again?"*
 - **Root Cause:**
-  When Aaron triggered `0` (the shorthand command to pull mobile updates from Telegram cloud storage), the agent searched across all connected cloud storage namespaces and un-isolated workspace files, polluting `diet-macro-assistant` with notes from `hunting-wabbits`. There was no pinned workspace-level isolation rule stopping cross-repo queries.
+  When Aaron triggered `0` (the shorthand command to pull mobile updates from Telegram cloud storage), the agent searched across all connected cloud storage namespaces and un-isolated workspace files, polluting `diet-macro-assistant` with notes from `executive-assistant`. There was no pinned workspace-level isolation rule stopping cross-repo queries.
 - **Current Status:** **Resolved**
   Created and pinned `.agents/rules/strict_project_isolation.md` and Rule 2h/2i in `rules/MasterRules.md`, strictly enforcing zero cross-contamination and bounding `0` solely to `diet-macro-assistant`.
 

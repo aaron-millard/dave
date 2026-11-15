@@ -71,7 +71,7 @@ Before performing any task, writing any code, or returning any answer, I **must*
     ```
   - If Aaron does NOT say "Idea dump", the bot treats the message as a regular question, conversation, or macro request and responds naturally.
   - Never treat an uploaded image as a grocery receipt unless Aaron explicitly mentions his `inventory` or `receipt`/`groceries`.
-  - **Strict Project Isolation Guardrail:** When working in `diet-macro-assistant`, NEVER query or apply notes/rules from other project bots (such as `hunting-wabbits` or `weightlifting-tracker`).
+  - **Strict Project Isolation Guardrail:** When working in `diet-macro-assistant`, NEVER query or apply notes/rules from other project bots (such as `executive-assistant` or `weightlifting-tracker`).
 - **2i. Zero Shorthand Rule (`0` = Check Telegram Updates for Diet & Macro Assistant):**
   - Whenever Aaron types `0` in this project chat, immediately fetch `diet-macro-assistant` Telegram cloud storage for pending updates/notes sent from mobile, sync them locally to `persistent_overrides.json`, and apply them to this project only.
 - **2j. "Roger Roger" Protocol (Replaces "Okay" / "Ok"):**
