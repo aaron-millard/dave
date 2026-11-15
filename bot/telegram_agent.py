@@ -1184,7 +1184,11 @@ SEEN_UPDATES = set()
 
 class BotHTTPHandler(BaseHTTPRequestHandler):
     def do_GET(self):
-        if self.path.startswith("/weightlifting-tracker-data.json") or self.path.startswith("/lifting-data.json"):
+        parsed = urllib.parse.urlparse(self.path)
+        path = parsed.path.rstrip("/") or "/"
+        qs = urllib.parse.parse_qs(parsed.query)
+
+        if path in ("/weightlifting-tracker-data.json", "/lifting-data.json"):
             body = lifting_agent.get_live_workout_json(get_gemini_key()).encode("utf-8")
             self.send_response(200)
             self.send_header("Content-Type", "application/json; charset=utf-8")
@@ -1192,18 +1196,11 @@ class BotHTTPHandler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(body)
             return
-        if self.path.startswith("/weightlifting-tracker") or self.path.startswith("/lifting"):
-            body = lifting_agent.get_dashboard_html(get_gemini_key()).encode("utf-8")
-            self.send_response(200)
-            self.send_header("Content-Type", "text/html; charset=utf-8")
-            self.end_headers()
-            self.wfile.write(body)
-            return
-        if (
-            self.path.startswith("/sleep-tracker-data.json")
-            or self.path.startswith("/sleep-data.json")
-            or self.path.startswith("/health-tracker-data.json")
-            or self.path.startswith("/health-data.json")
+        if path in (
+            "/sleep-tracker-data.json",
+            "/sleep-data.json",
+            "/health-tracker-data.json",
+            "/health-data.json",
         ):
             body = sleep_agent.get_live_sleep_json(get_gemini_key()).encode("utf-8")
             self.send_response(200)
@@ -1212,18 +1209,86 @@ class BotHTTPHandler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(body)
             return
-        if (
-            self.path.startswith("/sleep-tracker")
-            or self.path.startswith("/sleep")
-            or self.path.startswith("/health-tracker")
-            or self.path.startswith("/health")
-        ):
+
+        if path == "/embed/health":
             body = sleep_agent.get_dashboard_html(get_gemini_key()).encode("utf-8")
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Cache-Control", "no-store")
             self.end_headers()
             self.wfile.write(body)
             return
+        if path == "/embed/lifting":
+            body = lifting_agent.get_dashboard_html(get_gemini_key()).encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            self.wfile.write(body)
+            return
+        if path == "/embed/architecture" or (path == "/architecture" and qs.get("embed") == ["1"]):
+            arch_path = resolve_path("architecture.html", "bot")
+            if os.path.exists(arch_path):
+                with open(arch_path, "r", encoding="utf-8") as f:
+                    arch_html = f.read()
+            else:
+                arch_html = "<h1>Architecture dashboard not found</h1>"
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            self.wfile.write(arch_html.encode("utf-8"))
+            return
+
+        hub_routes = (
+            "/",
+            "/hub",
+            "/health",
+            "/health-tracker",
+            "/sleep",
+            "/sleep-tracker",
+            "/lifting",
+            "/weightlifting-tracker",
+            "/architecture",
+        )
+        if path in hub_routes:
+            subtab_q = (qs.get("subtab", [""])[0] or "").strip().lower()
+            tab_q = (qs.get("tab", [""])[0] or "").strip().lower()
+            if subtab_q == "garmin":
+                initial_tab = "garmin"
+            elif path in ("/lifting", "/weightlifting-tracker"):
+                initial_tab = "lifting"
+            elif path == "/architecture":
+                initial_tab = "architecture"
+            elif path in ("/health", "/health-tracker", "/sleep", "/sleep-tracker"):
+                initial_tab = "health"
+            elif tab_q in ("health", "garmin", "lifting", "architecture"):
+                initial_tab = tab_q
+            else:
+                initial_tab = "health"
+
+            hub_path = resolve_path("hub_dashboard.html", "bot")
+            if os.path.exists(hub_path):
+                with open(hub_path, "r", encoding="utf-8") as f:
+                    hub_html = f.read()
+                inject_tag = f"<script>window.__INITIAL_TAB__ = {json.dumps(initial_tab)};</script>"
+                if "</head>" in hub_html:
+                    hub_html = hub_html.replace("</head>", f"  {inject_tag}\n</head>", 1)
+                elif "<script>" in hub_html:
+                    hub_html = hub_html.replace("<script>", f"{inject_tag}\n<script>", 1)
+                else:
+                    hub_html = inject_tag + "\n" + hub_html
+                body = hub_html.encode("utf-8")
+            else:
+                body = sleep_agent.get_dashboard_html(get_gemini_key()).encode("utf-8")
+
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            self.wfile.write(body)
+            return
+
         self.send_response(200)
         self.end_headers()
         self.wfile.write(b"OK - Diet Macro Assistant Bot is awake")
