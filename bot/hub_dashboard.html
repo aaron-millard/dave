@@ -259,6 +259,10 @@
           <button class="sub-pill" id="pillHippo" onclick="switchInterviewCompany('hippo')">Hippo</button>
         </div>
       </div>
+
+      <div class="tab-group">
+        <button class="tab-btn" data-tab="flashcards" onclick="switchTab('flashcards')">5. Flashcards</button>
+      </div>
     </div>
 
     <div class="nav-right">
@@ -275,6 +279,7 @@
     <iframe id="frame-lifting" class="hub-frame" title="Weightlifting Tracker"></iframe>
     <iframe id="frame-architecture" class="hub-frame" title="System Architecture"></iframe>
     <iframe id="frame-interviews" class="hub-frame" title="Active Interviews"></iframe>
+    <iframe id="frame-flashcards" class="hub-frame" title="Flashcards"></iframe>
   </main>
 
   <script>
@@ -286,19 +291,21 @@
           health: "../health-tracker/dashboard.html",
           lifting: "../weightlifting-tracker/dashboard.html",
           architecture: "./architecture.html",
-          interviews: "./interviews.html"
+          interviews: "./interviews.html",
+          flashcards: "./flashcards.html"
         };
       }
       return {
         health: "/embed/health",
         lifting: "/embed/lifting",
         architecture: "/embed/architecture",
-        interviews: "/embed/interviews"
+        interviews: "/embed/interviews",
+        flashcards: "/embed/flashcards"
       };
     }
 
     const URLS = getBaseUrls();
-    const loadedTabs = { health: false, lifting: false, architecture: false, interviews: false };
+    const loadedTabs = { health: false, lifting: false, architecture: false, interviews: false, flashcards: false };
     let activeTab = "health";
     let activeHealthSubtab = "oura";
     let activeInterviewCompany = "knownwell";
@@ -354,7 +361,7 @@
     }
 
     function switchTab(tabName) {
-      const target = (tabName === "lifting" || tabName === "architecture" || tabName === "interviews") ? tabName : "health";
+      const target = (tabName === "lifting" || tabName === "architecture" || tabName === "interviews" || tabName === "flashcards") ? tabName : "health";
       activeTab = target;
 
       document.querySelectorAll(".tab-btn").forEach((btn) => {
@@ -410,6 +417,9 @@
       }
       if (qTab === "interviews" || injected === "interviews" || hash === "interviews" || path.includes("interviews")) {
         return "interviews";
+      }
+      if (qTab === "flashcards" || injected === "flashcards" || hash === "flashcards" || path.includes("flashcards")) {
+        return "flashcards";
       }
       if (qTab === "lifting" || injected === "lifting" || hash === "lifting" || path.includes("lifting") || path.includes("weightlifting")) {
         return "lifting";

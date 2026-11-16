@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flashcards - Executive Assistant Technical Bank</title>
+  <style>
+    :root {
+      --bg: #070b13;
+      --card: #0d1424;
+      --card-hover: #121c33;
+      --border: #1e293b;
+      --border-bright: #334155;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --blue: #38bdf8;
+      --purple: #c084fc;
+      --green: #34d399;
+      --amber: #fbbf24;
+      --code-bg: #050811;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      padding: 20px 24px 48px;
+    }
+
+    .container {
+      max-width: 1260px;
+      margin: 0 auto;
+    }
+
+    .top-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 20px;
+      padding: 14px 18px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+
+    .title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .title-wrap h1 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+
+    .pill {
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.14);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: var(--blue);
+    }
+
+    .pill.mastered {
+      background: rgba(52, 211, 153, 0.14);
+      border-color: rgba(52, 211, 153, 0.38);
+      color: var(--green);
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .ctrl-btn {
+      padding: 7px 13px;
+      border-radius: 9px;
+      background: #080d18;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .ctrl-btn:hover {
+      color: #fff;
+      border-color: var(--border-bright);
+    }
+
+    .ctrl-btn.active {
+      background: rgba(56, 189, 248, 0.16);
+      border-color: rgba(56, 189, 248, 0.5);
+      color: var(--blue);
+    }
+
+    .ctrl-btn.primary {
+      background: rgba(251, 191, 36, 0.14);
+      border-color: rgba(251, 191, 36, 0.45);
+      color: #fde68a;
+    }
+
+    .ctrl-btn.primary:hover {
+      background: rgba(251, 191, 36, 0.24);
+      color: #fff;
+    }
+
+    /* Term Flashcards Grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .term-card {
+      position: relative;
+      min-height: 156px;
+      padding: 20px;
+      border-radius: 16px;
+      background: linear-gradient(155deg, #0f172a 0%, #0b1120 100%);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      user-select: none;
+    }
+
+    .term-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(56, 189, 248, 0.55);
+      box-shadow: 0 10px 26px rgba(2, 6, 23, 0.55);
+      background: linear-gradient(155deg, #131f38 0%, #0d1527 100%);
+    }
+
+    .term-card.mastered-card {
+      border-color: rgba(52, 211, 153, 0.4);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .cat-tag {
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--blue);
+    }
+
+    .cat-tag.ai {
+      background: rgba(192, 132, 252, 0.12);
+      border-color: rgba(192, 132, 252, 0.32);
+      color: var(--purple);
+    }
+
+    .done-dot {
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: var(--green);
+      display: none;
+    }
+
+    .term-card.mastered-card .done-dot {
+      display: inline;
+    }
+
+    .term-title {
+      font-size: 1.22rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.015em;
+      margin: 14px 0 10px;
+      line-height: 1.3;
+    }
+
+    .card-hint {
+      font-size: 0.74rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    /* Pop-Up Flashcard Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.78);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 720px;
+      max-height: 88vh;
+      overflow-y: auto;
+      background: #0d1424;
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      border-radius: 18px;
+      padding: 24px 26px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+      animation: popIn 0.14s ease-out;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+
+    .modal-title {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #fff;
+      margin-top: 6px;
+    }
+
+    .close-btn {
+      background: #080d18;
+      border: 1px solid var(--border-bright);
+      color: var(--muted);
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .close-btn:hover {
+      color: #fff;
+      border-color: var(--blue);
+    }
+
+    .modal-section {
+      margin-bottom: 16px;
+    }
+
+    .modal-label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--blue);
+      margin-bottom: 6px;
+    }
+
+    .def-text {
+      font-size: 0.96rem;
+      color: #e2e8f0;
+      line-height: 1.62;
+    }
+
+    ul.anchors {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    ul.anchors li {
+      position: relative;
+      padding-left: 16px;
+      font-size: 0.88rem;
+      color: #cbd5e1;
+    }
+
+    ul.anchors li::before {
+      content: "-";
+      position: absolute;
+      left: 0;
+      color: var(--blue);
+      font-weight: 800;
+    }
+
+    .example-box {
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: #080d18;
+      border: 1px solid var(--border-bright);
+      font-size: 0.87rem;
+      color: #e2e8f0;
+    }
+
+    pre.sql-snip {
+      margin-top: 8px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
+      font-size: 0.78rem;
+      color: #bae6fd;
+      overflow-x: auto;
+    }
+
+    .modal-footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .nav-btns {
+      display: flex;
+      gap: 8px;
+    }
+
+    .master-btn {
+      padding: 8px 14px;
+      border-radius: 9px;
+      background: rgba(52, 211, 153, 0.14);
+      border: 1px solid rgba(52, 211, 153, 0.45);
+      color: var(--green);
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .master-btn.is-done {
+      background: rgba(52, 211, 153, 0.28);
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <div class="title-wrap">
+        <h1>Flashcards</h1>
+        <span class="pill" id="countPill">10 Terms</span>
+        <span class="pill mastered" id="masteredPill">0 / 10 Mastered</span>
+      </div>
+
+      <div class="controls">
+        <button class="ctrl-btn active" data-cat="all" onclick="setCategory('all', this)">All</button>
+        <button class="ctrl-btn" data-cat="sql" onclick="setCategory('sql', this)">SQL</button>
+        <button class="ctrl-btn" data-cat="ai" onclick="setCategory('ai', this)">AI &amp; Modern Stack</button>
+        <button class="ctrl-btn primary" onclick="shuffleCards()">Shuffle</button>
+        <button class="ctrl-btn" onclick="resetMastery()">Reset Progress</button>
+      </div>
+    </div>
+
+    <div id="cardsGrid" class="cards-grid"></div>
+  </div>
+
+  <!-- Pop-Up Definition Modal -->
+  <div id="modalBackdrop" class="modal-backdrop" onclick="handleBackdropClick(event)">
+    <div class="modal-card" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <div>
+          <span id="modalCat" class="cat-tag">SQL</span>
+          <div id="modalTitle" class="modal-title">Term</div>
+        </div>
+        <button class="close-btn" onclick="closeModal()" aria-label="Close">x</button>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-label">Conversational Definition</div>
+        <div id="modalDef" class="def-text"></div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-label">Key Anchors to Hit</div>
+        <ul id="modalAnchors" class="anchors"></ul>
+      </div>
+
+      <div class="modal-section" id="modalSqlWrap" style="display:none;">
+        <div class="modal-label">Quick SQL Pattern</div>
+        <pre id="modalSql" class="sql-snip"></pre>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-label">Aaron's Real-World Example</div>
+        <div id="modalExample" class="example-box"></div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="nav-btns">
+          <button class="ctrl-btn" onclick="stepCard(-1)">Prev Term</button>
+          <button class="ctrl-btn" onclick="stepCard(1)">Next Term</button>
+        </div>
+        <button id="masterToggleBtn" class="master-btn" onclick="toggleMasteredCurrent()">Mark Mastered</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const FLASHCARDS = [
+      {
+        id: "cte",
+        term: "CTE (Common Table Expression)",
+        category: "sql",
+        catLabel: "SQL",
+        definition: "A temporary, named result set defined at the top of a SQL query using WITH. It breaks complex multi-step transformations into clean, readable building blocks that can be referenced like tables within the main query.",
+        anchors: [
+          "Readability & Modularity: Replaces deeply nested subqueries with top-down sequential logic.",
+          "Pre-Aggregation to Prevent Fan-Out: Aggregate each fact table to a matching grain in separate CTEs before joining.",
+          "Scope: Exists only for the duration of a single SQL statement (unlike temp tables or views).",
+          "Recursive CTEs: Can walk hierarchical data like org charts or multi-touch user journeys."
+        ],
+        sql: "WITH monthly_spend AS (\n  SELECT DATE_TRUNC('month', spend_date) AS m, channel, SUM(spend) AS spend\n  FROM daily_ad_spend\n  GROUP BY 1, 2\n)\nSELECT * FROM monthly_spend;",
+        example: "When joining daily ad spend with policy binds or ticket sales, I put each source into its own CTE aggregated to month and channel first so joins never inflate spend or bind totals."
+      },
+      {
+        id: "partition",
+        term: "PARTITION BY (SQL Window Functions)",
+        category: "sql",
+        catLabel: "SQL",
+        definition: "A clause inside OVER (...) that splits rows into independent groups for window calculations like ROW_NUMBER, RANK, LAG, or running totals — while keeping every individual row intact instead of collapsing them like GROUP BY.",
+        anchors: [
+          "PARTITION BY vs GROUP BY: GROUP BY collapses rows to 1 row per group; PARTITION BY computes group metrics while preserving row-level detail.",
+          "Ordering Inside Partitions: Combine with ORDER BY inside OVER (...) for deduplication (rn = 1), running sums, or prior-event comparisons.",
+          "Key Functions: ROW_NUMBER() for deduping latest touch, LAG()/LEAD() for days between visits, SUM() OVER for cohort share."
+        ],
+        sql: "SELECT quote_id, click_ts, channel,\n  ROW_NUMBER() OVER (PARTITION BY quote_id ORDER BY click_ts DESC) AS rn\nFROM ad_clicks;",
+        example: "For last-touch attribution or Knownwell repeat-visit cadence, I partition by user_id or patient_id ordered by timestamp to grab the exact prior event with LAG or rn = 1."
+      },
+      {
+        id: "lod",
+        term: "LOD / Level of Detail (SQL Grain)",
+        category: "sql",
+        catLabel: "SQL",
+        definition: "Controlling the exact granularity (what one row represents) and computing metrics at a different level of detail than the base table — using pre-aggregated CTEs or window functions in SQL so higher-level totals never double-count when joined to finer rows (the SQL equivalent of Tableau FIXED/INCLUDE/EXCLUDE LODs).",
+        anchors: [
+          "Check Grain First: Always verify whether a table is 1 row per quote, 1 row per click, or 1 row per line item before joining.",
+          "FIXED Equivalent in SQL: A grouped CTE joined back on the partition key (e.g., total campaign spend joined to individual conversions).",
+          "INCLUDE / EXCLUDE Equivalent: Window aggregations like SUM(revenue) OVER (PARTITION BY customer_id) alongside row-level detail.",
+          "Prevents Fan-Out: Avoids multiplying $100 spend across 5 policy rows when reporting ROAS or Cost per Bind."
+        ],
+        sql: "SELECT p.policy_id, p.channel, p.premium,\n  SUM(p.premium) OVER (PARTITION BY p.channel) AS channel_total_premium\nFROM policies p;",
+        example: "Across 15+ Swish Dental clinics and Brooklyn Nets campaigns, I lock metric grain in SQL CTEs/views first so Power BI or Tableau users can slice by date or channel without ever inflating spend."
+      },
+      {
+        id: "dml",
+        term: "DML (Data Manipulation Language)",
+        category: "sql",
+        catLabel: "SQL",
+        definition: "The subset of SQL commands used to read, insert, update, merge, and delete data inside existing database tables — specifically SELECT, INSERT, UPDATE, DELETE, and MERGE (as opposed to DDL like CREATE/ALTER/DROP that modifies table structure).",
+        anchors: [
+          "Core Commands: SELECT (read), INSERT (add rows), UPDATE (modify existing rows), DELETE (remove rows), MERGE (upsert).",
+          "DML vs DDL: DML changes the data inside tables (and can be rolled back in a transaction); DDL (Data Definition Language: CREATE, ALTER, DROP, TRUNCATE) changes the table schema itself.",
+          "DML vs DCL: DCL (GRANT, REVOKE) controls user permissions.",
+          "Warehouse Safety: Always test UPDATE/DELETE filters with a SELECT first or wrap in a transaction."
+        ],
+        sql: "MERGE INTO dim_campaigns t\nUSING staging_campaigns s ON t.campaign_id = s.campaign_id\nWHEN MATCHED THEN UPDATE SET t.status = s.status\nWHEN NOT MATCHED THEN INSERT (campaign_id, status) VALUES (s.campaign_id, s.status);",
+        example: "In our ETL pipelines at OneMagnify and in my local/cloud trackers, I use MERGE/upsert DML patterns to safely update changing records without duplicating rows."
+      },
+      {
+        id: "star-schema",
+        term: "Star Schema Data Modeling",
+        category: "sql",
+        catLabel: "SQL",
+        definition: "A data modeling design that separates numeric business events (fact tables) from descriptive context (dimension tables), creating a clean star-shaped layout optimized for fast queries and intuitive BI slicing.",
+        anchors: [
+          "Fact Tables: Quantitative events at a clear grain (ad spend, ticket sales, policy binds) with foreign keys.",
+          "Dimension Tables: Descriptive attributes (Date, Channel, Campaign, Clinic, Customer) used to slice facts.",
+          "Performance: Fewer joins and faster columnar compression in Power BI VertiPaq and Tableau Hyper; avoids circular filter paths.",
+          "Star vs Snowflake: Star keeps dimensions denormalized for speed; snowflake normalizes dimensions into sub-tables."
+        ],
+        sql: "",
+        example: "At OneMagnify for the Brooklyn Nets, I designed star schemas joining Ticketmaster transactions and paid media facts to shared Date and Campaign dimensions for instant executive filtering."
+      },
+      {
+        id: "agentic-analytics",
+        term: "Agentic Analytics",
+        category: "ai",
+        catLabel: "AI & Modern Stack",
+        definition: "Using autonomous AI agents that actively connect to governed semantic models, run schema and QA validation checks, query live data, and surface root-cause insights via protocols like MCP — rather than passively answering static chat prompts.",
+        anchors: [
+          "Semantic Layer Interaction: Agents query governed models (Power BI / Tableau Data Apps via MCP) where metrics are already defined.",
+          "Autonomous Tool Use: Checks schema integrity, tests DAX/SQL measures, and catches discrepancies before production.",
+          "Active vs Passive: Moves beyond static dashboards to proactive anomaly investigation and action recommendations."
+        ],
+        sql: "",
+        example: "At OneMagnify, I use MCP daily with Power BI to automate DAX measure validation and audit complex schemas across 8-10 client accounts before dashboards go live."
+      },
+      {
+        id: "modular-modeling",
+        term: "Modular Data Modeling",
+        category: "sql",
+        catLabel: "SQL",
+        definition: "Structuring SQL transformations into clean, layered, reusable stages (staging -> intermediate -> mart) instead of giant monolithic scripts, so business logic is defined once, tested, and shared across every downstream report.",
+        anchors: [
+          "Staging Layer: 1-to-1 source cleanup, casting, renaming, and deduplication.",
+          "Intermediate Layer: Joins, attribution windows, and business-day pacing logic.",
+          "Mart Layer: Final fact/dimension tables and semantic views consumed by BI and leadership.",
+          "Single Source of Truth: Prevents two analysts from writing conflicting MQL or Cost per Bind definitions."
+        ],
+        sql: "",
+        example: "At Pebl, Marketing and Sales had conflicting MQL counts; I audited the funnel and locked 3 clean stages (Inbound, MQL, SAL) into modular SQL views so both teams pulled identical numbers."
+      },
+      {
+        id: "dbt",
+        term: "dbt (Data Build Tool)",
+        category: "ai",
+        catLabel: "AI & Modern Stack",
+        definition: "A SQL-first transformation framework that brings software engineering best practices — modular SELECT models, ref() dependency DAGs, version control, automated data tests, and lineage documentation — to the Transform step inside cloud data warehouses.",
+        anchors: [
+          "SELECT-Only Models: You write modular SQL SELECTs; dbt handles CREATE TABLE/VIEW materializations and dependency order via ref().",
+          "Built-In Testing: Automated unique, not_null, accepted_values, and relationship tests catch broken upstream CRM fields early.",
+          "Lineage & Docs: Auto-generates end-to-end column/table lineage from raw ingestion to executive metrics."
+        ],
+        sql: "",
+        example: "I structure my SQL warehouse layers using dbt-style staging/mart patterns and automated schema/metric QA checks (currently completing official dbt certification)."
+      },
+      {
+        id: "mcp",
+        term: "MCP (Model Context Protocol)",
+        category: "ai",
+        catLabel: "AI & Modern Stack",
+        definition: "An open protocol that lets AI assistants securely connect to external tools, live schemas, databases, and BI semantic models so the AI can inspect real structures and run deterministic checks instead of hallucinating.",
+        anchors: [
+          "Live Schema Context: AI reads actual table names, columns, DAX measures, and relationships directly.",
+          "Deterministic Verification: Pairs LLM reasoning with real tool calls (SQL execution, Power BI model checks, QA scripts).",
+          "Workflow Acceleration: Eliminates repetitive boilerplate and manual QA formatting so analysts focus on business insights."
+        ],
+        sql: "",
+        example: "I connect Claude/Antigravity to Power BI semantic models via MCP to validate DAX measures and catch relationship or grain bugs in minutes instead of hours."
+      },
+      {
+        id: "antigravity",
+        term: "Antigravity",
+        category: "ai",
+        catLabel: "AI & Modern Stack",
+        definition: "An agentic AI engineering environment that orchestrates code, local tools, persistent rules/memory, and multi-step execution workflows so engineers and analysts can build, test, and verify full pipelines and dashboards end-to-end.",
+        anchors: [
+          "Tool-Backed Execution: Runs real scripts, tests, and data syncs rather than outputting static code snippets.",
+          "Rules & Grounded Memory: Enforces workspace standards, verification checks, and domain constraints automatically.",
+          "Rapid Prototyping: Ideal for spinning up interactive HTML dashboards, QA scripts, and analytics automation."
+        ],
+        sql: "",
+        example: "I use Antigravity to automate my personal analytics dashboards (Oura sleep biometrics, weightlifting, and job pipeline), enforcing strict data validation and cloud syncs."
+      },
+      {
+        id: "semantic-layer",
+        term: "Semantic Layer",
+        category: "ai",
+        catLabel: "AI & Modern Stack",
+        definition: "A centralized governance layer between raw warehouse tables and BI/AI tools that defines canonical business metrics, joins, and filters once — guaranteeing everyone (and every AI agent) gets the exact same answer.",
+        anchors: [
+          "Stops Rogue SQL: Eliminates conflicting versions of KPIs like Bind Rate, CAC, MQL, or Revenue across teams.",
+          "AI-Ready Foundation: Gives tools like Claude, MCP, or BI self-service reliable metric definitions to query safely.",
+          "Clean UI Separation: Keeps transformations upstream in SQL/Databricks so dashboards stay lightweight and consistent."
+        ],
+        sql: "",
+        example: "With Pebl and OneMagnify enterprise accounts, locking canonical KPI logic in governed SQL/Power BI semantic models eliminated executive disagreements over mismatched numbers."
+      }
+    ];
+
+    let currentCategory = "all";
+    let orderedCards = [...FLASHCARDS];
+    let currentModalIdx = -1;
+    const MASTERED_KEY = "dave_flashcards_mastered_v1";
+
+    function loadMastered() {
+      try {
+        return new Set(JSON.parse(localStorage.getItem(MASTERED_KEY) || "[]"));
+      } catch (e) {
+        return new Set();
+      }
+    }
+
+    function saveMastered(set) {
+      localStorage.setItem(MASTERED_KEY, JSON.stringify(Array.from(set)));
+    }
+
+    function getFilteredCards() {
+      if (currentCategory === "all") return orderedCards;
+      return orderedCards.filter((c) => c.category === currentCategory);
+    }
+
+    function renderCards() {
+      const grid = document.getElementById("cardsGrid");
+      const mastered = loadMastered();
+      const visible = getFilteredCards();
+
+      document.getElementById("countPill").textContent = `${visible.length} Term${visible.length === 1 ? "" : "s"}`;
+      const masteredVisible = visible.filter((c) => mastered.has(c.id)).length;
+      document.getElementById("masteredPill").textContent = `${masteredVisible} / ${visible.length} Mastered`;
+
+      grid.innerHTML = visible.map((card, idx) => {
+        const isDone = mastered.has(card.id);
+        const tagClass = card.category === "ai" ? "cat-tag ai" : "cat-tag";
+        return `
+          <div class="term-card ${isDone ? "mastered-card" : ""}" onclick="openCard(${idx})">
+            <div class="card-top">
+              <span class="${tagClass}">${card.catLabel}</span>
+              <span class="done-dot">Mastered</span>
+            </div>
+            <div class="term-title">${card.term}</div>
+            <div class="card-hint">Click term to reveal definition</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function setCategory(cat, btn) {
+      currentCategory = cat;
+      document.querySelectorAll(".controls .ctrl-btn[data-cat]").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      renderCards();
+    }
+
+    function shuffleCards() {
+      for (let i = orderedCards.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [orderedCards[i], orderedCards[j]] = [orderedCards[j], orderedCards[i]];
+      }
+      renderCards();
+    }
+
+    function resetMastery() {
+      localStorage.removeItem(MASTERED_KEY);
+      renderCards();
+      if (currentModalIdx >= 0) updateMasterButton();
+    }
+
+    function openCard(idx) {
+      const visible = getFilteredCards();
+      if (!visible.length) return;
+      currentModalIdx = (idx + visible.length) % visible.length;
+      const card = visible[currentModalIdx];
+
+      const catEl = document.getElementById("modalCat");
+      catEl.textContent = card.catLabel;
+      catEl.className = card.category === "ai" ? "cat-tag ai" : "cat-tag";
+
+      document.getElementById("modalTitle").textContent = card.term;
+      document.getElementById("modalDef").textContent = card.definition;
+      document.getElementById("modalAnchors").innerHTML = card.anchors.map((a) => `<li>${a}</li>`).join("");
+
+      const sqlWrap = document.getElementById("modalSqlWrap");
+      if (card.sql) {
+        sqlWrap.style.display = "block";
+        document.getElementById("modalSql").textContent = card.sql;
+      } else {
+        sqlWrap.style.display = "none";
+      }
+
+      document.getElementById("modalExample").textContent = card.example;
+      updateMasterButton();
+      document.getElementById("modalBackdrop").classList.add("open");
+    }
+
+    function updateMasterButton() {
+      const visible = getFilteredCards();
+      const card = visible[currentModalIdx];
+      if (!card) return;
+      const mastered = loadMastered();
+      const isDone = mastered.has(card.id);
+      const btn = document.getElementById("masterToggleBtn");
+      btn.textContent = isDone ? "Mastered (Click to Undo)" : "Mark Mastered";
+      btn.classList.toggle("is-done", isDone);
+    }
+
+    function toggleMasteredCurrent() {
+      const visible = getFilteredCards();
+      const card = visible[currentModalIdx];
+      if (!card) return;
+      const mastered = loadMastered();
+      if (mastered.has(card.id)) mastered.delete(card.id);
+      else mastered.add(card.id);
+      saveMastered(mastered);
+      updateMasterButton();
+      renderCards();
+    }
+
+    function stepCard(delta) {
+      if (currentModalIdx < 0) return;
+      openCard(currentModalIdx + delta);
+    }
+
+    function closeModal() {
+      document.getElementById("modalBackdrop").classList.remove("open");
+      currentModalIdx = -1;
+    }
+
+    function handleBackdropClick(e) {
+      if (e.target.id === "modalBackdrop") closeModal();
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (currentModalIdx < 0) return;
+      if (e.key === "Escape") closeModal();
+      if (e.key === "ArrowRight") stepCard(1);
+      if (e.key === "ArrowLeft") stepCard(-1);
+    });
+
+    renderCards();
+  </script>
+</body>
+</html>
