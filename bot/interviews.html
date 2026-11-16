@@ -493,6 +493,70 @@
       background: rgba(56, 189, 248, 0.25);
     }
 
+    .sql-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .explain-btn {
+      background: rgba(251, 191, 36, 0.14);
+      border: 1px solid rgba(251, 191, 36, 0.45);
+      color: #fde68a;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .explain-btn:hover {
+      background: rgba(251, 191, 36, 0.25);
+      color: #fff;
+    }
+
+    .explain-btn.playing {
+      background: rgba(251, 113, 133, 0.2);
+      border-color: rgba(251, 113, 133, 0.55);
+      color: #fecdd3;
+    }
+
+    .explain-caption {
+      display: none;
+      padding: 8px 12px;
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid var(--border);
+      border-top: none;
+      font-size: 0.79rem;
+      color: #bae6fd;
+      line-height: 1.45;
+    }
+
+    .sql-wrap.explaining .explain-caption {
+      display: block;
+    }
+
+    .sql-line {
+      display: inline-block;
+      min-width: 100%;
+      padding: 1px 6px;
+      margin: 0 -6px;
+      border-radius: 4px;
+      transition: background 0.16s ease, opacity 0.16s ease;
+    }
+
+    .sql-wrap.explaining .sql-line {
+      opacity: 0.36;
+    }
+
+    .sql-wrap.explaining .sql-line.hl {
+      opacity: 1;
+      background: rgba(56, 189, 248, 0.2);
+      box-shadow: inset 3px 0 0 var(--blue);
+      color: #fff;
+    }
+
     pre {
       background: var(--code-bg);
       border: 1px solid var(--border);
@@ -658,7 +722,7 @@
         <div class="grid-2">
           <div class="card">
             <h2>Healthcare Funnel & Visit Conversion</h2>
-            <div class="sql-wrap">
+            <div class="sql-wrap" data-explain="kw_funnel">
               <div class="sql-header">
                 <span>Patient Lead -> Booked -> Completed Visit</span>
                 <button class="copy-btn" onclick="copySql(this)">Copy</button>
@@ -685,7 +749,7 @@ GROUP BY p.acquisition_channel;</pre>
 
           <div class="card">
             <h2>Cohort Retention & Repeat Visits (LAG / Window)</h2>
-            <div class="sql-wrap">
+            <div class="sql-wrap" data-explain="kw_lag">
               <div class="sql-header">
                 <span>Days Between Completed Appointments</span>
                 <button class="copy-btn" onclick="copySql(this)">Copy</button>
@@ -806,7 +870,7 @@ ORDER BY visit_num;</pre>
         <div class="grid-2">
           <div class="card">
             <h2>Pattern A: Lead -> Completed Visit Funnel</h2>
-            <div class="sql-wrap">
+            <div class="sql-wrap" data-explain="kw_funnel_cs">
               <div class="sql-header">
                 <span>CTE First-Visit Aggregation + Conversion %</span>
                 <button class="copy-btn" onclick="copySql(this)">Copy</button>
@@ -831,7 +895,7 @@ GROUP BY p.acquisition_channel;</pre>
 
           <div class="card">
             <h2>Pattern B: Repeat Visit Cadence (LAG)</h2>
-            <div class="sql-wrap">
+            <div class="sql-wrap" data-explain="kw_lag_cs">
               <div class="sql-header">
                 <span>ROW_NUMBER + LAG Window Function</span>
                 <button class="copy-btn" onclick="copySql(this)">Copy</button>
@@ -978,7 +1042,7 @@ ORDER BY visit_num;</pre>
         <div class="grid-2">
           <div class="card">
             <h2>1. Quote-to-Bind Funnel (30-Day Window)</h2>
-            <div class="sql-wrap">
+            <div class="sql-wrap" data-explain="hp_funnel">
               <div class="sql-header">
                 <span>LEFT JOIN w/ Date Window in ON Clause</span>
                 <button class="copy-btn" onclick="copySql(this)">Copy</button>
@@ -1002,7 +1066,7 @@ GROUP BY q.channel;</pre>
 
           <div class="card">
             <h2>2. Last-Touch Ad Attribution (ROW_NUMBER)</h2>
-            <div class="sql-wrap">
+            <div class="sql-wrap" data-explain="hp_attrib">
               <div class="sql-header">
                 <span>Most Recent Click Within 14 Days</span>
                 <button class="copy-btn" onclick="copySql(this)">Copy</button>
@@ -1030,7 +1094,7 @@ WHERE rn = 1;</pre>
 
         <div class="card">
           <h2>3. Multi-Table Spend &amp; Binds Without Fan-Out (CAC / ROAS)</h2>
-          <div class="sql-wrap">
+          <div class="sql-wrap" data-explain="hp_cac">
             <div class="sql-header">
               <span>Pre-Aggregate to Matching Grain Before Joining</span>
               <button class="copy-btn" onclick="copySql(this)">Copy</button>
@@ -1169,7 +1233,7 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
         <div class="grid-2">
           <div class="card">
             <h2>SQL 1: Quote-to-Bind (30d Window)</h2>
-            <div class="sql-wrap">
+            <div class="sql-wrap" data-explain="hp_funnel_cs">
               <div class="sql-header">
                 <span>LEFT JOIN Date Window</span>
                 <button class="copy-btn" onclick="copySql(this)">Copy</button>
@@ -1188,7 +1252,7 @@ GROUP BY q.channel;</pre>
 
           <div class="card">
             <h2>SQL 2: Last-Touch Click (ROW_NUMBER)</h2>
-            <div class="sql-wrap">
+            <div class="sql-wrap" data-explain="hp_attrib_cs">
               <div class="sql-header">
                 <span>14-Day Window</span>
                 <button class="copy-btn" onclick="copySql(this)">Copy</button>
@@ -1210,7 +1274,202 @@ SELECT quote_id, channel FROM ranked WHERE rn = 1;</pre>
   </div>
 
   <script>
+    const SQL_EXPLANATIONS = {
+      kw_funnel: [
+        { lines: [1, 2, 3, 4, 5, 6, 7, 8], text: "First, this CTE collapses appointments down to one row per patient, finding each patient's earliest completed visit date so multiple appointments never inflate conversion." },
+        { lines: [9, 10, 11, 12, 13], text: "In the main SELECT, we group by acquisition channel and count distinct patient leads, distinct converted patients, and divide them for the conversion percentage." },
+        { lines: [14, 15, 16, 17], text: "Finally, a LEFT JOIN keeps every lead from patients even if they never booked a visit, then groups cleanly by channel." }
+      ],
+      kw_lag: [
+        { lines: [1, 2, 3, 4, 5, 6, 7, 8], text: "This CTE filters to completed appointments, numbers each patient's visits chronologically with ROW_NUMBER, and pulls the prior visit date onto the same row using LAG." },
+        { lines: [9, 10, 11, 12], text: "Next, we group by visit number and average the day difference between the previous visit date and current visit date." },
+        { lines: [13, 14, 15, 16], text: "Filtering out NULL prior dates excludes visit one, leaving clean repeat-visit cadence metrics ordered by visit number." }
+      ],
+      kw_funnel_cs: [
+        { lines: [1, 2, 3, 4, 5, 6, 7], text: "The first_visit CTE rolls appointments up to one row per patient, capturing their earliest completed visit date." },
+        { lines: [8, 9, 10, 11, 12], text: "The outer SELECT counts distinct leads vs converted patients per channel and uses NULLIF to prevent divide-by-zero errors." },
+        { lines: [13, 14, 15], text: "A LEFT JOIN preserves unconverted leads so the conversion denominator stays accurate." }
+      ],
+      kw_lag_cs: [
+        { lines: [1, 2, 3, 4, 5, 6, 7, 8], text: "The CTE partitions completed appointments by patient_id, assigning visit_num with ROW_NUMBER and grabbing the previous visit date with LAG." },
+        { lines: [9, 10, 11, 12, 13, 14, 15], text: "We exclude first visits where prev_visit_date is NULL, then compute patient count and average days between visits per visit number." }
+      ],
+      hp_funnel: [
+        { lines: [1, 2, 3, 4, 5, 6], text: "The SELECT aggregates distinct quotes, distinct bound policies, the quote-to-bind conversion rate, and total annual premium by marketing channel." },
+        { lines: [7, 8, 9, 10, 11], text: "The 30-day bind window sits inside the LEFT JOIN ON clause rather than WHERE, so quotes that never bound are still counted in the denominator." },
+        { lines: [12, 13, 14], text: "The WHERE clause scopes the cohort to Q3 quote timestamps, and GROUP BY rolls everything up by channel." }
+      ],
+      hp_attrib: [
+        { lines: [1, 2, 3, 4, 5, 6, 7, 8, 9], text: "Inside ranked_clicks, ROW_NUMBER partitions by quote_id and sorts clicks newest-first so the most recent click gets rank 1." },
+        { lines: [10, 11, 12, 13, 14], text: "The LEFT JOIN matches each quote to clicks from the same user within the 14 days leading up to the quote timestamp." },
+        { lines: [15, 16, 17], text: "Filtering WHERE rn = 1 in the final SELECT returns exactly one last-touch channel and campaign per quote." }
+      ],
+      hp_cac: [
+        { lines: [1, 2, 3, 4, 5], text: "To avoid join fan-out, the first CTE pre-aggregates daily ad spend up to monthly channel grain." },
+        { lines: [6, 7, 8, 9, 10, 11, 12], text: "The second CTE pre-aggregates policy binds and premium to the exact same monthly channel grain using distinct campaign-to-channel mapping." },
+        { lines: [13, 14, 15, 16, 17, 18, 19, 20], text: "Joining the two CTEs at matching month-and-channel grain lets us compute Cost per Bind and ROAS safely with NULLIF guards and zero double-counting." }
+      ],
+      hp_funnel_cs: [
+        { lines: [1, 2, 3], text: "Counts distinct quotes, distinct binds, and divides them for bind rate by channel." },
+        { lines: [4, 5, 6, 7, 8, 9], text: "Putting the 30-day bound_ts window inside the LEFT JOIN ON clause keeps unbound quotes in the denominator." }
+      ],
+      hp_attrib_cs: [
+        { lines: [1, 2, 3, 4, 5, 6, 7], text: "Partitions ad clicks by quote_id within 14 days before the quote and ranks newest-first with ROW_NUMBER." },
+        { lines: [8], text: "Filtering WHERE rn = 1 picks the single last-touch click for each quote." }
+      ]
+    };
+
+    let activeExplainWrap = null;
+    let explainSessionId = 0;
+    window.__activeUtterance = null;
+
+    function pickNaturalVoice() {
+      if (!("speechSynthesis" in window)) return null;
+      const voices = window.speechSynthesis.getVoices() || [];
+      return (
+        voices.find((v) => /natural/i.test(v.name) && /^en/i.test(v.lang)) ||
+        voices.find((v) => /google us english/i.test(v.name)) ||
+        voices.find((v) => /samantha|alex|aria|guy|jenny/i.test(v.name) && /^en/i.test(v.lang)) ||
+        voices.find((v) => /^en-US/i.test(v.lang)) ||
+        voices.find((v) => /^en/i.test(v.lang)) ||
+        null
+      );
+    }
+
+    function stopExplain() {
+      explainSessionId++;
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+      window.__activeUtterance = null;
+      if (activeExplainWrap) {
+        activeExplainWrap.classList.remove("explaining");
+        activeExplainWrap.querySelectorAll(".sql-line.hl").forEach((el) => el.classList.remove("hl"));
+        const btn = activeExplainWrap.querySelector(".explain-btn");
+        if (btn) {
+          btn.classList.remove("playing");
+          btn.textContent = "Explain Query";
+        }
+        const cap = activeExplainWrap.querySelector(".explain-caption");
+        if (cap) cap.textContent = "";
+        activeExplainWrap = null;
+      }
+    }
+
+    function highlightLines(wrap, lineNums) {
+      wrap.querySelectorAll(".sql-line").forEach((el) => {
+        const ln = parseInt(el.getAttribute("data-line"), 10);
+        el.classList.toggle("hl", lineNums.includes(ln));
+      });
+    }
+
+    function toggleExplain(btn) {
+      const wrap = btn.closest(".sql-wrap");
+      const key = wrap.getAttribute("data-explain");
+      const steps = SQL_EXPLANATIONS[key];
+      if (!steps || !steps.length) return;
+
+      if (activeExplainWrap === wrap) {
+        stopExplain();
+        return;
+      }
+
+      stopExplain();
+      if (!("speechSynthesis" in window)) {
+        alert("Speech synthesis is not supported in this browser.");
+        return;
+      }
+
+      const mySession = explainSessionId;
+      activeExplainWrap = wrap;
+      wrap.classList.add("explaining");
+      btn.classList.add("playing");
+      btn.textContent = "Stop";
+
+      const cap = wrap.querySelector(".explain-caption");
+      const voice = pickNaturalVoice();
+      let stepIdx = 0;
+
+      function speakNext() {
+        if (mySession !== explainSessionId) return;
+        if (stepIdx >= steps.length) {
+          stopExplain();
+          return;
+        }
+        const step = steps[stepIdx];
+        highlightLines(wrap, step.lines);
+        if (cap) cap.textContent = step.text;
+
+        const utt = new SpeechSynthesisUtterance(step.text);
+        if (voice) utt.voice = voice;
+        utt.rate = 1.03;
+        utt.pitch = 1.0;
+        window.__activeUtterance = utt;
+
+        utt.onstart = () => {
+          if (mySession !== explainSessionId) return;
+          highlightLines(wrap, step.lines);
+          if (cap) cap.textContent = step.text;
+        };
+        utt.onend = () => {
+          if (mySession !== explainSessionId) return;
+          stepIdx++;
+          speakNext();
+        };
+        utt.onerror = () => {
+          if (mySession !== explainSessionId) return;
+          stopExplain();
+        };
+        window.speechSynthesis.speak(utt);
+      }
+
+      speakNext();
+    }
+
+    function initSqlExplainer() {
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.getVoices();
+      }
+      document.querySelectorAll(".sql-wrap[data-explain]").forEach((wrap) => {
+        const pre = wrap.querySelector("pre");
+        const header = wrap.querySelector(".sql-header");
+        if (!pre || !header) return;
+
+        const rawLines = pre.textContent.replace(/\r\n/g, "\n").split("\n");
+        pre.innerHTML = rawLines
+          .map((line, i) => {
+            const safe = line
+              .replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;");
+            return `<span class="sql-line" data-line="${i + 1}">${safe || " "}</span>`;
+          })
+          .join("\n");
+
+        const copyBtn = header.querySelector(".copy-btn");
+        if (copyBtn && !header.querySelector(".sql-actions")) {
+          const actions = document.createElement("div");
+          actions.className = "sql-actions";
+          const expBtn = document.createElement("button");
+          expBtn.className = "explain-btn";
+          expBtn.type = "button";
+          expBtn.textContent = "Explain Query";
+          expBtn.onclick = () => toggleExplain(expBtn);
+          copyBtn.parentNode.insertBefore(actions, copyBtn);
+          actions.appendChild(expBtn);
+          actions.appendChild(copyBtn);
+        }
+
+        if (!wrap.querySelector(".explain-caption")) {
+          const cap = document.createElement("div");
+          cap.className = "explain-caption";
+          header.insertAdjacentElement("afterend", cap);
+        }
+      });
+    }
+
     function switchCompany(company) {
+      stopExplain();
       document.querySelectorAll(".company-tab").forEach((btn) => {
         btn.classList.toggle("active", btn.getAttribute("data-company") === company);
       });
@@ -1221,6 +1480,7 @@ SELECT quote_id, channel FROM ranked WHERE rn = 1;</pre>
     }
 
     function toggleCheatSheet(company, showCheat) {
+      stopExplain();
       const prefix = company === "knownwell" ? "kw-" : "hp-";
       const fullPane = document.getElementById(prefix + "fullpage");
       const cheatPane = document.getElementById(prefix + "cheatsheet");
@@ -1240,6 +1500,8 @@ SELECT quote_id, channel FROM ranked WHERE rn = 1;</pre>
         setTimeout(() => { btn.textContent = orig; }, 1400);
       });
     }
+
+    initSqlExplainer();
 
     // Allow deep-linking via ?company=hippo or #hippo
     (function initFromUrl() {

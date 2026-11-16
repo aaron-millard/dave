@@ -350,6 +350,71 @@
       overflow-x: auto;
     }
 
+    .sql-head-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .explain-btn {
+      background: rgba(251, 191, 36, 0.14);
+      border: 1px solid rgba(251, 191, 36, 0.45);
+      color: #fde68a;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .explain-btn:hover {
+      background: rgba(251, 191, 36, 0.25);
+      color: #fff;
+    }
+
+    .explain-btn.playing {
+      background: rgba(251, 113, 133, 0.2);
+      border-color: rgba(251, 113, 133, 0.55);
+      color: #fecdd3;
+    }
+
+    .explain-caption {
+      display: none;
+      margin-top: 8px;
+      padding: 8px 11px;
+      border-radius: 8px;
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      font-size: 0.8rem;
+      color: #bae6fd;
+      line-height: 1.45;
+    }
+
+    #modalSqlWrap.explaining .explain-caption {
+      display: block;
+    }
+
+    .sql-line {
+      display: inline-block;
+      min-width: 100%;
+      padding: 1px 6px;
+      margin: 0 -6px;
+      border-radius: 4px;
+      transition: background 0.16s ease, opacity 0.16s ease;
+    }
+
+    #modalSqlWrap.explaining .sql-line {
+      opacity: 0.36;
+    }
+
+    #modalSqlWrap.explaining .sql-line.hl {
+      opacity: 1;
+      background: rgba(56, 189, 248, 0.2);
+      box-shadow: inset 3px 0 0 var(--blue);
+      color: #fff;
+    }
+
     .modal-footer {
       display: flex;
       flex-wrap: wrap;
@@ -430,7 +495,11 @@
       </div>
 
       <div class="modal-section" id="modalSqlWrap" style="display:none;">
-        <div class="modal-label">Quick SQL Pattern</div>
+        <div class="sql-head-row">
+          <div class="modal-label" style="margin-bottom:0;">Quick SQL Pattern</div>
+          <button id="modalExplainBtn" class="explain-btn" type="button" onclick="toggleFlashcardExplain()">Explain Query</button>
+        </div>
+        <div id="modalExplainCap" class="explain-caption"></div>
         <pre id="modalSql" class="sql-snip"></pre>
       </div>
 
@@ -707,9 +776,16 @@
       document.getElementById("modalAnchors").innerHTML = card.anchors.map((a) => `<li>${a}</li>`).join("");
 
       const sqlWrap = document.getElementById("modalSqlWrap");
+      stopFlashcardExplain();
       if (card.sql) {
         sqlWrap.style.display = "block";
-        document.getElementById("modalSql").textContent = card.sql;
+        const lines = card.sql.replace(/\r\n/g, "\n").split("\n");
+        document.getElementById("modalSql").innerHTML = lines
+          .map((line, i) => {
+            const safe = line.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            return `<span class="sql-line" data-line="${i + 1}">${safe || " "}</span>`;
+          })
+          .join("\n");
       } else {
         sqlWrap.style.display = "none";
       }
@@ -742,12 +818,142 @@
       renderCards();
     }
 
+    const SQL_WALKTHROUGHS = {
+      cte: [
+        { lines: [1], text: "WITH monthly_spend AS opens a temporary named result set at the top of the query." },
+        { lines: [2, 3, 4], text: "Inside the CTE, we truncate spend_date to month and sum spend per channel, rolling daily data up to monthly grain." },
+        { lines: [5, 6], text: "Then the main SELECT treats monthly_spend just like a regular table." }
+      ],
+      partition: [
+        { lines: [1], text: "First we select the individual quote_id, click timestamp, and channel without collapsing rows." },
+        { lines: [2], text: "PARTITION BY quote_id splits clicks into separate buckets per quote, while ORDER BY click_ts DESC puts the newest click first as row number 1." },
+        { lines: [3], text: "Reading from ad_clicks keeps every row intact until we filter rn equals 1 in an outer query." }
+      ],
+      lod: [
+        { lines: [1], text: "We start at policy-level detail: one row per policy_id with its channel and individual premium." },
+        { lines: [2], text: "SUM of premium OVER PARTITION BY channel adds a channel-level total right alongside each policy row without collapsing the table." },
+        { lines: [3], text: "That lets you compare each policy's share against its channel total in a single pass." }
+      ],
+      dml: [
+        { lines: [1], text: "MERGE INTO targets the existing dim_campaigns table to perform an upsert." },
+        { lines: [2], text: "USING staging_campaigns joins incoming records to the target on campaign_id." },
+        { lines: [3], text: "WHEN MATCHED updates the status on existing campaigns." },
+        { lines: [4], text: "WHEN NOT MATCHED inserts brand-new campaigns that do not exist yet." }
+      ]
+    };
+
+    let fcExplainSession = 0;
+    window.__fcActiveUtt = null;
+
+    function pickNaturalVoice() {
+      if (!("speechSynthesis" in window)) return null;
+      const voices = window.speechSynthesis.getVoices() || [];
+      return (
+        voices.find((v) => /natural/i.test(v.name) && /^en/i.test(v.lang)) ||
+        voices.find((v) => /google us english/i.test(v.name)) ||
+        voices.find((v) => /samantha|alex|aria|guy|jenny/i.test(v.name) && /^en/i.test(v.lang)) ||
+        voices.find((v) => /^en-US/i.test(v.lang)) ||
+        voices.find((v) => /^en/i.test(v.lang)) ||
+        null
+      );
+    }
+
+    function stopFlashcardExplain() {
+      fcExplainSession++;
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+      window.__fcActiveUtt = null;
+      const wrap = document.getElementById("modalSqlWrap");
+      const btn = document.getElementById("modalExplainBtn");
+      const cap = document.getElementById("modalExplainCap");
+      if (wrap) {
+        wrap.classList.remove("explaining");
+        wrap.querySelectorAll(".sql-line.hl").forEach((el) => el.classList.remove("hl"));
+      }
+      if (btn) {
+        btn.classList.remove("playing");
+        btn.textContent = "Explain Query";
+      }
+      if (cap) cap.textContent = "";
+    }
+
+    function toggleFlashcardExplain() {
+      const visible = getFilteredCards();
+      const card = visible[currentModalIdx];
+      if (!card) return;
+      const steps = SQL_WALKTHROUGHS[card.id];
+      if (!steps || !steps.length) return;
+
+      const wrap = document.getElementById("modalSqlWrap");
+      const btn = document.getElementById("modalExplainBtn");
+      const cap = document.getElementById("modalExplainCap");
+      if (wrap.classList.contains("explaining")) {
+        stopFlashcardExplain();
+        return;
+      }
+
+      stopFlashcardExplain();
+      if (!("speechSynthesis" in window)) {
+        alert("Speech synthesis is not supported in this browser.");
+        return;
+      }
+
+      const mySession = fcExplainSession;
+      wrap.classList.add("explaining");
+      btn.classList.add("playing");
+      btn.textContent = "Stop";
+      const voice = pickNaturalVoice();
+      let idx = 0;
+
+      function hl(lines) {
+        wrap.querySelectorAll(".sql-line").forEach((el) => {
+          const ln = parseInt(el.getAttribute("data-line"), 10);
+          el.classList.toggle("hl", lines.includes(ln));
+        });
+      }
+
+      function nextStep() {
+        if (mySession !== fcExplainSession) return;
+        if (idx >= steps.length) {
+          stopFlashcardExplain();
+          return;
+        }
+        const st = steps[idx];
+        hl(st.lines);
+        cap.textContent = st.text;
+        const utt = new SpeechSynthesisUtterance(st.text);
+        if (voice) utt.voice = voice;
+        utt.rate = 1.03;
+        utt.pitch = 1.0;
+        window.__fcActiveUtt = utt;
+        utt.onstart = () => {
+          if (mySession !== fcExplainSession) return;
+          hl(st.lines);
+          cap.textContent = st.text;
+        };
+        utt.onend = () => {
+          if (mySession !== fcExplainSession) return;
+          idx++;
+          nextStep();
+        };
+        utt.onerror = () => {
+          if (mySession !== fcExplainSession) return;
+          stopFlashcardExplain();
+        };
+        window.speechSynthesis.speak(utt);
+      }
+
+      nextStep();
+    }
+
     function stepCard(delta) {
       if (currentModalIdx < 0) return;
       openCard(currentModalIdx + delta);
     }
 
     function closeModal() {
+      stopFlashcardExplain();
       document.getElementById("modalBackdrop").classList.remove("open");
       currentModalIdx = -1;
     }
