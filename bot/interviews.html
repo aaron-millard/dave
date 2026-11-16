@@ -1170,7 +1170,137 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
             </ul>
           </div>
         </div>
+
+        <div class="section-heading">5. Master Question Bank &amp; Grounded Answers (From R1 &amp; R2 Audios)</div>
+        <div class="grid-2">
+          <div class="card">
+            <h2>Q1: "Walk me through your background and what you are doing day-to-day."</h2>
+            <div class="quote-box">
+              I have spent the last 10 years in data analytics, starting out in sports data at Athlyte where I built ETL pipelines across five sports, and then serving as the sole BI analyst at Rodeo Logistics building their automated Tableau suite. For the past three years at OneMagnify, I have owned the entire data lifecycle across 8 to 10 dedicated client accounts. That means extracting raw ad and marketing data through Azure Data Factory, transforming and modeling it in SQL, and delivering final decision-making dashboards in Power BI and modern MCP workflows.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q2: "Why are you looking to leave OneMagnify, and why Hippo?"</h2>
+            <div class="quote-box">
+              Over the last three years at OneMagnify, I have completely mastered our agency pipeline, but agency work inherently divides your attention across multiple clients and fragmented datasets. I am ready to move in-house to bring my skill set to one company, one data warehouse, and own the full customer journey from quote to bind and retention. On top of that, I live right down the street on 5th Street in downtown Austin, making Hippo a natural personal and professional fit.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q3: "Tell me about some of the dashboards you're creating."</h2>
+            <div class="quote-box">
+              The dashboards I build bridge the gap between marketing spend and bottom-line revenue. For the Brooklyn Nets, I built dynamic pacing dashboards that connect ad spend across Google, Meta, and TikTok to Ticketmaster ticketing inventory, tracking sales against game schedules and opponent tiers. For Pebl, I built executive dashboards that unified conflicting lead qualification definitions across web forms, Salesforce opportunities, and closed deals.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q4: "Can you walk me through a specific complex dashboard you built, how you structured it, and what business problem it solved?"</h2>
+            <div class="quote-box">
+              With the Brooklyn Nets, account leadership had a major blind spot: heavy advertising spend across Google, Meta, and TikTok lived completely separate from Ticketmaster ticket sales, so they couldn't see true ROAS. I integrated both sources into our SQL warehouse and built dynamic pacing models in Power BI that tracked daily ticket sales against upcoming game dates, opponent tiers, and seat categories. This gave leadership a single pane of glass to dynamically shift ad spend to where it actually moved ticket inventory.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q5: "Beyond the dashboard plumbing, did you do any analysis yourself to uncover insights or recommendations?"</h2>
+            <div class="quote-box">
+              Yes. When I joined the Nets ad spend against Ticketmaster ticket sales, the data revealed that weekday lower-tier games were completely price- and ad-inelastic; pouring ad dollars there yielded almost zero additional ticket sales. Meanwhile, high-demand weekend games were selling out early and had under-funded ad budgets. I recommended shifting 25% of our paid ad spend from weekday games into weekend marquee matchups, which boosted gross ticket revenue by 14% without increasing total budget.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q6: "Tell me about a time you built a dashboard from scratch where metric definitions were ambiguous or conflicting."</h2>
+            <div class="quote-box">
+              When onboarding Pebl, a global hiring platform, marketing and sales had conflicting definitions of what counted as a qualified lead. Marketing counted any web form submission, while sales only counted leads that met specific company size and qualification criteria in Salesforce, causing leadership to see lead volume that never turned into closed revenue. I audited both systems from raw ad clicks to closed-won opportunities, facilitated alignment sessions between both department heads, and built a unified SQL view and executive dashboard that standardized lead stages across the entire business.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q7: "How did you communicate that discrepancy to stakeholders and get everyone aligned?"</h2>
+            <div class="quote-box">
+              I brought both team leads together and showed them a clear comparison table laying out what marketing was counting, what sales was seeing in Salesforce, and the exact dollar variance between them. Instead of arguing over opinions, seeing the actual data logic made it obvious that we were measuring two different stages of the funnel. Once they agreed on the criteria, I codified the definition directly into the SQL layer and documented it so neither team could pull conflicting numbers again.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q8: "How do you ensure someone in the future does not query the tables and use the wrong definition again?"</h2>
+            <div class="quote-box">
+              I prevent drift by locking core KPI logic into centralized, production SQL views rather than letting people write ad-hoc queries against raw tables. Alongside that, I maintain clear data dictionary documentation detailing the exact inclusion criteria, status filters, and grain. Moving forward in modern warehouses like Databricks or dbt, this is reinforced with semantic layer definitions and automated schema tests that prevent unvetted queries from entering executive reporting.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q9: "Do you prefer doing transformations in SQL or in Power BI, and do you collaborate with data engineers?"</h2>
+            <div class="quote-box">
+              I prefer to do almost all of my transformations upstream at the SQL database level rather than inside Power BI. Keeping transformations in SQL ensures the data is clean, portable, and reusable across any downstream reporting tool rather than trapped inside proprietary BI formulas. When it comes to data engineers, I have operated as the data engineer across most of my career, managing my own Azure Data Factory pipelines, stored procedures, and warehouse tables directly.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q10: "Do you have a centralized place where you store SQLs, and do you work with data engineers to materialize new metrics?"</h2>
+            <div class="quote-box">
+              In my role at OneMagnify, I handle the data engineering myself—from building Azure Data Factory ingestion pipelines to creating stored procedures and database views. We maintain our modular views and transformation scripts directly in our SQL warehouse, ensuring that every downstream reporting layer pulls from validated production models. I believe in establishing strict database-level views so any analyst querying the warehouse gets consistent, verified data.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q11: "Can you walk me through an example where you actually used an AI tool in your analytics work to make your process much more efficient or streamlined?"</h2>
+            <div class="quote-box">
+              I use Claude paired with Model Context Protocol (MCP) in VS Code to automate SQL modeling, schema validation, and DAX calculations. By feeding the AI agent our exact table schemas, data dictionaries, and business rules, it drafts complex multi-table queries, spots potential fan-out join traps, and runs automated QA checks on datasets before release. This workflow eliminates manual drag-and-drop dashboarding and catches data inconsistencies before anything goes to production.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q12: "What do you think of HTML dashboards vs. traditional BI platforms like Tableau or Power BI?"</h2>
+            <div class="quote-box">
+              I see AI-generated HTML dashboards as incredible accelerators for rapid prototyping and executive storytelling because you can spin up customized visuals from a clean SQL query in seconds without drag-and-drop overhead. However, traditional BI tools like Power BI and Tableau provide enterprise governance, user permissioning, and dynamic slicing for large operational teams. Because I build all my data models and transformations upstream in SQL, my data is portable and ready to feed either Claude HTML dashboards or enterprise BI tools depending on stakeholder needs.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q13: "What is your view on Tableau vs. Power BI, and what tools do you prefer?"</h2>
+            <div class="quote-box">
+              While my daily production work over the last three years at OneMagnify has centered on Power BI, Tableau was my primary tool earlier in my career when I built over 20 automated dashboards from scratch at Rodeo Logistics. Both platforms solve the same core business problem of delivering decision-ready intelligence. Because Hippo is moving toward Claude-generated HTML dashboards and Databricks, my foundation of doing heavy modeling in SQL allows me to deliver clean, pre-aggregated tables to whatever frontend tool the team adopts.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q14: "Sales and marketing is demanding, sometimes everything is a fire drill. If you have multiple conflicting requests and everything needs to be done today, how do you manage your priorities?"</h2>
+            <div class="quote-box">
+              I run a four-step framework: central ticket logging, transparent documentation, regular communication, and business-impact escalation. I log all requests into a centralized queue so nothing gets lost in Slack, and I never let 48 hours pass without giving a stakeholder an update on their request. If two senior leaders have conflicting urgent requests, I assess the direct revenue or operational impact and loop leadership in to make a transparent prioritization call based on business value.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q15: "What AI tools do you use in your daily workflow?"</h2>
+            <div class="quote-box">
+              In my professional workflow, I use Claude paired with Model Context Protocol (MCP) in VS Code to automate SQL modeling, schema validation, and DAX calculations. For personal development and scripting, I use Gemini within Antigravity in VS Code. Both tools act as accelerators for drafting complex queries, finding edge cases, and speeding up documentation, but I always manually validate the logic before anything touches production.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q16: "This role requires being in the office twice a week (Tuesdays and Wednesdays) downtown on 5th Street. How do you feel about that?"</h2>
+            <div class="quote-box">
+              I am 100% on board with the hybrid schedule of two days a week in the office. I actually live three blocks away on 5th Street and walk past the office with my dog regularly, so being downtown and collaborating in person with the team is ideal for me.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q17: "What do you like to do for fun outside of work?"</h2>
+            <div class="quote-box">
+              Outside of work, I am a big sports and college football fan, I work out every morning, and I have a dog that I take everywhere around downtown Austin. I also have family in Colorado, so I head up to the mountains whenever I can to go snowboarding.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q18: "What are your compensation expectations and timeline?"</h2>
+            <div class="quote-box">
+              In my initial recruiter screen, I mentioned $120,000 as my baseline floor. After reviewing the full-funnel scope, technical expectations, and commercial ownership of this Senior role, I am targeting $130,000 to $150,000 base, with flexibility depending on total rewards. In terms of timing, I am ready to start right away after giving a standard two-week notice to my current team.
+            </div>
+          </div>
+        </div>
       </div>
+
 
       <!-- Hippo: CHEAT SHEET ONLY -->
       <div id="hp-cheatsheet" class="view-pane">
@@ -1269,7 +1399,137 @@ SELECT quote_id, channel FROM ranked WHERE rn = 1;</pre>
             </div>
           </div>
         </div>
+
+        <div class="section-heading">Master Question Bank &amp; Grounded Answers (From R1 &amp; R2 Audios)</div>
+        <div class="grid-2">
+          <div class="card">
+            <h2>Q1: "Walk me through your background and what you are doing day-to-day."</h2>
+            <div class="quote-box">
+              I have spent the last 10 years in data analytics, starting out in sports data at Athlyte where I built ETL pipelines across five sports, and then serving as the sole BI analyst at Rodeo Logistics building their automated Tableau suite. For the past three years at OneMagnify, I have owned the entire data lifecycle across 8 to 10 dedicated client accounts. That means extracting raw ad and marketing data through Azure Data Factory, transforming and modeling it in SQL, and delivering final decision-making dashboards in Power BI and modern MCP workflows.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q2: "Why are you looking to leave OneMagnify, and why Hippo?"</h2>
+            <div class="quote-box">
+              Over the last three years at OneMagnify, I have completely mastered our agency pipeline, but agency work inherently divides your attention across multiple clients and fragmented datasets. I am ready to move in-house to bring my skill set to one company, one data warehouse, and own the full customer journey from quote to bind and retention. On top of that, I live right down the street on 5th Street in downtown Austin, making Hippo a natural personal and professional fit.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q3: "Tell me about some of the dashboards you're creating."</h2>
+            <div class="quote-box">
+              The dashboards I build bridge the gap between marketing spend and bottom-line revenue. For the Brooklyn Nets, I built dynamic pacing dashboards that connect ad spend across Google, Meta, and TikTok to Ticketmaster ticketing inventory, tracking sales against game schedules and opponent tiers. For Pebl, I built executive dashboards that unified conflicting lead qualification definitions across web forms, Salesforce opportunities, and closed deals.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q4: "Can you walk me through a specific complex dashboard you built, how you structured it, and what business problem it solved?"</h2>
+            <div class="quote-box">
+              With the Brooklyn Nets, account leadership had a major blind spot: heavy advertising spend across Google, Meta, and TikTok lived completely separate from Ticketmaster ticket sales, so they couldn't see true ROAS. I integrated both sources into our SQL warehouse and built dynamic pacing models in Power BI that tracked daily ticket sales against upcoming game dates, opponent tiers, and seat categories. This gave leadership a single pane of glass to dynamically shift ad spend to where it actually moved ticket inventory.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q5: "Beyond the dashboard plumbing, did you do any analysis yourself to uncover insights or recommendations?"</h2>
+            <div class="quote-box">
+              Yes. When I joined the Nets ad spend against Ticketmaster ticket sales, the data revealed that weekday lower-tier games were completely price- and ad-inelastic; pouring ad dollars there yielded almost zero additional ticket sales. Meanwhile, high-demand weekend games were selling out early and had under-funded ad budgets. I recommended shifting 25% of our paid ad spend from weekday games into weekend marquee matchups, which boosted gross ticket revenue by 14% without increasing total budget.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q6: "Tell me about a time you built a dashboard from scratch where metric definitions were ambiguous or conflicting."</h2>
+            <div class="quote-box">
+              When onboarding Pebl, a global hiring platform, marketing and sales had conflicting definitions of what counted as a qualified lead. Marketing counted any web form submission, while sales only counted leads that met specific company size and qualification criteria in Salesforce, causing leadership to see lead volume that never turned into closed revenue. I audited both systems from raw ad clicks to closed-won opportunities, facilitated alignment sessions between both department heads, and built a unified SQL view and executive dashboard that standardized lead stages across the entire business.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q7: "How did you communicate that discrepancy to stakeholders and get everyone aligned?"</h2>
+            <div class="quote-box">
+              I brought both team leads together and showed them a clear comparison table laying out what marketing was counting, what sales was seeing in Salesforce, and the exact dollar variance between them. Instead of arguing over opinions, seeing the actual data logic made it obvious that we were measuring two different stages of the funnel. Once they agreed on the criteria, I codified the definition directly into the SQL layer and documented it so neither team could pull conflicting numbers again.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q8: "How do you ensure someone in the future does not query the tables and use the wrong definition again?"</h2>
+            <div class="quote-box">
+              I prevent drift by locking core KPI logic into centralized, production SQL views rather than letting people write ad-hoc queries against raw tables. Alongside that, I maintain clear data dictionary documentation detailing the exact inclusion criteria, status filters, and grain. Moving forward in modern warehouses like Databricks or dbt, this is reinforced with semantic layer definitions and automated schema tests that prevent unvetted queries from entering executive reporting.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q9: "Do you prefer doing transformations in SQL or in Power BI, and do you collaborate with data engineers?"</h2>
+            <div class="quote-box">
+              I prefer to do almost all of my transformations upstream at the SQL database level rather than inside Power BI. Keeping transformations in SQL ensures the data is clean, portable, and reusable across any downstream reporting tool rather than trapped inside proprietary BI formulas. When it comes to data engineers, I have operated as the data engineer across most of my career, managing my own Azure Data Factory pipelines, stored procedures, and warehouse tables directly.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q10: "Do you have a centralized place where you store SQLs, and do you work with data engineers to materialize new metrics?"</h2>
+            <div class="quote-box">
+              In my role at OneMagnify, I handle the data engineering myself—from building Azure Data Factory ingestion pipelines to creating stored procedures and database views. We maintain our modular views and transformation scripts directly in our SQL warehouse, ensuring that every downstream reporting layer pulls from validated production models. I believe in establishing strict database-level views so any analyst querying the warehouse gets consistent, verified data.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q11: "Can you walk me through an example where you actually used an AI tool in your analytics work to make your process much more efficient or streamlined?"</h2>
+            <div class="quote-box">
+              I use Claude paired with Model Context Protocol (MCP) in VS Code to automate SQL modeling, schema validation, and DAX calculations. By feeding the AI agent our exact table schemas, data dictionaries, and business rules, it drafts complex multi-table queries, spots potential fan-out join traps, and runs automated QA checks on datasets before release. This workflow eliminates manual drag-and-drop dashboarding and catches data inconsistencies before anything goes to production.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q12: "What do you think of HTML dashboards vs. traditional BI platforms like Tableau or Power BI?"</h2>
+            <div class="quote-box">
+              I see AI-generated HTML dashboards as incredible accelerators for rapid prototyping and executive storytelling because you can spin up customized visuals from a clean SQL query in seconds without drag-and-drop overhead. However, traditional BI tools like Power BI and Tableau provide enterprise governance, user permissioning, and dynamic slicing for large operational teams. Because I build all my data models and transformations upstream in SQL, my data is portable and ready to feed either Claude HTML dashboards or enterprise BI tools depending on stakeholder needs.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q13: "What is your view on Tableau vs. Power BI, and what tools do you prefer?"</h2>
+            <div class="quote-box">
+              While my daily production work over the last three years at OneMagnify has centered on Power BI, Tableau was my primary tool earlier in my career when I built over 20 automated dashboards from scratch at Rodeo Logistics. Both platforms solve the same core business problem of delivering decision-ready intelligence. Because Hippo is moving toward Claude-generated HTML dashboards and Databricks, my foundation of doing heavy modeling in SQL allows me to deliver clean, pre-aggregated tables to whatever frontend tool the team adopts.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q14: "Sales and marketing is demanding, sometimes everything is a fire drill. If you have multiple conflicting requests and everything needs to be done today, how do you manage your priorities?"</h2>
+            <div class="quote-box">
+              I run a four-step framework: central ticket logging, transparent documentation, regular communication, and business-impact escalation. I log all requests into a centralized queue so nothing gets lost in Slack, and I never let 48 hours pass without giving a stakeholder an update on their request. If two senior leaders have conflicting urgent requests, I assess the direct revenue or operational impact and loop leadership in to make a transparent prioritization call based on business value.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q15: "What AI tools do you use in your daily workflow?"</h2>
+            <div class="quote-box">
+              In my professional workflow, I use Claude paired with Model Context Protocol (MCP) in VS Code to automate SQL modeling, schema validation, and DAX calculations. For personal development and scripting, I use Gemini within Antigravity in VS Code. Both tools act as accelerators for drafting complex queries, finding edge cases, and speeding up documentation, but I always manually validate the logic before anything touches production.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q16: "This role requires being in the office twice a week (Tuesdays and Wednesdays) downtown on 5th Street. How do you feel about that?"</h2>
+            <div class="quote-box">
+              I am 100% on board with the hybrid schedule of two days a week in the office. I actually live three blocks away on 5th Street and walk past the office with my dog regularly, so being downtown and collaborating in person with the team is ideal for me.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q17: "What do you like to do for fun outside of work?"</h2>
+            <div class="quote-box">
+              Outside of work, I am a big sports and college football fan, I work out every morning, and I have a dog that I take everywhere around downtown Austin. I also have family in Colorado, so I head up to the mountains whenever I can to go snowboarding.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q18: "What are your compensation expectations and timeline?"</h2>
+            <div class="quote-box">
+              In my initial recruiter screen, I mentioned $120,000 as my baseline floor. After reviewing the full-funnel scope, technical expectations, and commercial ownership of this Senior role, I am targeting $130,000 to $150,000 base, with flexibility depending on total rewards. In terms of timing, I am ready to start right away after giving a standard two-week notice to my current team.
+            </div>
+          </div>
+        </div>
       </div>
+
     </section>
   </div>
 
