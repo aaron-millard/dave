@@ -295,6 +295,18 @@
       line-height: 1.62;
     }
 
+    .quick-box {
+      padding: 12px 15px;
+      border-radius: 10px;
+      background: rgba(251, 191, 36, 0.09);
+      border: 1px solid rgba(251, 191, 36, 0.42);
+      border-left: 4px solid var(--amber);
+      font-size: 0.98rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.5;
+    }
+
     ul.anchors {
       list-style: none;
       display: flex;
@@ -403,6 +415,11 @@
       </div>
 
       <div class="modal-section">
+        <div class="modal-label" style="color: var(--amber);">Quick Say-It-Fast (Layman's)</div>
+        <div id="modalQuick" class="quick-box"></div>
+      </div>
+
+      <div class="modal-section">
         <div class="modal-label">Conversational Definition</div>
         <div id="modalDef" class="def-text"></div>
       </div>
@@ -439,6 +456,7 @@
         term: "CTE (Common Table Expression)",
         category: "sql",
         catLabel: "SQL",
+        quick: "It's basically a temporary named mini-table at the top of a SQL query so you don't write messy nested subqueries.",
         definition: "A temporary, named result set defined at the top of a SQL query using WITH. It breaks complex multi-step transformations into clean, readable building blocks that can be referenced like tables within the main query.",
         anchors: [
           "Readability & Modularity: Replaces deeply nested subqueries with top-down sequential logic.",
@@ -454,6 +472,7 @@
         term: "PARTITION BY (SQL Window Functions)",
         category: "sql",
         catLabel: "SQL",
+        quick: "It groups your rows like GROUP BY so you can rank or sum within each group, except it keeps every individual row instead of collapsing them.",
         definition: "A clause inside OVER (...) that splits rows into independent groups for window calculations like ROW_NUMBER, RANK, LAG, or running totals — while keeping every individual row intact instead of collapsing them like GROUP BY.",
         anchors: [
           "PARTITION BY vs GROUP BY: GROUP BY collapses rows to 1 row per group; PARTITION BY computes group metrics while preserving row-level detail.",
@@ -468,6 +487,7 @@
         term: "LOD / Level of Detail (SQL Grain)",
         category: "sql",
         catLabel: "SQL",
+        quick: "It's controlling what one row actually represents so you don't accidentally double-count numbers when joining tables at different detail levels.",
         definition: "Controlling the exact granularity (what one row represents) and computing metrics at a different level of detail than the base table — using pre-aggregated CTEs or window functions in SQL so higher-level totals never double-count when joined to finer rows (the SQL equivalent of Tableau FIXED/INCLUDE/EXCLUDE LODs).",
         anchors: [
           "Check Grain First: Always verify whether a table is 1 row per quote, 1 row per click, or 1 row per line item before joining.",
@@ -483,6 +503,7 @@
         term: "DML (Data Manipulation Language)",
         category: "sql",
         catLabel: "SQL",
+        quick: "It's the SQL commands that touch the actual data inside a table (reading, adding, updating, or deleting rows) without changing the table's structure.",
         definition: "The subset of SQL commands used to read, insert, update, merge, and delete data inside existing database tables — specifically SELECT, INSERT, UPDATE, DELETE, and MERGE (as opposed to DDL like CREATE/ALTER/DROP that modifies table structure).",
         anchors: [
           "Core Commands: SELECT (read), INSERT (add rows), UPDATE (modify existing rows), DELETE (remove rows), MERGE (upsert).",
@@ -498,6 +519,7 @@
         term: "Star Schema Data Modeling",
         category: "sql",
         catLabel: "SQL",
+        quick: "It puts your numbers in one central table and all your descriptive labels in clean side tables around it so dashboards run fast and never break.",
         definition: "A data modeling design that separates numeric business events (fact tables) from descriptive context (dimension tables), creating a clean star-shaped layout optimized for fast queries and intuitive BI slicing.",
         anchors: [
           "Fact Tables: Quantitative events at a clear grain (ad spend, ticket sales, policy binds) with foreign keys.",
@@ -513,6 +535,7 @@
         term: "Agentic Analytics",
         category: "ai",
         catLabel: "AI & Modern Stack",
+        quick: "Instead of just answering a prompt, the AI actually connects to your data model, runs checks on its own, and flags what's broken or why a metric moved.",
         definition: "Using autonomous AI agents that actively connect to governed semantic models, run schema and QA validation checks, query live data, and surface root-cause insights via protocols like MCP — rather than passively answering static chat prompts.",
         anchors: [
           "Semantic Layer Interaction: Agents query governed models (Power BI / Tableau Data Apps via MCP) where metrics are already defined.",
@@ -527,6 +550,7 @@
         term: "Modular Data Modeling",
         category: "sql",
         catLabel: "SQL",
+        quick: "Instead of one giant 500-line SQL script, you break it into clean reusable building blocks so every report uses the exact same metric logic.",
         definition: "Structuring SQL transformations into clean, layered, reusable stages (staging -> intermediate -> mart) instead of giant monolithic scripts, so business logic is defined once, tested, and shared across every downstream report.",
         anchors: [
           "Staging Layer: 1-to-1 source cleanup, casting, renaming, and deduplication.",
@@ -542,6 +566,7 @@
         term: "dbt (Data Build Tool)",
         category: "ai",
         catLabel: "AI & Modern Stack",
+        quick: "It lets analysts build warehouse tables using just SQL SELECTs while adding software-style version control, dependency order, and automated data tests.",
         definition: "A SQL-first transformation framework that brings software engineering best practices — modular SELECT models, ref() dependency DAGs, version control, automated data tests, and lineage documentation — to the Transform step inside cloud data warehouses.",
         anchors: [
           "SELECT-Only Models: You write modular SQL SELECTs; dbt handles CREATE TABLE/VIEW materializations and dependency order via ref().",
@@ -556,6 +581,7 @@
         term: "MCP (Model Context Protocol)",
         category: "ai",
         catLabel: "AI & Modern Stack",
+        quick: "It's basically a USB-C plug that lets an AI read your real Power BI or database schema directly instead of guessing.",
         definition: "An open protocol that lets AI assistants securely connect to external tools, live schemas, databases, and BI semantic models so the AI can inspect real structures and run deterministic checks instead of hallucinating.",
         anchors: [
           "Live Schema Context: AI reads actual table names, columns, DAX measures, and relationships directly.",
@@ -570,6 +596,7 @@
         term: "Antigravity",
         category: "ai",
         catLabel: "AI & Modern Stack",
+        quick: "It's an AI workspace that can actually run scripts, check files, and verify its own work end-to-end instead of just giving you text snippets.",
         definition: "An agentic AI engineering environment that orchestrates code, local tools, persistent rules/memory, and multi-step execution workflows so engineers and analysts can build, test, and verify full pipelines and dashboards end-to-end.",
         anchors: [
           "Tool-Backed Execution: Runs real scripts, tests, and data syncs rather than outputting static code snippets.",
@@ -584,6 +611,7 @@
         term: "Semantic Layer",
         category: "ai",
         catLabel: "AI & Modern Stack",
+        quick: "It's one central rulebook for your KPIs so Marketing, Sales, and Finance never pull two different numbers for the same metric.",
         definition: "A centralized governance layer between raw warehouse tables and BI/AI tools that defines canonical business metrics, joins, and filters once — guaranteeing everyone (and every AI agent) gets the exact same answer.",
         anchors: [
           "Stops Rogue SQL: Eliminates conflicting versions of KPIs like Bind Rate, CAC, MQL, or Revenue across teams.",
@@ -674,6 +702,7 @@
       catEl.className = card.category === "ai" ? "cat-tag ai" : "cat-tag";
 
       document.getElementById("modalTitle").textContent = card.term;
+      document.getElementById("modalQuick").textContent = card.quick || "";
       document.getElementById("modalDef").textContent = card.definition;
       document.getElementById("modalAnchors").innerHTML = card.anchors.map((a) => `<li>${a}</li>`).join("");
 
