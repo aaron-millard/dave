@@ -844,6 +844,7 @@
 
     let fcExplainSession = 0;
     window.__fcActiveUtt = null;
+    window.__fcActiveAudio = null;
 
     function pickNaturalVoice() {
       if (!("speechSynthesis" in window)) return null;
@@ -860,6 +861,13 @@
 
     function stopFlashcardExplain() {
       fcExplainSession++;
+      if (window.__fcActiveAudio) {
+        try {
+          window.__fcActiveAudio.pause();
+          window.__fcActiveAudio.src = "";
+        } catch (e) {}
+        window.__fcActiveAudio = null;
+      }
       if ("speechSynthesis" in window) {
         window.speechSynthesis.cancel();
       }
@@ -894,15 +902,11 @@
       }
 
       stopFlashcardExplain();
-      if (!("speechSynthesis" in window)) {
-        alert("Speech synthesis is not supported in this browser.");
-        return;
-      }
-
       const mySession = fcExplainSession;
       wrap.classList.add("explaining");
       btn.classList.add("playing");
       btn.textContent = "Stop";
+      const audioBase = window.location.protocol === "file:" ? "./audio/sql/" : "/audio/sql/";
       const voice = pickNaturalVoice();
       let idx = 0;
 
@@ -911,6 +915,27 @@
           const ln = parseInt(el.getAttribute("data-line"), 10);
           el.classList.toggle("hl", lines.includes(ln));
         });
+      }
+
+      function fallbackSpeak(st) {
+        if (!("speechSynthesis" in window)) {
+          stopFlashcardExplain();
+          return;
+        }
+        const utt = new SpeechSynthesisUtterance(st.text);
+        if (voice) utt.voice = voice;
+        utt.rate = 1.03;
+        window.__fcActiveUtt = utt;
+        utt.onend = () => {
+          if (mySession !== fcExplainSession) return;
+          idx++;
+          nextStep();
+        };
+        utt.onerror = () => {
+          if (mySession !== fcExplainSession) return;
+          stopFlashcardExplain();
+        };
+        window.speechSynthesis.speak(utt);
       }
 
       function nextStep() {
@@ -922,26 +947,22 @@
         const st = steps[idx];
         hl(st.lines);
         cap.textContent = st.text;
-        const utt = new SpeechSynthesisUtterance(st.text);
-        if (voice) utt.voice = voice;
-        utt.rate = 1.03;
-        utt.pitch = 1.0;
-        window.__fcActiveUtt = utt;
-        utt.onstart = () => {
-          if (mySession !== fcExplainSession) return;
-          hl(st.lines);
-          cap.textContent = st.text;
-        };
-        utt.onend = () => {
+
+        const audio = new Audio(`${audioBase}fc_${card.id}_${idx}.wav`);
+        window.__fcActiveAudio = audio;
+        audio.onended = () => {
           if (mySession !== fcExplainSession) return;
           idx++;
           nextStep();
         };
-        utt.onerror = () => {
+        audio.onerror = () => {
           if (mySession !== fcExplainSession) return;
-          stopFlashcardExplain();
+          fallbackSpeak(st);
         };
-        window.speechSynthesis.speak(utt);
+        audio.play().catch(() => {
+          if (mySession !== fcExplainSession) return;
+          fallbackSpeak(st);
+        });
       }
 
       nextStep();

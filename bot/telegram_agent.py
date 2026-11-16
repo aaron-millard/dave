@@ -1265,6 +1265,22 @@ class BotHTTPHandler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(fc_html.encode("utf-8"))
             return
+        if path.startswith("/audio/sql/") and (path.endswith(".wav") or path.endswith(".mp3")):
+            safe_name = os.path.basename(path)
+            aud_path = resolve_path(os.path.join("audio", "sql", safe_name), "bot")
+            if os.path.exists(aud_path):
+                with open(aud_path, "rb") as f:
+                    aud_bytes = f.read()
+                ctype = "audio/wav" if safe_name.endswith(".wav") else "audio/mpeg"
+                self.send_response(200)
+                self.send_header("Content-Type", ctype)
+                self.send_header("Cache-Control", "public, max-age=86400")
+                self.end_headers()
+                self.wfile.write(aud_bytes)
+                return
+            self.send_response(404)
+            self.end_headers()
+            return
 
         hub_routes = (
             "/",

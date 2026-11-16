@@ -1322,6 +1322,7 @@ SELECT quote_id, channel FROM ranked WHERE rn = 1;</pre>
     let activeExplainWrap = null;
     let explainSessionId = 0;
     window.__activeUtterance = null;
+    window.__activeAudio = null;
 
     function pickNaturalVoice() {
       if (!("speechSynthesis" in window)) return null;
@@ -1338,6 +1339,13 @@ SELECT quote_id, channel FROM ranked WHERE rn = 1;</pre>
 
     function stopExplain() {
       explainSessionId++;
+      if (window.__activeAudio) {
+        try {
+          window.__activeAudio.pause();
+          window.__activeAudio.src = "";
+        } catch (e) {}
+        window.__activeAudio = null;
+      }
       if ("speechSynthesis" in window) {
         window.speechSynthesis.cancel();
       }
@@ -1375,11 +1383,6 @@ SELECT quote_id, channel FROM ranked WHERE rn = 1;</pre>
       }
 
       stopExplain();
-      if (!("speechSynthesis" in window)) {
-        alert("Speech synthesis is not supported in this browser.");
-        return;
-      }
-
       const mySession = explainSessionId;
       activeExplainWrap = wrap;
       wrap.classList.add("explaining");
@@ -1387,10 +1390,32 @@ SELECT quote_id, channel FROM ranked WHERE rn = 1;</pre>
       btn.textContent = "Stop";
 
       const cap = wrap.querySelector(".explain-caption");
+      const audioBase = window.location.protocol === "file:" ? "./audio/sql/" : "/audio/sql/";
       const voice = pickNaturalVoice();
       let stepIdx = 0;
 
-      function speakNext() {
+      function speakFallback(step) {
+        if (!("speechSynthesis" in window)) {
+          stopExplain();
+          return;
+        }
+        const utt = new SpeechSynthesisUtterance(step.text);
+        if (voice) utt.voice = voice;
+        utt.rate = 1.03;
+        window.__activeUtterance = utt;
+        utt.onend = () => {
+          if (mySession !== explainSessionId) return;
+          stepIdx++;
+          playNext();
+        };
+        utt.onerror = () => {
+          if (mySession !== explainSessionId) return;
+          stopExplain();
+        };
+        window.speechSynthesis.speak(utt);
+      }
+
+      function playNext() {
         if (mySession !== explainSessionId) return;
         if (stepIdx >= steps.length) {
           stopExplain();
@@ -1400,30 +1425,24 @@ SELECT quote_id, channel FROM ranked WHERE rn = 1;</pre>
         highlightLines(wrap, step.lines);
         if (cap) cap.textContent = step.text;
 
-        const utt = new SpeechSynthesisUtterance(step.text);
-        if (voice) utt.voice = voice;
-        utt.rate = 1.03;
-        utt.pitch = 1.0;
-        window.__activeUtterance = utt;
-
-        utt.onstart = () => {
-          if (mySession !== explainSessionId) return;
-          highlightLines(wrap, step.lines);
-          if (cap) cap.textContent = step.text;
-        };
-        utt.onend = () => {
+        const audio = new Audio(`${audioBase}${key}_${stepIdx}.wav`);
+        window.__activeAudio = audio;
+        audio.onended = () => {
           if (mySession !== explainSessionId) return;
           stepIdx++;
-          speakNext();
+          playNext();
         };
-        utt.onerror = () => {
+        audio.onerror = () => {
           if (mySession !== explainSessionId) return;
-          stopExplain();
+          speakFallback(step);
         };
-        window.speechSynthesis.speak(utt);
+        audio.play().catch(() => {
+          if (mySession !== explainSessionId) return;
+          speakFallback(step);
+        });
       }
 
-      speakNext();
+      playNext();
     }
 
     function initSqlExplainer() {
