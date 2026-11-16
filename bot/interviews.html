@@ -256,43 +256,107 @@
       margin-top: 2px;
     }
 
-    /* Section Sub-tabs */
-    .section-tabs {
+    /* Full Page vs Cheat Sheet Mode Bar */
+    .view-bar {
       display: flex;
-      gap: 8px;
       flex-wrap: wrap;
-      margin-bottom: 16px;
-    }
-
-    .sec-btn {
-      padding: 8px 14px;
-      border-radius: 9px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding: 12px 16px;
+      border-radius: 12px;
       background: var(--card);
       border: 1px solid var(--border);
+    }
+
+    .view-bar-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.84rem;
       color: var(--muted);
-      font-size: 0.82rem;
-      font-weight: 700;
+      font-weight: 600;
+    }
+
+    .mode-pill {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.14);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: var(--blue);
+    }
+
+    .mode-pill.cheat {
+      background: rgba(251, 191, 36, 0.14);
+      border-color: rgba(251, 191, 36, 0.45);
+      color: var(--amber);
+    }
+
+    .cheatsheet-btn {
+      padding: 9px 18px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.12));
+      border: 1px solid rgba(251, 191, 36, 0.55);
+      color: #fde68a;
+      font-size: 0.85rem;
+      font-weight: 800;
       cursor: pointer;
       transition: all 0.15s ease;
     }
 
-    .sec-btn:hover {
+    .cheatsheet-btn:hover {
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.3), rgba(245, 158, 11, 0.2));
+      border-color: var(--amber);
       color: #fff;
-      border-color: var(--border-bright);
+      transform: translateY(-1px);
     }
 
-    .sec-btn.active {
-      background: rgba(56, 189, 248, 0.16);
-      border-color: rgba(56, 189, 248, 0.5);
-      color: var(--blue);
+    .back-btn {
+      padding: 9px 18px;
+      border-radius: 10px;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      color: #bae6fd;
+      font-size: 0.85rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s ease;
     }
 
-    .sec-panel {
+    .back-btn:hover {
+      background: rgba(56, 189, 248, 0.25);
+      color: #fff;
+    }
+
+    .view-pane {
       display: none;
     }
 
-    .sec-panel.active {
+    .view-pane.active {
       display: block;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 22px 0 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.92rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--blue);
+    }
+
+    .section-heading:first-child {
+      margin-top: 4px;
     }
 
     /* Content Grid & Cards */
@@ -526,15 +590,17 @@
         </div>
       </div>
 
-      <div class="section-tabs" data-company="knownwell">
-        <button class="sec-btn active" onclick="switchSection('knownwell', 'overview', this)">Overview & Team</button>
-        <button class="sec-btn" onclick="switchSection('knownwell', 'sql', this)">Round 2 SQL Prep</button>
-        <button class="sec-btn" onclick="switchSection('knownwell', 'feedback', this)">R1 Debrief & Fixes</button>
-        <button class="sec-btn" onclick="switchSection('knownwell', 'questions', this)">Questions & Framing</button>
+      <div id="kw-view-bar" class="view-bar">
+        <div class="view-bar-meta">
+          <span class="mode-pill">Full Job Page</span>
+          <span>Complete Knownwell dossier: team, SQL prep, R1 debrief, story framing, and questions</span>
+        </div>
+        <button class="cheatsheet-btn" onclick="toggleCheatSheet('knownwell', true)">Open Cheat Sheet Only</button>
       </div>
 
-      <!-- Knownwell: Overview -->
-      <div id="kw-overview" class="sec-panel active">
+      <!-- Knownwell: FULL JOB PAGE -->
+      <div id="kw-fullpage" class="view-pane active">
+        <div class="section-heading">1. Overview, Business Model & Team</div>
         <div class="grid-2">
           <div class="card">
             <h2>Company & Business Model</h2>
@@ -578,10 +644,8 @@
             </ul>
           </div>
         </div>
-      </div>
 
-      <!-- Knownwell: SQL Prep -->
-      <div id="kw-sql" class="sec-panel">
+        <div class="section-heading">2. Round 2 Live SQL Prep (Thu Nov 19)</div>
         <div class="card">
           <h2>Round 2 Format: 60-Min Technical CoderPad (Thu Nov 19)</h2>
           <ul class="clean-list">
@@ -647,10 +711,8 @@ ORDER BY visit_num;</pre>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Knownwell: Feedback -->
-      <div id="kw-feedback" class="sec-panel">
+        <div class="section-heading">3. Round 1 Debrief & Priority Fixes</div>
         <div class="callout">
           <div class="callout-title">#1 Priority Fix for Round 2 (Derek & Morgan)</div>
           Stop saying "dashboarding jobs are going away" or "I want to move into data engineering." In Round 1, that triggered Thomas to gently clarify Derek needs a Data Analyst, not a Data Engineer. Frame AI and MCP as automating repetitive formatting so you have MORE time for deep SQL modeling and consultative clinical partnership.
@@ -674,10 +736,8 @@ ORDER BY visit_num;</pre>
             </ul>
           </div>
         </div>
-      </div>
 
-      <!-- Knownwell: Questions -->
-      <div id="kw-questions" class="sec-panel">
+        <div class="section-heading">4. Story Framing & Questions to Ask</div>
         <div class="grid-2">
           <div class="card">
             <h2>Smart Questions for Derek & Morgan</h2>
@@ -700,6 +760,110 @@ ORDER BY visit_num;</pre>
               "Marketing and Sales were reporting conflicting MQL numbers. I audited the funnel from ad click to Salesforce, aligned both teams on 3 clear stages (Inbound, MQL, SAL), and locked the logic into SQL views."
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Knownwell: CHEAT SHEET ONLY -->
+      <div id="kw-cheatsheet" class="view-pane">
+        <div class="view-bar">
+          <div class="view-bar-meta">
+            <span class="mode-pill cheat">Cheat Sheet Mode</span>
+            <span>Knownwell Round 2 CoderPad SQL Rapid Reference (Thu Nov 19 - 60m w/ Derek & Morgan)</span>
+          </div>
+          <button class="back-btn" onclick="toggleCheatSheet('knownwell', false)">Back to Full Job Page</button>
+        </div>
+
+        <div class="callout">
+          <div class="callout-title">Role Guardrail: Analyst First, Never Data Engineer</div>
+          Do NOT say "dashboarding is dying" or "I want to move into data engineering." Say: "I love partnering with clinicians and ops leaders, using SQL + AI/MCP to automate repetitive QA so I can spend more time uncovering patient-funnel and clinic-capacity insights."
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <h2>Ask Before Writing a Single Line of SQL</h2>
+            <ul class="clean-list">
+              <li>"What is the grain of the appointments table — one row per scheduled booking, or can reschedules create multiple rows?"</li>
+              <li>"Which appointment statuses count as completed vs no-show/cancelled?"</li>
+              <li>"Should telehealth and in-clinic visits be treated identically or segmented?"</li>
+              <li>"For conversion rate, is the denominator all leads created in the period or only qualified/booked patients?"</li>
+              <li>"Are timestamps UTC or clinic local time?"</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h2>30-Second Story Anchors (Derek & Morgan)</h2>
+            <h3>Swish Dental (15+ Clinics - Closest 1:1 Match)</h3>
+            <div class="quote-box">
+              "Connected ad spend to clinic bookings & chair capacity across 15+ locations, built business-day pacing in SQL, and helped managers shift budget to under-booked clinics."
+            </div>
+            <h3>Pebl (Metric Governance w/ Non-Tech Teams)</h3>
+            <div class="quote-box">
+              "Marketing and Sales had conflicting MQL counts. Audited ad-to-Salesforce funnel, aligned 3 stages (Inbound, MQL, SAL), and locked definitions into SQL views."
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <h2>Pattern A: Lead -> Completed Visit Funnel</h2>
+            <div class="sql-wrap">
+              <div class="sql-header">
+                <span>CTE First-Visit Aggregation + Conversion %</span>
+                <button class="copy-btn" onclick="copySql(this)">Copy</button>
+              </div>
+              <pre>WITH first_visit AS (
+    SELECT
+        patient_id,
+        MIN(CASE WHEN status = 'completed' THEN visit_date END) AS first_completed_dt
+    FROM appointments
+    GROUP BY patient_id
+)
+SELECT
+    p.acquisition_channel,
+    COUNT(DISTINCT p.patient_id) AS total_leads,
+    COUNT(DISTINCT fv.first_completed_dt) AS converted_patients,
+    ROUND(100.0 * COUNT(DISTINCT fv.first_completed_dt) / NULLIF(COUNT(DISTINCT p.patient_id), 0), 1) AS conv_pct
+FROM patients p
+LEFT JOIN first_visit fv ON p.patient_id = fv.patient_id
+GROUP BY p.acquisition_channel;</pre>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Pattern B: Repeat Visit Cadence (LAG)</h2>
+            <div class="sql-wrap">
+              <div class="sql-header">
+                <span>ROW_NUMBER + LAG Window Function</span>
+                <button class="copy-btn" onclick="copySql(this)">Copy</button>
+              </div>
+              <pre>WITH ordered_visits AS (
+    SELECT
+        patient_id,
+        visit_date,
+        ROW_NUMBER() OVER (PARTITION BY patient_id ORDER BY visit_date) AS visit_num,
+        LAG(visit_date) OVER (PARTITION BY patient_id ORDER BY visit_date) AS prev_visit_date
+    FROM appointments
+    WHERE status = 'completed'
+)
+SELECT
+    visit_num,
+    COUNT(*) AS patient_count,
+    AVG(DATEDIFF('day', prev_visit_date, visit_date)) AS avg_days_since_prior
+FROM ordered_visits
+WHERE prev_visit_date IS NOT NULL
+GROUP BY visit_num
+ORDER BY visit_num;</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Top Questions to Ask at the End (Pick 2)</h2>
+          <ul class="clean-list">
+            <li>"How are clinical/EHR data currently joined with patient acquisition and CRM data in your warehouse?"</li>
+            <li>"What are the biggest blind spots clinical ops or leadership wants answered over the next two quarters?"</li>
+            <li>"How do you balance urgent ad-hoc clinic requests with building clean, reusable SQL/dbt models?"</li>
+          </ul>
         </div>
       </div>
     </section>
@@ -748,18 +912,20 @@ ORDER BY visit_num;</pre>
         </div>
       </div>
 
-      <div class="section-tabs" data-company="hippo">
-        <button class="sec-btn active" onclick="switchSection('hippo', 'overview', this)">Overview & Stack</button>
-        <button class="sec-btn" onclick="switchSection('hippo', 'sql', this)">Round 3 SQL Cheat Sheet</button>
-        <button class="sec-btn" onclick="switchSection('hippo', 'feedback', this)">R2 Debrief & Fixes</button>
-        <button class="sec-btn" onclick="switchSection('hippo', 'questions', this)">Insight Framework & Qs</button>
+      <div id="hp-view-bar" class="view-bar">
+        <div class="view-bar-meta">
+          <span class="mode-pill">Full Job Page</span>
+          <span>Complete Hippo dossier: org &amp; stack, R3 SQL patterns, R2 debrief &amp; fixes, insight framework &amp; Qs</span>
+        </div>
+        <button class="cheatsheet-btn" onclick="toggleCheatSheet('hippo', true)">Open Cheat Sheet Only</button>
       </div>
 
-      <!-- Hippo: Overview -->
-      <div id="hp-overview" class="sec-panel active">
+      <!-- Hippo: FULL JOB PAGE -->
+      <div id="hp-fullpage" class="view-pane active">
+        <div class="section-heading">1. Organization, Role Context &amp; AI Stack</div>
         <div class="grid-2">
           <div class="card">
-            <h2>Organization & Role Context</h2>
+            <h2>Organization &amp; Role Context</h2>
             <div class="kv-grid">
               <div class="kv-item">
                 <div class="kv-label">Hiring Manager</div>
@@ -781,24 +947,22 @@ ORDER BY visit_num;</pre>
             <ul class="clean-list">
               <li>Centralized ~1 year ago into a single analytics + data engineering team supporting Sales, Marketing, Pricing, Actuarial, and Underwriting.</li>
               <li>Jakub currently has 1 dedicated Sales/Marketing Sr. Analyst and needs a 2nd dedicated Sr. Analyst to co-lead acquisition analytics for a major upcoming product launch.</li>
-              <li>Hybrid policy: Tuesdays & Wednesdays in Austin office with free catered lunches; Jakub lives in Dallas and visits monthly.</li>
+              <li>Hybrid policy: Tuesdays &amp; Wednesdays in Austin office with free catered lunches; Jakub lives in Dallas and visits monthly.</li>
             </ul>
           </div>
 
           <div class="card">
-            <h2>Tech Stack & AI Roadmap</h2>
+            <h2>Tech Stack &amp; AI Roadmap</h2>
             <ul class="clean-list">
               <li>Warehouse: Migrating from legacy setup to Databricks next year; actively building a centralized semantic layer to stop rogue SQL definitions.</li>
-              <li>AI & Automation: Daily power users of Claude AI and Devin.</li>
+              <li>AI &amp; Automation: Daily power users of Claude AI and Devin.</li>
               <li>Dashboarding Shift: Moving heavily toward Claude-generated interactive HTML dashboards for rapid executive prototyping rather than traditional drag-and-drop BI tools.</li>
               <li>Philosophy: Analysts must operate as strategic business consultants rather than reactive dashboard ticket-takers.</li>
             </ul>
           </div>
         </div>
-      </div>
 
-      <!-- Hippo: SQL Cheat Sheet -->
-      <div id="hp-sql" class="sec-panel">
+        <div class="section-heading">2. Round 3 Technical SQL Patterns</div>
         <div class="card">
           <h2>Questions to Ask Immediately When Tables Appear</h2>
           <ul class="clean-list">
@@ -806,6 +970,8 @@ ORDER BY visit_num;</pre>
             <li>"Can one quote have multiple policies attached, or is it strictly one-to-one?"</li>
             <li>"Which timestamp counts as the bind: bound date or policy start date?"</li>
             <li>"For status, is 'active' the only bind status, or do we count 'pending'?"</li>
+            <li>"When joining ad spend or marketing touches, what is the attribution window and grain?"</li>
+            <li>"Are timestamps UTC or local, and should cancelled/expired policies be excluded?"</li>
           </ul>
         </div>
 
@@ -863,7 +1029,7 @@ WHERE rn = 1;</pre>
         </div>
 
         <div class="card">
-          <h2>3. Multi-Table Spend & Binds Without Fan-Out (CAC / ROAS)</h2>
+          <h2>3. Multi-Table Spend &amp; Binds Without Fan-Out (CAC / ROAS)</h2>
           <div class="sql-wrap">
             <div class="sql-header">
               <span>Pre-Aggregate to Matching Grain Before Joining</span>
@@ -891,13 +1057,11 @@ LEFT JOIN monthly_binds mb
 ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
           </div>
         </div>
-      </div>
 
-      <!-- Hippo: Feedback -->
-      <div id="hp-feedback" class="sec-panel">
+        <div class="section-heading">3. Round 2 Debrief &amp; Practitioner Lines</div>
         <div class="callout">
           <div class="callout-title">#1 Priority Fix from Round 2 (Analytical Insights vs. Plumbing)</div>
-          When Jakub asked what insights you uncovered beyond the Brooklyn Nets dashboard, you looped back to dynamic pacing plumbing. For Round 3 and Case Study, ALWAYS separate the pipeline from the business discovery using the 3-Part Insight Framework (Question -> Data Finding -> Business Action).
+          When Jakub asked what insights you uncovered beyond the Brooklyn Nets dashboard, you looped back to dynamic pacing plumbing. For Round 3 and Case Study, ALWAYS separate the pipeline from the business discovery using the 3-Part Insight Framework (Question -&gt; Data Finding -&gt; Business Action).
         </div>
 
         <div class="grid-2">
@@ -905,7 +1069,7 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
             <h2>Round 2 Wins (Nov 12 w/ Jakub Sienkiel)</h2>
             <ul class="clean-list">
               <li>Standout punchline: "I prefer transformations at the SQL level... I am the data engineer."</li>
-              <li>AI differentiation: Jakub took notes on MCP & automated QA validation to research immediately.</li>
+              <li>AI differentiation: Jakub took notes on MCP &amp; automated QA validation to research immediately.</li>
               <li>Pebl MQL discrepancy story nailed cross-functional metric alignment.</li>
               <li>Natural Austin rapport: Living 3 blocks from 5th St office + shared Colorado skiing background.</li>
             </ul>
@@ -921,10 +1085,8 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
             </ul>
           </div>
         </div>
-      </div>
 
-      <!-- Hippo: Questions & Framing -->
-      <div id="hp-questions" class="sec-panel">
+        <div class="section-heading">4. Insight Framework &amp; Questions to Ask</div>
         <div class="grid-2">
           <div class="card">
             <h2>3-Part Analytical Insight Answer (Fixing R2 Miss)</h2>
@@ -945,6 +1107,105 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
           </div>
         </div>
       </div>
+
+      <!-- Hippo: CHEAT SHEET ONLY -->
+      <div id="hp-cheatsheet" class="view-pane">
+        <div class="view-bar">
+          <div class="view-bar-meta">
+            <span class="mode-pill cheat">Cheat Sheet Mode</span>
+            <span>Hippo Round 3 Pre-Interview Rapid Reference (30m Technical SQL Screen)</span>
+          </div>
+          <button class="back-btn" onclick="toggleCheatSheet('hippo', false)">Back to Full Job Page</button>
+        </div>
+
+        <div class="callout">
+          <div class="callout-title">SQL Positioning + #1 R2 Fix</div>
+          Lead with: "I prefer transformations at the SQL level so the BI/HTML layer stays clean." When asked for an analytical insight, NEVER describe pipeline plumbing — use the 3-Part Brooklyn Nets Framework (Question -&gt; Finding -&gt; Action).
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <h2>6 Questions When Tables Appear</h2>
+            <ul class="clean-list">
+              <li>"Is quotes one row per quote, or can a customer show up multiple times?"</li>
+              <li>"Can one quote have multiple policies attached, or strictly 1:1?"</li>
+              <li>"Which timestamp counts as the bind: bound date or policy start date?"</li>
+              <li>"Is 'active' the only bind status, or do we count 'pending'?"</li>
+              <li>"What is the attribution window and grain on ad_clicks / spend?"</li>
+              <li>"Should cancelled/expired policies be excluded?"</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h2>4 Practitioner Lines to Drop</h2>
+            <ul class="clean-list">
+              <li>"First thing I check when conversion drops is if an upstream form or CRM field broke before assuming it's an ad issue."</li>
+              <li>"Cost per Bind is what matters — cheap quotes mean nothing if they don't convert."</li>
+              <li>"I lock metric definitions into modular SQL views so nobody pulls conflicting numbers."</li>
+              <li>"Moving toward Claude HTML dashboards means pushing transformations upstream into SQL keeps the UI super clean."</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <h2>3-Part Brooklyn Nets Insight (No Plumbing!)</h2>
+            <div class="quote-box">
+              1. Question: Why wasn't heavy Meta/Google spend lifting weekday Nets ticket sales?<br><br>
+              2. Finding: Ad spend + Ticketmaster data showed weekday lower-tier games were ad-inelastic, while weekend marquee matchups were under-funded.<br><br>
+              3. Action: Reallocated 25% of paid budget from weekdays to weekend marquee games -&gt; +14% gross ticket revenue with $0 extra spend.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>2 End-of-Call Questions for Sr. Analyst</h2>
+            <ul class="clean-list">
+              <li>"What is the messiest or most fragmented data source your team has to model in the warehouse right now?"</li>
+              <li>"With the Databricks migration next year, which Sales/Marketing tables are highest priority for the new semantic layer?"</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <h2>SQL 1: Quote-to-Bind (30d Window)</h2>
+            <div class="sql-wrap">
+              <div class="sql-header">
+                <span>LEFT JOIN Date Window</span>
+                <button class="copy-btn" onclick="copySql(this)">Copy</button>
+              </div>
+              <pre>SELECT q.channel, COUNT(DISTINCT q.quote_id) AS quotes,
+       COUNT(DISTINCT p.policy_id) AS binds,
+       COUNT(DISTINCT p.policy_id) * 1.0 / COUNT(DISTINCT q.quote_id) AS bind_rate
+FROM quotes q
+LEFT JOIN policies p
+  ON q.quote_id = p.quote_id
+ AND p.bound_ts &gt;= q.quote_ts
+ AND p.bound_ts &lt; DATEADD(day, 30, q.quote_ts)
+GROUP BY q.channel;</pre>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>SQL 2: Last-Touch Click (ROW_NUMBER)</h2>
+            <div class="sql-wrap">
+              <div class="sql-header">
+                <span>14-Day Window</span>
+                <button class="copy-btn" onclick="copySql(this)">Copy</button>
+              </div>
+              <pre>WITH ranked AS (
+  SELECT q.quote_id, c.channel,
+         ROW_NUMBER() OVER (PARTITION BY q.quote_id ORDER BY c.click_ts DESC) AS rn
+  FROM quotes q
+  LEFT JOIN ad_clicks c
+    ON q.user_id = c.user_id
+   AND c.click_ts BETWEEN DATEADD(day, -14, q.quote_ts) AND q.quote_ts
+)
+SELECT quote_id, channel FROM ranked WHERE rn = 1;</pre>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   </div>
 
@@ -956,16 +1217,19 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
       document.querySelectorAll(".company-panel").forEach((panel) => {
         panel.classList.toggle("active", panel.id === "panel-" + company);
       });
+      toggleCheatSheet(company, false);
     }
 
-    function switchSection(company, section, btnEl) {
+    function toggleCheatSheet(company, showCheat) {
       const prefix = company === "knownwell" ? "kw-" : "hp-";
-      const panel = document.getElementById("panel-" + company);
-      panel.querySelectorAll(".sec-btn").forEach((b) => b.classList.remove("active"));
-      btnEl.classList.add("active");
-      panel.querySelectorAll(".sec-panel").forEach((p) => {
-        p.classList.toggle("active", p.id === prefix + section);
-      });
+      const fullPane = document.getElementById(prefix + "fullpage");
+      const cheatPane = document.getElementById(prefix + "cheatsheet");
+      const viewBar = document.getElementById(prefix + "view-bar");
+      if (fullPane && cheatPane && viewBar) {
+        fullPane.classList.toggle("active", !showCheat);
+        cheatPane.classList.toggle("active", showCheat);
+        viewBar.style.display = showCheat ? "none" : "flex";
+      }
     }
 
     function copySql(btn) {
