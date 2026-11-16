@@ -747,8 +747,59 @@ def _calc_custom_scores_py(
     }
 
 
+def _is_substance_or_hunger_log(text: str) -> bool:
+    """Detect whether message is logging Night Hunger, Alcohol, or Nicotine rather than asking a sleep question."""
+    t = (text or "").strip()
+    tl = t.lower()
+    if not any(w in tl for w in ("hunger", "alcohol", "nicotine")):
+        return False
+    if t.endswith("?") or re.match(
+        r"^(?:what|how|why|when|where|which|who|did|does|do|is|was|were|are|can|could|should|tell|show|give|compare|explain|analyze)\b",
+        tl,
+    ):
+        return False
+    if any(k in tl for k in ("affect", "impact", "correlat", "trend", "average", "avg", "stats", "score", "summary", "report")):
+        return False
+    has_val_or_cmd = bool(
+        re.search(r"\b(?:high|med|medium|low|none|non|zero|yes|no|true|false|unknown|level|log|set|mark|put|update)\b", tl)
+    )
+    return has_val_or_cmd or len(tl.split()) <= 6
+
+
+def _resolve_log_night_of(text: str, now_dt: datetime) -> str:
+    """Resolve target night_of YYYY-MM-DD from explicit date, 'yesterday'/'last night', 'tonight', or time-of-day."""
+    t_clean = (text or "").strip()
+    t_low = t_clean.lower()
+
+    m_iso = re.search(r"\b(\d{4}-\d{2}-\d{2})\b", t_clean)
+    if m_iso:
+        return m_iso.group(1)
+
+    m_md = re.search(r"\b(\d{1,2})[/-](\d{1,2})(?:[/-](\d{2,4}))?\b", t_clean)
+    if m_md:
+        mo, dy = int(m_md.group(1)), int(m_md.group(2))
+        yr_raw = m_md.group(3)
+        yr = int(yr_raw) + 2000 if (yr_raw and len(yr_raw) == 2) else (int(yr_raw) if yr_raw else now_dt.year)
+        try:
+            cand = datetime(yr, mo, dy)
+            if not yr_raw and cand.date() > now_dt.date():
+                cand = datetime(yr - 1, mo, dy)
+            return cand.strftime("%Y-%m-%d")
+        except ValueError:
+            pass
+
+    if re.search(r"\b(?:last\s*night|yesterday)\b", t_low):
+        return (now_dt - timedelta(days=1)).strftime("%Y-%m-%d")
+    if re.search(r"\btonight\b", t_low):
+        return now_dt.strftime("%Y-%m-%d")
+
+    return (now_dt - timedelta(days=1)).strftime("%Y-%m-%d") if now_dt.hour < 14 else now_dt.strftime("%Y-%m-%d")
+
+
 def format_sleep_status_reply(text: str, gemini_key: str, token: str) -> Optional[str]:
     """Handle 9, /sleep, /lastnight, 'sleep status', 'last night', or '/sleep MM-DD' queries."""
+    if _is_substance_or_hunger_log(text):
+        return None
     t_clean = text.strip()
     t_low = t_clean.lower()
 
@@ -762,9 +813,10 @@ def format_sleep_status_reply(text: str, gemini_key: str, token: str) -> Optiona
         r"^/(?:sleep|health|lastnight|status|score|today)\b",
         r"\bhow\s+(?:was|did)\s+(?:my\s+|the\s+)?sleep\b",
         r"\bhow\s+did\s+i\s+sleep\b",
-        r"\bhow\s+was\s+(?:last\s+night|yesterday)\b",
-        r"\b(?:sleep|health)\s*(?:stats|status|score|report)\b",
-        r"\blast\s*night(?:\s+sleep)?\b",
+        r"\bhow\s+was\s+(?:my\s+)?(?:last\s+night|yesterday)\b",
+        r"\b(?:sleep|health)\s*(?:stats|status|score|report|summary)\b",
+        r"\blast\s*night(?:'s)?\s+(?:sleep|stats|status|score|report|summary)\b",
+        r"\bsleep\s+last\s*night\b",
         r"\b(?:i\s+want\s+)?all\s+(?:the\s+)?stats\b",
         r"\bwhat\s+(?:was|were)\s+(?:my\s+)?sleep\s+stats\b",
         r"\bgive\s+me\s+(?:all\s+)?(?:the\s+)?(?:sleep\s+)?stats\b",
@@ -1058,30 +1110,10 @@ def _handle_sleep_batch(gemini_key: str, token: str, chat_id: int):
         send_message(token, chat_id, reply)
         return
 
-    status_reply = format_sleep_status_reply(text, gemini_key, token)
-    if status_reply:
-        send_message(token, chat_id, status_reply)
-        return
-
-    dose_reply = parse_and_record_dose(text, gemini_key, token)
-    if dose_reply:
-        send_message(token, chat_id, dose_reply)
-        return
-
-    if text_lower.startswith("idea dump") or "idea dump" in text_lower:
-        state = sync_state_from_cloud(token)
-        state.setdefault("notes", []).append({
-            "timestamp": now_cst().isoformat(),
-            "note": text
-        })
-        save_state_to_cloud(token, state)
-        send_message(token, chat_id, "Roger Roger.\n\nUpdate Summary:\n- Logged idea dump note to cloud memory.")
-        return
-
-    if "hunger" in text_lower or "alcohol" in text_lower or "nicotine" in text_lower:
+    if _is_substance_or_hunger_log(text):
         state = sync_state_from_cloud(token)
         now = now_cst()
-        night_of_key = (now - timedelta(days=1)).strftime("%Y-%m-%d") if now.hour < 14 else now.strftime("%Y-%m-%d")
+        night_of_key = _resolve_log_night_of(text, now)
         logged_msgs = []
 
         if "hunger" in text_lower:
@@ -1098,7 +1130,7 @@ def _handle_sleep_batch(gemini_key: str, token: str, chat_id: int):
             for m in state.get("medication_logs", []):
                 if m.get("night_of") == night_of_key:
                     m["hunger_level"] = level
-            logged_msgs.append(f"Logged Night Hunger: {level}")
+            logged_msgs.append(f"Logged Night Hunger ({night_of_key}): {level}")
 
         if "alcohol" in text_lower:
             alc_val = "No" if re.search(r"\b(?:no|none|0|false)\b", text_lower) else "Yes"
@@ -1123,6 +1155,26 @@ def _handle_sleep_batch(gemini_key: str, token: str, chat_id: int):
 
         save_state_to_cloud(token, state)
         send_message(token, chat_id, "Roger Roger.\n\n" + "\n".join(logged_msgs))
+        return
+
+    dose_reply = parse_and_record_dose(text, gemini_key, token)
+    if dose_reply:
+        send_message(token, chat_id, dose_reply)
+        return
+
+    status_reply = format_sleep_status_reply(text, gemini_key, token)
+    if status_reply:
+        send_message(token, chat_id, status_reply)
+        return
+
+    if text_lower.startswith("idea dump") or "idea dump" in text_lower:
+        state = sync_state_from_cloud(token)
+        state.setdefault("notes", []).append({
+            "timestamp": now_cst().isoformat(),
+            "note": text
+        })
+        save_state_to_cloud(token, state)
+        send_message(token, chat_id, "Roger Roger.\n\nUpdate Summary:\n- Logged idea dump note to cloud memory.")
         return
 
     # Question or conversation turn
