@@ -133,6 +133,17 @@
       color: var(--purple);
     }
 
+.company-tab.active[data-company="anduril"] {
+      background: rgba(56, 189, 248, 0.16);
+      border-color: rgba(56, 189, 248, 0.5);
+      color: #fff;
+    }
+
+    .company-tab.active[data-company="anduril"] .tab-stage-tag {
+      background: rgba(56, 189, 248, 0.24);
+      color: #38bdf8;
+    }
+
     .company-panel {
       display: none;
     }
@@ -616,6 +627,10 @@
         <button class="company-tab" data-company="hippo" onclick="switchCompany('hippo')">
           <span>Hippo Insurance</span>
           <span class="tab-stage-tag">R3 Passed - Awaiting R4</span>
+        </button>
+        <button class="company-tab" data-company="anduril" onclick="switchCompany('anduril')">
+          <span>Anduril Industries</span>
+          <span class="tab-stage-tag">R1 Recruiter Screen</span>
         </button>
       </div>
     </div>
@@ -1347,6 +1362,166 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
 
 
       </section>
+
+    <!-- ==================== ANDURIL INDUSTRIES PANEL ==================== -->
+    <section id="panel-anduril" class="company-panel">
+      <div class="hero-card">
+        <div class="hero-top">
+          <div>
+            <div class="hero-company">Anduril Industries</div>
+            <div class="hero-role">Analytics Engineer, Hardware Test (Hardware Test Data Operations)</div>
+          </div>
+          <div class="hero-badges">
+            <span class="badge badge-green">Scheduled: R1 Recruiter Screen</span>
+            <span class="badge">$147,000 - $196,000 Base</span>
+            <span class="badge">Remote US / Costa Mesa HQ</span>
+            <span class="badge">Recruiter: Shane Shrum</span>
+          </div>
+        </div>
+
+        <div class="pipeline">
+          <div class="step current">
+            <div class="step-label">Up Next</div>
+            <div class="step-name">R1: Recruiter Screen</div>
+            <div class="step-sub">Shane Shrum (Talent)</div>
+          </div>
+          <div class="step">
+            <div class="step-label">Stage 2</div>
+            <div class="step-name">Hardware Test Team</div>
+            <div class="step-sub">Technical Lead / Team</div>
+          </div>
+          <div class="step">
+            <div class="step-label">Stage 3</div>
+            <div class="step-name">Architecture &amp; Modeling</div>
+            <div class="step-sub">Telemetry Pipelines &amp; SQL</div>
+          </div>
+          <div class="step">
+            <div class="step-label">Stage 4</div>
+            <div class="step-name">Final Leadership</div>
+            <div class="step-sub">Exec / VP Alignment</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="view-pane active">
+        <div class="section-heading">1. Company Mission, Team &amp; Role Intelligence</div>
+        <div class="grid-2">
+          <div class="card">
+            <h2>Organization &amp; Team Mission</h2>
+            <div class="kv-grid">
+              <div class="kv-item">
+                <div class="kv-label">Company Type</div>
+                <div class="kv-val">Defense Tech Unicorn</div>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Core OS</div>
+                <div class="kv-val">Lattice OS (3D C2)</div>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Hardware Products</div>
+                <div class="kv-val">UAS, Counter-UAS, Maritime, SRM</div>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Team Size</div>
+                <div class="kv-val">Small (1-3 People, High Autonomy)</div>
+              </div>
+            </div>
+            <ul class="clean-list">
+              <li>Hardware Test Operations: Organizes and reports on all of Anduril's hardware products through development and testing.</li>
+              <li>Data Operations Function: Builds the data infrastructure and analytical tools turning telemetry, flight test logs, and incident records into consistent, automated fleet performance metrics.</li>
+              <li>Scope: Spans full data lifecycle—how data is generated on hardware platforms, egressed to the cloud, modeled into clean schemas, and delivered to test engineers and executives.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h2>Tech Stack &amp; Engineering Culture</h2>
+            <ul class="clean-list">
+              <li>Core Stack: SQL, Python (Pandas/Polars/APIs), Palantir Foundry (transforms, ontology modeling, Workshop), and internal dashboards.</li>
+              <li>Small Services: Writing targeted Python webhooks, daemons, and ingestion bridges connecting test benches to the cloud.</li>
+              <li>Ownership Philosophy: Act as a true "Data Product Owner"—independently anticipating what operational questions flight test leads need answered downstream.</li>
+              <li>Technical Alignment: Writing clear design docs and RFCs to align hardware leads and software teams before code ships.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section-heading">2. Aaron's Grounded Strategic Alignment (Zero Fluff)</div>
+        <div class="card">
+          <h2>Direct Experience Mapping to Anduril Hardware Test</h2>
+          <div class="grid-2" style="margin-top: 10px;">
+            <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px;">
+              <h3 style="color: var(--accent); margin-bottom: 6px;">End-to-End Pipeline Ownership</h3>
+              <p style="font-size: 0.85rem; color: var(--text-dim); line-height: 1.5;">
+                3+ years at OneMagnify owning complete lifecycles across Azure Data Factory, Azure SQL, Python, and REST APIs. Designed 30+ production star schemas and normalized models.
+              </p>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px;">
+              <h3 style="color: var(--accent); margin-bottom: 6px;">Telemetry &amp; Simulation Pipelines</h3>
+              <p style="font-size: 0.85rem; color: var(--text-dim); line-height: 1.5;">
+                Dave's Analytics: Designed and scaled ingestion pipeline for 100k+ simulation test records, test runs, and statistical tracking. Moment House: Instrumented 50+ custom telemetry events across live broadcast infra.
+              </p>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px;">
+              <h3 style="color: var(--accent); margin-bottom: 6px;">Solo Lead on Small Teams</h3>
+              <p style="font-size: 0.85rem; color: var(--text-dim); line-height: 1.5;">
+                Regularly operates as the sole technical lead across 8-10 major client accounts, taking vague business needs and turning messy raw logs into clean, automated executive reporting.
+              </p>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px;">
+              <h3 style="color: var(--accent); margin-bottom: 6px;">Automated Quality Assurance</h3>
+              <p style="font-size: 0.85rem; color: var(--text-dim); line-height: 1.5;">
+                Expertise using Model Context Protocol (MCP) and automated SQL reconciliation scripts to catch schema drift, null spikes, and fan-out risks before models reach production.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-heading">3. Master Practice Question Bank (Tailored to Anduril)</div>
+        <div class="card-stack">
+          <div class="card">
+            <h2>Q1: "Why Anduril, and why this Analytics Engineer role in Hardware Test?"</h2>
+            <div class="quote-box">
+              Building autonomous defense systems requires the highest standard of data reliability. In hardware test, an analytics bug or misaligned telemetry isn't just an ad-tracking discrepancy; it directly impacts flight test velocity, hardware reliability, and field readiness. Over my 10 years in data and three years at OneMagnify, I have owned complete data workflows from raw ingestion to production dashboards. I thrive on small teams where scope is fluid and you own the full problem: ingesting telemetry, establishing clean data models, enforcing data contracts, and delivering dashboards that engineers and leadership trust.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q2: "Walk me through your experience building end-to-end data pipelines and models."</h2>
+            <div class="quote-box">
+              At OneMagnify, I own end-to-end data delivery across multiple enterprise accounts. I extract raw logs, API payloads, and event streams through automated ingestion jobs into Azure SQL, build modular SQL views and star schemas that normalize heterogeneous sources into clean dimension and fact tables, and deliver production dashboards with strict validation checks. In addition, on Dave's Analytics, I engineered an automated ingestion pipeline that parsed and normalized over 100,000 simulation test records and event logs into structured SQL tables for continuous statistical tracking.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q3: "How do you handle hardware telemetry, event logs, or messy semi-structured data?"</h2>
+            <div class="quote-box">
+              I treat event data with a strict pipeline architecture: first, an immutable staging layer so raw signals are never lost; second, using Python and SQL to unpack nested payloads, handle timestamp drifts, and standardize schemas; third, establishing strict data contracts with automated validation checks to flag schema drift or null spikes; and fourth, mapping raw test executions into clear operational entities (test runs, test articles, subsystems, passes/fails) so test engineers query intuitive tables rather than parsing raw logs.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q4: "What is your technical proficiency in SQL, Python, and modern data stack tools?"</h2>
+            <div class="quote-box">
+              SQL is the core foundation of my career—I write complex multi-table joins, modular views, stored procedures, and performance-optimized queries daily in production. In Python, I write practical data transformation routines using Pandas and API libraries for data wrangling and webhook ingestion. While my production stack has centered around Azure Data Factory and SQL warehouses, modern transformation engines like Foundry or dbt are fundamentally modular SQL, schema modeling, and dependency management. Having 9+ years of complex SQL and Git version control, ramping up on Foundry transforms and ontology modeling will be very fast.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q5: "Tell me about a time you worked on a small team with ambiguous requirements and high autonomy."</h2>
+            <div class="quote-box">
+              Throughout my 3+ years at OneMagnify, I have operated as the sole analytics engineer and BI lead across 8 to 10 distinct client accounts simultaneously. On our Pebl account, marketing and sales had completely conflicting definitions of pipeline metrics, resulting in distrusted reporting. Rather than waiting for a spec doc, I initiated an audit of the entire funnel, documented the logic divergence, and proposed a three-stage lifecycle model (Inbound Lead, MQL, SAL). I aligned stakeholders across teams and built the unified SQL views and dashboards. Owning the problem end-to-end and driving clarity in fluid environments is where I perform best.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q6: "How do you partner with non-analyst engineers (flight test, hardware engineers, SWE)?"</h2>
+            <div class="quote-box">
+              I align on operational outcomes rather than technical jargon. When meeting with test engineers or hardware leads, I don't start by debating schema structure. I ask: 'What test decision do you need to make the moment a flight test or bench test concludes? What failure modes or telemetry thresholds need immediate alerting?' Once I understand their operational needs, I define the data contract upfront, write clear RFCs/design docs, and build automated QA so they never have to doubt the reliability of test reports.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </div>
 
   <script>
@@ -1602,7 +1777,7 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
     (function initFromUrl() {
       const params = new URLSearchParams(window.location.search || "");
       const c = (params.get("company") || window.location.hash.replace("#", "") || "").toLowerCase();
-      if (c === "hippo" || c === "knownwell") {
+      if (c === "hippo" || c === "knownwell" || c === "anduril") {
         switchCompany(c);
       }
     })();

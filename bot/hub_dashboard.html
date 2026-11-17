@@ -266,6 +266,7 @@
         <div class="sub-pill-wrap">
           <button class="sub-pill active" id="pillKnownwell" onclick="switchInterviewCompany('knownwell')">Knownwell</button>
           <button class="sub-pill" id="pillHippo" onclick="switchInterviewCompany('hippo')">Hippo</button>
+          <button class="sub-pill" id="pillAnduril" onclick="switchInterviewCompany('anduril')">Anduril</button>
         </div>
       </div>
 
@@ -347,14 +348,16 @@
     }
 
     function updateInterviewPills(company) {
-      activeInterviewCompany = company === "hippo" ? "hippo" : "knownwell";
+      activeInterviewCompany = (company === "hippo" || company === "anduril") ? company : "knownwell";
       document.getElementById("pillKnownwell").classList.toggle("active", activeInterviewCompany === "knownwell");
       document.getElementById("pillHippo").classList.toggle("active", activeInterviewCompany === "hippo");
+      document.getElementById("pillAnduril").classList.toggle("active", activeInterviewCompany === "anduril");
     }
 
     function buildInterviewsUrl(company) {
       const base = URLS.interviews;
-      return base + (base.includes("?") ? "&" : "?") + "company=" + (company === "hippo" ? "hippo" : "knownwell");
+      const target = (company === "hippo" || company === "anduril") ? company : "knownwell";
+      return base + (base.includes("?") ? "&" : "?") + "company=" + target;
     }
 
     function ensureLoaded(tabName, forceReload = false) {
@@ -400,7 +403,7 @@
     }
 
     function switchInterviewCompany(company) {
-      const normalized = company === "hippo" ? "hippo" : "knownwell";
+      const normalized = (company === "hippo" || company === "anduril") ? company : "knownwell";
       updateInterviewPills(normalized);
       switchTab("interviews");
 
