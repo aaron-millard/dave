@@ -1290,6 +1290,9 @@ def get_dashboard_html(gemini_key: str) -> str:
         inject_parts.append(f"const CLOUD_DOSES = {json.dumps(state['medication_logs'])};")
     if state.get("oura_cache"):
         inject_parts.append(f"const CLOUD_OURA = {json.dumps(state['oura_cache'])};")
+    raw_garmin = files.get("data/garmin_cache.json")
+    if raw_garmin:
+        inject_parts.append(f"const CLOUD_GARMIN = {raw_garmin};")
     if inject_parts:
         inject_js = "<script>" + " ".join(inject_parts) + "</script>"
         html = html.replace("<script>", f"{inject_js}\n  <script>", 1)
