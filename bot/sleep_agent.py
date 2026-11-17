@@ -796,9 +796,19 @@ def _resolve_log_night_of(text: str, now_dt: datetime) -> str:
     return (now_dt - timedelta(days=1)).strftime("%Y-%m-%d") if now_dt.hour < 14 else now_dt.strftime("%Y-%m-%d")
 
 
+def _is_backlog_or_note(text: str) -> bool:
+    t_low = (text or "").strip().lower()
+    return bool(
+        re.match(r"^(?:backlog|idea\s*dump|note)\b\s*[:\-]?", t_low)
+        or "idea dump" in t_low
+        or "add to backlog" in t_low
+        or "add something to backlog" in t_low
+    )
+
+
 def format_sleep_status_reply(text: str, gemini_key: str, token: str) -> Optional[str]:
     """Handle 9, /sleep, /lastnight, 'sleep status', 'last night', or '/sleep MM-DD' queries."""
-    if _is_substance_or_hunger_log(text):
+    if _is_substance_or_hunger_log(text) or _is_backlog_or_note(text):
         return None
     t_clean = text.strip()
     t_low = t_clean.lower()
@@ -806,7 +816,7 @@ def format_sleep_status_reply(text: str, gemini_key: str, token: str) -> Optiona
     is_nine = bool(re.match(r"^/?9(?:\.|$)", t_clean) or t_low in ["9", "9."])
     is_cmd = bool(re.match(r"^/(?:sleep|health|lastnight|status|score|today)\b", t_low))
     is_phrase = bool(
-        re.match(r"^(?:(?:sleep|health)\s*status|last\s*night(?:\s+sleep)?|how\s+did\s+i\s+sleep(?:\s+(?:last\s+night|on\s+.+))?|(?:sleep|health)\s+report|status(?:\s+[\d/\-]+)?)$", t_low)
+        re.match(r"^(?:(?:sleep|health)\s*status|last\s*night(?:\s+sleep)?|how\s+did\s+i\s+sleep(?:\s+(?:last\s+night|on\s+.+))?|(?:sleep|health)\s+report|my\s+sleep\??|sleep\s+score\??|status(?:\s+[\d/\-]+)?)$", t_low)
     )
     sleep_inquiry_patterns = [
         r"^/?9(?:\.|$)",
@@ -818,10 +828,8 @@ def format_sleep_status_reply(text: str, gemini_key: str, token: str) -> Optiona
         r"\blast\s*night(?:'s)?\s+(?:sleep|stats|status|score|report|summary)\b",
         r"\bsleep\s+last\s*night\b",
         r"\b(?:i\s+want\s+)?all\s+(?:the\s+)?stats\b",
-        r"\bwhat\s+(?:was|were)\s+(?:my\s+)?sleep\s+stats\b",
+        r"\bwhat\s+(?:was|were)\s+(?:my\s+)?sleep\s+(?:stats|score)\b",
         r"\bgive\s+me\s+(?:all\s+)?(?:the\s+)?(?:sleep\s+)?stats\b",
-        r"\bmy\s+sleep\b",
-        r"\bsleep\s+score\b",
     ]
     matched = bool(is_nine or is_cmd or is_phrase or any(re.search(pat, t_low) for pat in sleep_inquiry_patterns))
     if not matched:
@@ -1157,6 +1165,18 @@ def _handle_sleep_batch(gemini_key: str, token: str, chat_id: int):
         send_message(token, chat_id, "Roger Roger.\n\n" + "\n".join(logged_msgs))
         return
 
+    if _is_backlog_or_note(text):
+        state = sync_state_from_cloud(token)
+        clean_note = re.sub(r"^(?:backlog|idea\s*dump|note)\s*[:\-]?\s*", "", text, flags=re.I).strip() or text
+        state.setdefault("notes", []).append({
+            "timestamp": now_cst().isoformat(),
+            "type": "backlog" if "backlog" in text_lower else "note",
+            "note": clean_note,
+        })
+        save_state_to_cloud(token, state)
+        send_message(token, chat_id, f"Roger Roger.\n\nUpdate Summary:\n- Added to Backlog: {clean_note}")
+        return
+
     dose_reply = parse_and_record_dose(text, gemini_key, token)
     if dose_reply:
         send_message(token, chat_id, dose_reply)
@@ -1165,16 +1185,6 @@ def _handle_sleep_batch(gemini_key: str, token: str, chat_id: int):
     status_reply = format_sleep_status_reply(text, gemini_key, token)
     if status_reply:
         send_message(token, chat_id, status_reply)
-        return
-
-    if text_lower.startswith("idea dump") or "idea dump" in text_lower:
-        state = sync_state_from_cloud(token)
-        state.setdefault("notes", []).append({
-            "timestamp": now_cst().isoformat(),
-            "note": text
-        })
-        save_state_to_cloud(token, state)
-        send_message(token, chat_id, "Roger Roger.\n\nUpdate Summary:\n- Logged idea dump note to cloud memory.")
         return
 
     # Question or conversation turn
