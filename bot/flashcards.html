@@ -534,7 +534,7 @@
           "Recursive CTEs: Can walk hierarchical data like org charts or multi-touch user journeys."
         ],
         sql: "WITH monthly_spend AS (\n  SELECT DATE_TRUNC('month', spend_date) AS m, channel, SUM(spend) AS spend\n  FROM daily_ad_spend\n  GROUP BY 1, 2\n)\nSELECT * FROM monthly_spend;",
-        example: "When joining daily ad spend with policy binds or ticket sales, I put each source into its own CTE aggregated to month and channel first so joins never inflate spend or bind totals."
+        example: "In my daily production work at OneMagnify, I prefer modular SQL Views and Stored Procedures over CTEs for reusability, while using CTEs cleanly in ad-hoc checks or live CoderPad interviews."
       },
       {
         id: "partition",
@@ -565,7 +565,7 @@
           "Prevents Fan-Out: Avoids multiplying $100 spend across 5 policy rows when reporting ROAS or Cost per Bind."
         ],
         sql: "SELECT p.policy_id, p.channel, p.premium,\n  SUM(p.premium) OVER (PARTITION BY p.channel) AS channel_total_premium\nFROM policies p;",
-        example: "Across 15+ Swish Dental clinics and Brooklyn Nets campaigns, I lock metric grain in SQL CTEs/views first so Power BI or Tableau users can slice by date or channel without ever inflating spend."
+        example: "Across Swish Dental clinics and Brooklyn Nets campaigns, I lock metric grain in modular SQL Views first so Power BI or Tableau users can slice by date or channel without ever inflating spend."
       },
       {
         id: "dml",
