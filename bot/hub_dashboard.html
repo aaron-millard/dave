@@ -35,27 +35,28 @@
 
     /* Top Command Navbar */
     .hub-navbar {
-      height: 58px;
+      height: 54px;
       background: var(--nav-bg);
       border-bottom: 1px solid var(--border);
-      padding: 0 18px;
+      padding: 0 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 14px;
-      overflow-x: auto;
+      gap: 10px;
+      overflow: hidden;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .brand-mark {
-      width: 30px;
-      height: 30px;
+      width: 28px;
+      height: 28px;
       border-radius: 8px;
       background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(192, 132, 252, 0.25));
       border: 1px solid rgba(56, 189, 248, 0.45);
@@ -63,12 +64,12 @@
       align-items: center;
       justify-content: center;
       font-weight: 800;
-      font-size: 0.86rem;
+      font-size: 0.82rem;
       color: var(--blue);
     }
 
     .brand-text {
-      font-size: 0.96rem;
+      font-size: 0.92rem;
       font-weight: 800;
       letter-spacing: -0.01em;
       color: #fff;
@@ -77,7 +78,9 @@
     .tab-bar {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
+      min-width: 0;
+      flex-wrap: nowrap;
     }
 
     .tab-group {
@@ -85,18 +88,18 @@
       align-items: center;
       background: #080d18;
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 3px;
-      gap: 3px;
+      border-radius: 9px;
+      padding: 2px;
+      gap: 2px;
     }
 
     .tab-btn {
       background: transparent;
       border: none;
       color: var(--muted);
-      padding: 7px 14px;
+      padding: 6px 10px;
       border-radius: 7px;
-      font-size: 0.84rem;
+      font-size: 0.8rem;
       font-weight: 700;
       cursor: pointer;
       white-space: nowrap;
@@ -132,11 +135,17 @@
       box-shadow: inset 0 0 0 1px rgba(52, 211, 153, 0.45);
     }
 
+    .tab-btn.active[data-tab="flashcards"] {
+      background: rgba(251, 191, 36, 0.18);
+      color: #fbbf24;
+      box-shadow: inset 0 0 0 1px rgba(251, 191, 36, 0.45);
+    }
+
     .sub-pill-wrap {
       display: inline-flex;
       align-items: center;
-      gap: 3px;
-      padding-left: 4px;
+      gap: 2px;
+      padding-left: 3px;
       border-left: 1px solid var(--border);
     }
 
@@ -144,9 +153,9 @@
       background: transparent;
       border: none;
       color: var(--muted);
-      padding: 5px 9px;
+      padding: 4px 7px;
       border-radius: 6px;
-      font-size: 0.74rem;
+      font-size: 0.71rem;
       font-weight: 700;
       cursor: pointer;
       white-space: nowrap;
@@ -209,7 +218,7 @@
     .viewport-wrap {
       position: relative;
       width: 100%;
-      height: calc(100vh - 58px);
+      height: calc(100vh - 54px);
       background: var(--bg);
     }
 
@@ -268,9 +277,9 @@
     <div class="nav-right">
       <span class="status-pill" id="envStatusPill">
         <span class="status-dot"></span>
-        <span id="envStatusText">Checking Env...</span>
+        <span id="envStatusText">Env</span>
       </span>
-      <button class="reload-btn" onclick="reloadActiveFrame()">Refresh Tab</button>
+      <button class="reload-btn" onclick="reloadActiveFrame()">Refresh</button>
     </div>
   </nav>
 
@@ -312,11 +321,14 @@
 
     function updateEnvBadge() {
       const txt = document.getElementById("envStatusText");
+      const pill = document.getElementById("envStatusPill");
       if (isFileMode) {
-        txt.textContent = "Dave Local PC Mode (5 Repos)";
+        txt.textContent = "Local";
+        if (pill) pill.title = "Dave Local PC Mode (5 Repos)";
       } else {
         const host = window.location.host || "dave-pocl.onrender.com";
-        txt.textContent = "Dave Live (" + host + ")";
+        txt.textContent = "Live";
+        if (pill) pill.title = "Dave Live (" + host + ")";
       }
     }
 
