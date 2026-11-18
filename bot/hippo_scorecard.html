@@ -483,11 +483,33 @@
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 14px;
+      gap: 8px;
       font-size: 0.78rem;
       font-weight: 700;
       color: var(--muted);
       margin-bottom: 8px;
+    }
+
+    .legend-filter-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface-alt);
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .legend-filter-btn:hover { border-color: var(--hippo-forest); color: var(--text); }
+    .legend-filter-btn.active {
+      background: var(--hippo-deep);
+      color: #fff;
+      border-color: var(--hippo-deep);
     }
 
     .legend-item {
@@ -779,12 +801,13 @@
           <div class="card" data-beat="1">
             <div class="card-title">
               <span>Monthly Bind Rate Ramp (Oct 2025 - Apr 2026)</span>
-              <span class="pill green">Hover for Monthly Detail</span>
+              <span class="pill green" id="ramp-hint">Click a Producer Below to Focus</span>
             </div>
-            <div class="chart-legend">
-              <span class="legend-item"><span class="legend-swatch dot" style="background:#006838;"></span>Builder (54% Apr)</span>
-              <span class="legend-item"><span class="legend-swatch dot" style="background:#DC2626;"></span>AgencyLink (8.1% Apr)</span>
-              <span class="legend-item"><span class="legend-swatch dot" style="background:#0284C7;"></span>National (5.0% Apr)</span>
+            <div class="chart-legend" id="ramp-legend">
+              <button class="legend-filter-btn active" id="rf-all" onclick="setRampFocus('all')">All 3 Channels</button>
+              <button class="legend-filter-btn" id="rf-bld" onclick="setRampFocus('bld')"><span class="legend-swatch dot" style="background:#006838;"></span>Builder (54% Apr)</button>
+              <button class="legend-filter-btn" id="rf-agy" onclick="setRampFocus('agy')"><span class="legend-swatch dot" style="background:#DC2626;"></span>AgencyLink (8.1% Apr)</button>
+              <button class="legend-filter-btn" id="rf-nat" onclick="setRampFocus('nat')"><span class="legend-swatch dot" style="background:#0284C7;"></span>National (5.0% Apr)</button>
             </div>
             <svg id="ramp-svg" viewBox="0 0 565 232" width="100%" height="232" aria-label="Monthly Bind Rate Ramp"></svg>
             <p style="font-size:0.78rem; color:var(--muted); margin-top:4px;">*May 2026 excluded from ramp line because snapshot is partial (May 1-15).</p>
@@ -813,10 +836,14 @@
             </div>
 
             <div class="beat-inner" data-beat="3" style="border-top:1px solid var(--border); padding-top:14px;">
-              <div class="card-title" style="margin-bottom:8px;"><span>Price Sensitivity (Unbound vs Bound)</span></div>
+              <div class="card-title" style="margin-bottom:8px;"><span>Price Sensitivity (Bound vs Unbound)</span></div>
               <div class="metric-row"><span class="metric-label">Builder Quoted</span><span class="metric-val">$1,128 bound vs $1,351 unbound (+20%)</span></div>
               <div class="metric-row"><span class="metric-label">National Quoted</span><span class="metric-val">$1,655 bound vs $1,858 unbound (+12%)</span></div>
               <div class="metric-row"><span class="metric-label">AgencyLink Quoted</span><span class="metric-val">$1,918 bound vs $2,445 unbound (+27%)</span></div>
+              <div class="metric-row" style="border-top:2px solid var(--border); background:var(--surface-alt); margin:4px -10px -8px; padding:8px 10px; border-radius:0 0 8px 8px;">
+                <span class="metric-label" style="color:var(--hippo-deep); font-weight:700;">Combined Portfolio</span>
+                <span class="metric-val" style="color:var(--hippo-deep);">$1,342 bound vs $1,873 unbound (+12-27% per channel)</span>
+              </div>
             </div>
           </div>
         </div>
@@ -873,28 +900,28 @@
 
         <div class="grid-3">
           <div class="card" data-beat="3">
-            <div class="card-title"><span>Builder Top Cancels (370)</span><span class="pill green">70% Closing / Prop / UW</span></div>
+            <div class="card-title"><span>Builder Top Cancels (370)</span><span class="pill green">70% Closing &amp; Property</span></div>
             <ul class="clean-list">
               <li>Inspection not resolved (67 | 18%)</li>
               <li>Home sale fell through (59 | 16%)</li>
               <li>Escrow / mortgagee missed (51 | 14%)</li>
-              <li>Property hazard / UW (80 | 22%)</li>
+              <li>Property hazard / Underwriting (80 | 22%)</li>
             </ul>
           </div>
           <div class="card" data-beat="4">
-            <div class="card-title"><span>National Top Cancels (155)</span><span class="pill blue">44% Escrow / Switch</span></div>
+            <div class="card-title"><span>National Top Cancels (155)</span><span class="pill blue">44% Escrow &amp; Switch</span></div>
             <ul class="clean-list">
               <li>Mortgagee / escrow change (40 | 26%)</li>
               <li>Insured chose other carrier (28 | 18%)</li>
               <li>Terms not accepted (19 | 12%)</li>
-              <li>UW condition not resolved (18 | 12%)</li>
+              <li>Underwriting condition open (18 | 12%)</li>
             </ul>
           </div>
           <div class="card" data-beat="5">
-            <div class="card-title"><span>AgencyLink Top Cancels (73)</span><span class="pill rose">45% (33/73) Insp / UW</span></div>
+            <div class="card-title"><span>AgencyLink Top Cancels (73)</span><span class="pill rose">45% Inspection &amp; Underwriting</span></div>
             <ul class="clean-list">
               <li>Inspection not resolved (19 | 26%)</li>
-              <li>UW condition not resolved (14 | 19%)</li>
+              <li>Underwriting condition open (14 | 19%)</li>
               <li>Insured flat cancel (12 | 16%)</li>
               <li>Terms / non-payment (16 | 22%)</li>
             </ul>
@@ -907,8 +934,8 @@
         <div class="slide-header">
           <div>
             <div class="kicker">Analysis 3 - Underwriting &amp; Risk Quality</div>
-            <h2>Loss Ratios, Cohort Maturity &amp; CAT Exposure</h2>
-            <p class="slide-takeaway">National (22% YTD LR) and Builder both outdo AgencyLink in every monthly cohort; Builder carries 83% High/Very-High CAT.</p>
+            <h2>Loss Ratios, Cohort Maturity &amp; Catastrophe Exposure</h2>
+            <p class="slide-takeaway">National (22% YTD LR) and Builder both outdo AgencyLink in every monthly cohort; Builder carries 83% High/Very-High catastrophe risk.</p>
           </div>
         </div>
 
@@ -932,7 +959,7 @@
               </div>
               <svg id="cohort-svg" viewBox="0 0 520 206" width="100%" height="206" aria-label="Same-Month Cohort Loss Ratios Jan to Apr 2026"></svg>
               <div style="margin-top:8px; padding:8px 11px; background:var(--surface-alt); border-radius:8px; font-size:0.78rem; color:var(--text); display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap;">
-                <span><strong>Dec 2025 Baseline (Most Mature):</strong> Builder <strong>56%</strong></span>
+                <span><strong>Dec 2025 Oldest Baseline:</strong> Builder <strong>56%</strong></span>
                 <span style="color:var(--muted);">National (17-33%) &amp; Builder (16-43%) outdo AgencyLink (46-145%) every month</span>
               </div>
             </div>
@@ -943,7 +970,7 @@
                   <tr><th>Bind Month</th><th class="num">National</th><th class="num">Builder</th><th class="num">AgencyLink</th></tr>
                 </thead>
                 <tbody>
-                  <tr><td>Dec 2025 (Most Mature)</td><td class="num">-</td><td class="num"><strong>56%</strong></td><td class="num">-</td></tr>
+                  <tr><td>Dec 2025 (Oldest Baseline)</td><td class="num">-</td><td class="num"><strong>56%</strong></td><td class="num">-</td></tr>
                   <tr><td>Jan 2026</td><td class="num" style="color:var(--hippo-deep); font-weight:700">22%</td><td class="num">43%</td><td class="num" style="color:var(--rose); font-weight:700">90%</td></tr>
                   <tr><td>Feb 2026</td><td class="num" style="color:var(--hippo-deep); font-weight:700">17%</td><td class="num">22%</td><td class="num" style="color:var(--rose); font-weight:700">145%</td></tr>
                   <tr><td>Mar 2026</td><td class="num" style="color:var(--hippo-deep); font-weight:700">33%</td><td class="num">39%</td><td class="num" style="color:var(--rose); font-weight:700">49%</td></tr>
@@ -958,7 +985,7 @@
           <div class="card beat-container" style="display:flex; flex-direction:column; justify-content:space-between; gap:12px;">
             <div class="beat-inner" data-beat="2">
               <div class="card-title">
-                <span>CAT Risk Tier &amp; Underwriting Drivers (Bound)</span>
+                <span>Catastrophe Risk Tier &amp; Underwriting Drivers</span>
               </div>
               <div class="chart-legend" style="margin-bottom:10px;">
                 <span class="legend-item"><span class="legend-swatch" style="background:var(--hippo-deep);"></span>Low / Moderate</span>
@@ -974,7 +1001,7 @@
                 </div>
               </div>
               <div class="bar-wrap">
-                <div class="bar-head"><span>National CAT Risk Tier</span><span style="color:var(--hippo-deep)">80% Low / Moderate</span></div>
+                <div class="bar-head"><span>National Catastrophe Risk</span><span style="color:var(--hippo-deep)">80% Low / Moderate</span></div>
                 <div class="bar-track">
                   <div class="bar-fill" style="width:79.6%; background:var(--hippo-deep)" title="Low/Moderate: 80%"></div>
                   <div class="bar-fill" style="width:19.3%; background:var(--amber)" title="High: 19%"></div>
@@ -982,7 +1009,7 @@
                 </div>
               </div>
               <div class="bar-wrap" style="margin-bottom:0;">
-                <div class="bar-head"><span>AgencyLink CAT Risk Tier</span><span style="color:var(--sky)">78% Low / Moderate</span></div>
+                <div class="bar-head"><span>AgencyLink Catastrophe Risk</span><span style="color:var(--sky)">78% Low / Moderate</span></div>
                 <div class="bar-track">
                   <div class="bar-fill" style="width:77.7%; background:var(--hippo-deep)" title="Low/Moderate: 78%"></div>
                   <div class="bar-fill" style="width:22.3%; background:var(--amber)" title="High: 22%"></div>
@@ -990,11 +1017,18 @@
               </div>
             </div>
 
-            <div class="beat-inner" data-beat="3" style="border-top:1px solid var(--border); padding-top:12px;">
-              <div class="metric-row" style="border-top:none; padding-top:0;"><span class="metric-label">Average Home Age</span><span class="metric-val">Bld 0.1y | Nat 10.2y | Agy 33.0y</span></div>
-              <div class="metric-row"><span class="metric-label">Average Insurance Score</span><span class="metric-val">Bld 700 | Nat 674 | Agy 600 (8.8% unscored)</span></div>
-              <div class="metric-row"><span class="metric-label">Claim Frequency &amp; Avg Severity</span><span class="metric-val">Bld 1.2% ($30k) | Nat 2.6% ($13k) | Agy 5.1% ($21k)</span></div>
-              <div class="metric-row" style="padding-bottom:0;"><span class="metric-label">YTD Loss Ratio (All-Time)</span><span class="metric-val">Bld 31% (34%) | Nat 22% | Agy 65% (63%)</span></div>
+            <div class="beat-inner" data-beat="3" style="border-top:1px solid var(--border); padding-top:10px;">
+              <table>
+                <thead>
+                  <tr><th>Underwriting Metric</th><th class="num">Builder</th><th class="num">National</th><th class="num">AgencyLink</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Average Home Age</td><td class="num">0.1 yrs</td><td class="num">10.2 yrs</td><td class="num" style="color:var(--rose); font-weight:700;">33.0 yrs</td></tr>
+                  <tr><td>Avg Insurance Score</td><td class="num" style="color:var(--hippo-deep); font-weight:700;">700</td><td class="num">674</td><td class="num" style="color:var(--rose); font-weight:700;">600 (8.8% missing)</td></tr>
+                  <tr><td>Claim Freq / Avg Claim</td><td class="num">1.2% ($30k)</td><td class="num">2.6% ($13k)</td><td class="num" style="color:var(--rose); font-weight:700;">5.1% ($21k)</td></tr>
+                  <tr><td>YTD Loss Ratio (All-Time)</td><td class="num" style="color:var(--amber); font-weight:700;">31% (34%)</td><td class="num" style="color:var(--hippo-deep); font-weight:700;">22%</td><td class="num" style="color:var(--rose); font-weight:700;">65% (63%)</td></tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -1011,47 +1045,38 @@
         </div>
 
         <div class="grid-2" style="margin-bottom:16px;">
-          <!-- Proportional Sub-Agency Concentration Card -->
+          <!-- Cleaner Sub-Agency Concentration Card -->
           <div class="card" data-beat="1">
             <div class="card-title">
-              <span>Sub-Agency Concentration Breakdown</span>
+              <span>Sub-Agency Concentration</span>
               <span class="pill amber">364 Total Sub-Agencies</span>
             </div>
 
             <div class="bar-wrap">
-              <div class="bar-head"><span>National Direct Aggregator</span><span style="color:var(--sky)">1 direct partner · 100% ($3.85M)</span></div>
+              <div class="bar-head"><span>National (1 Direct Partner)</span><span style="color:var(--sky)">100% through one partner</span></div>
               <div class="bar-track">
-                <div class="bar-fill" style="width:100%; background:var(--sky)" title="1 centralized aggregator (2,350 bounds)"></div>
+                <div class="bar-fill" style="width:100%; background:var(--sky)"></div>
               </div>
             </div>
 
             <div class="bar-wrap">
-              <div class="bar-head"><span>Builder (13 sub-agencies · Keystone 72% LR)</span><span style="color:var(--hippo-deep)">Top 5 = 75% (~29% bind) · Top 10 = 97%</span></div>
+              <div class="bar-head"><span>Builder (13 Sub-Agencies)</span><span style="color:var(--hippo-deep)">Top 5 drive 75% (Keystone outlier: 72% LR)</span></div>
               <div class="bar-track">
-                <div class="bar-fill" style="width:75.2%; background:var(--hippo-deep)" title="Top 5 Builder Sub-Agencies: 75% of bound premium"></div>
-                <div class="bar-fill" style="width:21.7%; background:var(--hippo-mint)" title="Next 5 Builder Sub-Agencies: 22%"></div>
-                <div class="bar-fill" style="width:3.1%; background:#A7F3D0" title="Tail 3 Builder Sub-Agencies: 3%"></div>
+                <div class="bar-fill" style="width:75.2%; background:var(--hippo-deep)"></div>
+                <div class="bar-fill" style="width:24.8%; background:var(--hippo-mint)"></div>
               </div>
             </div>
 
-            <div class="bar-wrap" style="margin-bottom:8px;">
-              <div class="bar-head"><span>AgencyLink (350 sub-agencies)</span><span style="color:var(--rose)">160 0-bound · 116 1-bound · 37 3+</span></div>
+            <div class="bar-wrap" style="margin-bottom:10px;">
+              <div class="bar-head"><span>AgencyLink (350 Sub-Agencies)</span><span style="color:var(--rose)">79% bound 0 or 1 policy (276 of 350)</span></div>
               <div class="bar-track">
-                <div class="bar-fill" style="width:45.7%; background:var(--rose)" title="160 zero-bound (46%)"></div>
-                <div class="bar-fill" style="width:33.1%; background:var(--amber)" title="116 1-bound (33%)"></div>
-                <div class="bar-fill" style="width:10.6%; background:#93C5FD" title="37 2-bound (11%)"></div>
-                <div class="bar-fill" style="width:10.6%; background:var(--hippo-deep)" title="37 active 3+ bounds (11%)"></div>
-              </div>
-              <div style="display:flex; gap:10px; flex-wrap:wrap; font-size:0.72rem; color:var(--muted); margin-top:5px;">
-                <span><strong style="color:var(--rose);">46%</strong> 0-bound (160)</span>
-                <span><strong style="color:var(--amber);">33%</strong> 1-bound (116)</span>
-                <span><strong style="color:var(--sky);">11%</strong> 2-bound (37)</span>
-                <span><strong style="color:var(--hippo-deep);">11%</strong> Active 3+ (37)</span>
+                <div class="bar-fill" style="width:78.8%; background:var(--rose)" title="276 bound 0 or 1 policy (79%)"></div>
+                <div class="bar-fill" style="width:21.2%; background:var(--hippo-deep)" title="74 bound 2+ policies (21%)"></div>
               </div>
             </div>
 
-            <div style="margin-top:10px; padding:10px 12px; background:var(--surface-alt); border-radius:10px; font-size:0.82rem;">
-              <strong>Bright Spots Inside AgencyLink:</strong> Homes 0-15 yrs run an <strong>8.0% LR</strong>, Insurance Score 680+ runs <strong>19%</strong>, and 166 binding sub-agencies have <strong>$0 claims</strong> ($720k clean premium).
+            <div style="padding:10px 12px; background:var(--surface-alt); border-radius:10px; font-size:0.82rem; line-height:1.45;">
+              <strong>Bright Spots Inside AgencyLink:</strong> 166 binding sub-agencies have <strong>$0 claims</strong> ($720k clean book); homes 0-15 yrs run <strong>8.0% LR</strong>, and Insurance Score 680+ runs <strong>19% LR</strong>.
             </div>
           </div>
 
@@ -1060,9 +1085,9 @@
             <div class="card-title"><span>Data Hygiene &amp; Normalization Audit</span><span class="pill blue">QA Verified</span></div>
             <ul class="clean-list">
               <li><strong>Unique Properties:</strong> 84,817 unique property addresses (1 quote per home, zero cross-producer overlap).</li>
-              <li><strong>Zero Quote IDs:</strong> 235 rows in Hawaii across Builder (140) and AgencyLink (95) came through as Quote ID = 0, all unbound (0% bind).</li>
+              <li><strong>Zero Quote IDs:</strong> 235 Hawaii quotes in Q4 (Builder 140, AgencyLink 95) came in as Quote ID = 0, all unbound.</li>
               <li><strong>Naming Variant:</strong> 1 AgencyLink Sub-Agency appears under 2 slightly different names (350 sub-agencies across 351 name pairs).</li>
-              <li><strong>Missing Scores:</strong> No-hit / no-score records appear in 8.8% of AgencyLink bounds vs 3.7% in National.</li>
+              <li><strong>Missing Scores:</strong> 8.8% of AgencyLink policies had no Insurance Score on file vs 3.7% in National.</li>
             </ul>
           </div>
         </div>
@@ -1087,7 +1112,7 @@
           <div>
             <div class="kicker">Result 1 - Optimization Plan</div>
             <h2>Recommended Channel Actions</h2>
-            <p class="slide-takeaway">Protect Builder's conversion while balancing CAT, unlock National's bind rate, and tighten AgencyLink going forward.</p>
+            <p class="slide-takeaway">Protect Builder's conversion while balancing catastrophe risk, unlock National's bind rate, and tighten AgencyLink going forward.</p>
           </div>
         </div>
 
@@ -1095,27 +1120,27 @@
           <div class="card" data-beat="1" style="border-top: 4px solid var(--hippo-deep);">
             <div class="card-title"><span>1. Builder</span><span class="pill green">Protect &amp; Diversify</span></div>
             <ul class="clean-list">
-              <li>Maintain embedded point-of-sale closing integration driving 48% bind rate.</li>
-              <li>Steer new community launches outside TX (57%) and FL (21%) to bring down 83% High/Very-High CAT share.</li>
-              <li>Tighten pre-closing escrow &amp; inspection handoffs to trim 7-day closing cancels.</li>
+              <li>Protect the closing-flow integration driving a 48% bind rate.</li>
+              <li>Steer new builder launches outside TX (57%) and FL (21%) to bring down 83% High/Very-High catastrophe risk.</li>
+              <li>Tighten pre-closing escrow &amp; inspection handoffs to trim 7-day cancels.</li>
             </ul>
           </div>
 
           <div class="card" data-beat="2" style="border-top: 4px solid var(--sky);">
             <div class="card-title"><span>2. National</span><span class="pill blue">Lift Conversion</span></div>
             <ul class="clean-list">
-              <li>Test targeted pricing / quoting adjustments on unbound shoppers (currently +12% higher quoted premium on 57,800 quotes).</li>
+              <li>Test targeted pricing adjustments on unbound shoppers (currently +12% pricier across nearly 58k quotes).</li>
               <li>Lifting bind rate from 4.1% to 6.0% adds ~$1.8M bound premium with zero new traffic.</li>
-              <li>Preserve strong 80% Low/Mod CAT mix and low 22% loss ratio.</li>
+              <li>Preserve 80% Low/Moderate catastrophe mix and low 22% loss ratio.</li>
             </ul>
           </div>
 
           <div class="card" data-beat="3" style="border-top: 4px solid var(--rose);">
             <div class="card-title"><span>3. AgencyLink</span><span class="pill rose">Tighten &amp; Prune</span></div>
             <ul class="clean-list">
-              <li>Stop taking new quotes on older homes (&gt;15-20 yrs), Insurance Score &lt;680, and High CAT going forward.</li>
-              <li>Deactivate ~276 zero/1-bound tail sub-agencies; focus on top ~35-50 active partners (protecting $720k claim-free book).</li>
-              <li>Set 90-day gate (&lt;10% cancel, &lt;45% LR) before full channel exit.</li>
+              <li>Stop quoting older homes (&gt;15-20 yrs), Insurance Scores &lt;680, and High catastrophe risk going forward.</li>
+              <li>Deactivate ~276 zero/1-bound tail sub-agencies; focus on top ~35-50 active partners (protecting $720k clean book).</li>
+              <li>Set a 90-day performance review (&lt;10% cancel, &lt;45% LR) before any channel exit.</li>
             </ul>
           </div>
         </div>
@@ -1127,7 +1152,7 @@
           <div>
             <div class="kicker">Result 2 - Next Partner Strategy</div>
             <h2>Ideal Future Producer Profile</h2>
-            <p class="slide-takeaway">Combine Builder's embedded conversion &amp; underwriting quality with National's geographic and CAT balance.</p>
+            <p class="slide-takeaway">Combine Builder's closing conversion &amp; underwriting quality with National's geographic and catastrophe balance.</p>
           </div>
         </div>
 
@@ -1135,7 +1160,7 @@
           <div class="card" data-beat="1">
             <div class="card-title"><span>Keep From Builder</span><span class="pill green">Conversion</span></div>
             <ul class="clean-list">
-              <li>Embedded at home purchase or closing (25-45%+ bind rate).</li>
+              <li>Built right into the home closing flow (~30-48% bind rate).</li>
               <li>Tight, manageable partner count (&lt;15 sub-agencies).</li>
               <li>Strong Insurance Score (680+) and newer homes (&lt;15 yrs old).</li>
             </ul>
@@ -1144,24 +1169,24 @@
           <div class="card" data-beat="2">
             <div class="card-title"><span>Keep From National</span><span class="pill blue">Risk Balance</span></div>
             <ul class="clean-list">
-              <li>75-80% Low / Moderate CAT risk mix.</li>
+              <li>75-80% Low / Moderate catastrophe risk mix.</li>
               <li>Geographic diversity outside TX/FL storm corridors.</li>
-              <li>Single centralized API integration.</li>
+              <li>One direct partner connection instead of hundreds of scattered offices.</li>
             </ul>
           </div>
 
           <div class="card" data-beat="3" style="background:var(--surface-alt); border-color:var(--hippo-forest);">
             <div class="card-title"><span>Target Partner Fit</span><span class="pill green">Who to Sign</span></div>
             <ul class="clean-list">
-              <li><strong>National / Regional Mortgage Lenders &amp; Digital Closing Platforms</strong> (embedded at loan lock/escrow).</li>
-              <li><strong>Midwest / Mid-Atlantic Homebuilders</strong> (low CAT new construction).</li>
-              <li><strong>Curated Digital Agencies</strong> with pre-bind Insurance Score &amp; home-age filters.</li>
+              <li><strong>National / Regional Mortgage Lenders &amp; Digital Closing Platforms</strong> (built into loan lock/escrow).</li>
+              <li><strong>Midwest / Mid-Atlantic Homebuilders</strong> (lower-catastrophe new construction).</li>
+              <li><strong>Curated Digital Agencies</strong> with upfront Insurance Score &amp; home-age filters.</li>
             </ul>
           </div>
         </div>
 
         <div class="banner" data-beat="4" style="margin-bottom:0;">
-          <strong>Success Gate (First 90 Days):</strong> Evaluate any new producer on <strong>Bind Rate &gt;20%</strong>, <strong>Cancel Rate &lt;8%</strong>, <strong>High/Very-High CAT &lt;35%</strong>, and <strong>Average Insurance Score &gt;670</strong>.
+          <strong>90-Day Success Benchmark:</strong> Evaluate any new producer on <strong>Bind Rate &gt;20%</strong>, <strong>Cancel Rate &lt;8%</strong>, <strong>High/Very-High Catastrophe &lt;35%</strong>, and <strong>Average Insurance Score &gt;670</strong>.
         </div>
       </section>
 
@@ -1383,9 +1408,30 @@
       { label: "Apr '26", full: "April 2026", bld: { pct: 53.78, b: 1400, q: 2603 }, agy: { pct: 8.12, b: 130, q: 1600 }, nat: { pct: 4.97, b: 760, q: 15287 } }
     ];
 
+    let rampFocus = "all";
+
+    function setRampFocus(mode) {
+      rampFocus = (rampFocus === mode && mode !== "all") ? "all" : mode;
+      ["all", "bld", "agy", "nat"].forEach((k) => {
+        const btn = document.getElementById("rf-" + k);
+        if (btn) btn.classList.toggle("active", k === rampFocus);
+      });
+      const hint = document.getElementById("ramp-hint");
+      if (hint) {
+        hint.textContent = rampFocus === "all" ? "Click a Producer Below to Focus" : "Focused View (Click Again for All)";
+      }
+      renderRampChart();
+    }
+
     function renderRampChart() {
       const svg = document.getElementById("ramp-svg");
-      const xStart = 68, xStep = 77, yBottom = 195, pxPerPct = 2.8;
+      const xStart = 68, xStep = 77, yBottom = 195, plotTop = 26;
+      const yCfg = rampFocus === "nat"
+        ? { ticks: [6, 4, 2, 0], max: 6.5 }
+        : rampFocus === "agy"
+        ? { ticks: [10, 8, 6, 4, 2, 0], max: 10 }
+        : { ticks: [60, 45, 30, 15, 0], max: 60 };
+      const pxPerPct = (yBottom - plotTop) / yCfg.max;
       const yFor = (pct) => +(yBottom - pct * pxPerPct).toFixed(1);
 
       let out = [];
@@ -1395,7 +1441,7 @@
       out.push(`<text x="${ytdX + 8}" y="35" font-size="10" font-weight="700" fill="#1D7350">2026 YTD Window</text>`);
 
       // Y gridlines
-      [60, 45, 30, 15, 0].forEach((tick) => {
+      yCfg.ticks.forEach((tick) => {
         const y = yFor(tick);
         const dash = tick === 0 ? "" : 'stroke-dasharray="3 3"';
         const stroke = tick === 0 ? "#CBD8D0" : "#DCE7E0";
@@ -1414,42 +1460,47 @@
       out.push(`<line id="ramp-crosshair" x1="0" y1="22" x2="0" y2="${yBottom}" stroke="#1D7350" stroke-width="1" stroke-dasharray="3 3" opacity="0" />`);
 
       // Series polylines & dots
-      const series = [
+      const allSeries = [
         { key: "bld", name: "Builder", color: "#006838" },
         { key: "agy", name: "AgencyLink", color: "#DC2626" },
         { key: "nat", name: "National", color: "#0284C7" }
       ];
+      const activeSeries = rampFocus === "all" ? allSeries : allSeries.filter((s) => s.key === rampFocus);
 
-      series.forEach((s) => {
+      activeSeries.forEach((s) => {
         const pts = [];
         RAMP_DATA.forEach((d, i) => {
           if (d[s.key]) pts.push(`${xStart + i * xStep},${yFor(d[s.key].pct)}`);
         });
-        out.push(`<polyline fill="none" stroke="${s.color}" stroke-width="${s.key === "bld" ? 3 : 2.5}" stroke-linecap="round" stroke-linejoin="round" points="${pts.join(" ")}" />`);
+        out.push(`<polyline fill="none" stroke="${s.color}" stroke-width="${rampFocus === s.key ? 3.5 : (s.key === "bld" ? 3 : 2.5)}" stroke-linecap="round" stroke-linejoin="round" points="${pts.join(" ")}" />`);
       });
 
-      // Key start & end labels directly on chart (matching script points)
-      const octX = xStart;
-      const janX = xStart + 3 * xStep;
-      const last = RAMP_DATA[RAMP_DATA.length - 1];
-      const lastX = xStart + (RAMP_DATA.length - 1) * xStep;
-      out.push(`<text x="${octX}" y="${yFor(RAMP_DATA[0].bld.pct) - 10}" text-anchor="middle" font-size="10.5" font-weight="700" fill="#006838">0.9%</text>`);
-      out.push(`<text x="${janX - 6}" y="${yFor(RAMP_DATA[3].bld.pct) - 10}" text-anchor="middle" font-size="10.5" font-weight="800" fill="#006838">46%</text>`);
-      out.push(`<text x="${janX - 6}" y="${yFor(RAMP_DATA[3].nat.pct) + 15}" text-anchor="middle" font-size="10.5" font-weight="800" fill="#0284C7">2.1%</text>`);
-      out.push(`<text x="${lastX - 6}" y="${yFor(last.bld.pct) - 10}" text-anchor="middle" font-size="11" font-weight="800" fill="#006838">54%</text>`);
-      out.push(`<text x="${lastX - 6}" y="${yFor(last.agy.pct) - 9}" text-anchor="middle" font-size="11" font-weight="800" fill="#DC2626">8.1%</text>`);
-      out.push(`<text x="${lastX - 6}" y="${yFor(last.nat.pct) + 16}" text-anchor="middle" font-size="11" font-weight="800" fill="#0284C7">5.0%</text>`);
+      // Endpoint / focused month labels
+      if (rampFocus === "all") {
+        const octX = xStart;
+        const janX = xStart + 3 * xStep;
+        const last = RAMP_DATA[RAMP_DATA.length - 1];
+        const lastX = xStart + (RAMP_DATA.length - 1) * xStep;
+        out.push(`<text x="${octX}" y="${yFor(RAMP_DATA[0].bld.pct) - 10}" text-anchor="middle" font-size="10.5" font-weight="700" fill="#006838">0.9%</text>`);
+        out.push(`<text x="${janX - 6}" y="${yFor(RAMP_DATA[3].bld.pct) - 10}" text-anchor="middle" font-size="10.5" font-weight="800" fill="#006838">46%</text>`);
+        out.push(`<text x="${janX - 6}" y="${yFor(RAMP_DATA[3].nat.pct) + 15}" text-anchor="middle" font-size="10.5" font-weight="800" fill="#0284C7">2.1%</text>`);
+        out.push(`<text x="${lastX - 6}" y="${yFor(last.bld.pct) - 10}" text-anchor="middle" font-size="11" font-weight="800" fill="#006838">54%</text>`);
+        out.push(`<text x="${lastX - 6}" y="${yFor(last.agy.pct) - 9}" text-anchor="middle" font-size="11" font-weight="800" fill="#DC2626">8.1%</text>`);
+        out.push(`<text x="${lastX - 6}" y="${yFor(last.nat.pct) + 16}" text-anchor="middle" font-size="11" font-weight="800" fill="#0284C7">5.0%</text>`);
+      }
 
-      // Dots + hover columns
+      // Dots + solo month labels + hover columns
       RAMP_DATA.forEach((d, i) => {
         const x = xStart + i * xStep;
-        series.forEach((s) => {
+        activeSeries.forEach((s) => {
           if (!d[s.key]) return;
           const y = yFor(d[s.key].pct);
-          const isAprBld = (i === RAMP_DATA.length - 1 && s.key === "bld");
-          out.push(`<circle id="rdot-${s.key}-${i}" class="ramp-dot" cx="${x}" cy="${y}" r="${isAprBld ? 5 : 4}" fill="${isAprBld ? "#02DF82" : s.color}" stroke="${isAprBld ? "#006838" : "#FFFFFF"}" stroke-width="1.8" />`);
+          const isApr = (i === RAMP_DATA.length - 1);
+          out.push(`<circle id="rdot-${s.key}-${i}" class="ramp-dot" cx="${x}" cy="${y}" r="${rampFocus !== "all" || (isApr && s.key === "bld") ? 5 : 4}" fill="${isApr && s.key === "bld" ? "#02DF82" : s.color}" stroke="#FFFFFF" stroke-width="1.8" />`);
+          if (rampFocus !== "all") {
+            out.push(`<text x="${x}" y="${y - 10}" text-anchor="middle" font-size="11" font-weight="800" fill="${s.color}">${fmtPct(d[s.key].pct)}</text>`);
+          }
         });
-        // Wide invisible hit band per month for effortless Zoom hovering
         out.push(`<rect class="svg-hover-zone" data-idx="${i}" x="${x - 36}" y="20" width="72" height="190" fill="transparent" />`);
       });
 
@@ -1465,15 +1516,16 @@
           crosshair.setAttribute("x1", x);
           crosshair.setAttribute("x2", x);
           crosshair.setAttribute("opacity", "0.75");
-          series.forEach((s) => {
+          activeSeries.forEach((s) => {
             const dot = document.getElementById(`rdot-${s.key}-${idx}`);
             if (dot) dot.setAttribute("r", "6.5");
           });
           let rows = "";
-          series.forEach((s) => {
+          activeSeries.forEach((s) => {
             if (!d[s.key]) return;
             rows += `<div class="tt-row"><span class="tt-label"><span class="legend-swatch dot" style="background:${s.color};"></span>${s.name}</span><span class="tt-val">${fmtPct(d[s.key].pct)} <span style="font-weight:500;color:#52665C;">(${d[s.key].b.toLocaleString()}/${d[s.key].q.toLocaleString()})</span></span></div>`;
           });
+          if (!rows) return;
           showTooltip(e, `<div class="tt-title">${d.full} Bind Rate</div>${rows}`);
         });
 
@@ -1481,10 +1533,10 @@
 
         zone.addEventListener("mouseleave", () => {
           crosshair.setAttribute("opacity", "0");
-          series.forEach((s) => {
+          activeSeries.forEach((s) => {
             const dot = document.getElementById(`rdot-${s.key}-${idx}`);
             const isAprBld = (idx === RAMP_DATA.length - 1 && s.key === "bld");
-            if (dot) dot.setAttribute("r", isAprBld ? "5" : "4");
+            if (dot) dot.setAttribute("r", (rampFocus !== "all" || isAprBld) ? "5" : "4");
           });
           hideTooltip();
         });
@@ -1573,35 +1625,35 @@
     const SUB_VIEWS = {
       bld: {
         subtitle: "(Top 5 Builder Sub-Agencies = 75% of $6.13M Bound)",
-        headers: ["Partner Code", "Sub-Agency Name", "Quotes", "Bounds", "Bind %", "Bound $", "Share %", "Cancel %", "YTD LR"],
+        headers: ["Partner Code", "Sub-Agency Name", "Quotes", "Bounds", "Bind %", "Bound $", "Share %", "Cancel %", "YTD LR", "Quick Insight"],
         rows: [
-          ["BLD001", "Crestline Builder Services", "4,033", "1,186", "29%", "$1.33M", "22%", "6.0%", "31%"],
-          ["BLD002", "Summit Home Insurance", "3,490", "1,016", "29%", "$1.14M", "19%", "6.0%", "42%"],
-          ["BLD003", "Horizon Builder Agency", "2,981", "917", "31%", "$1.03M", "17%", "6.4%", "20%"],
-          ["BLD004", "Pinegate Homes Assurance", "1,825", "535", "29%", "$611k", "10%", "7.5%", "52%"],
-          ["BLD005", "Meridian New Home Agency", "1,559", "445", "29%", "$494k", "8.1%", "8.3%", "6.9%"]
+          ["BLD001", "Crestline Builder Services", "4,033", "1,186", "29%", "$1.33M", "22%", "6.0%", "31%", "Largest volume, steady LR"],
+          ["BLD002", "Summit Home Insurance", "3,490", "1,016", "29%", "$1.14M", "19%", "6.0%", "42%", "#2 partner, solid retention"],
+          ["BLD003", "Horizon Builder Agency", "2,981", "917", "31%", "$1.03M", "17%", "6.4%", "20%", "Strong bind + low 20% LR"],
+          ["BLD004", "Pinegate Homes Assurance", "1,825", "535", "29%", "$611k", "10%", "7.5%", "52%", "Elevated loss ratio (watch)"],
+          ["BLD005", "Meridian New Home Agency", "1,559", "445", "29%", "$494k", "8.1%", "8.3%", "6.9%", "Ultra-clean 6.9% loss ratio"]
         ]
       },
       agy: {
         subtitle: "(Top 5 AgencyLink = 14% of $931k Bound across 350 sub-agencies)",
-        headers: ["Partner Code", "Sub-Agency Name", "Quotes", "Bounds", "Bind %", "Bound $", "Share %", "Cancel %", "YTD LR"],
+        headers: ["Partner Code", "Sub-Agency Name", "Quotes", "Bounds", "Bind %", "Bound $", "Share %", "Cancel %", "YTD LR", "Quick Insight"],
         rows: [
-          ["AGY008", "Frontier Trust Agency", "102", "16", "16%", "$35k", "3.7%", "31%", "0%"],
-          ["AGY014", "Main Street Select", "63", "9", "14%", "$25k", "2.6%", "0%", "108%"],
-          ["AGY016", "Oak & Elm Agency", "113", "13", "12%", "$24k", "2.6%", "7.7%", "7.4%"],
-          ["AGY013", "Liberty Branch Partners", "105", "11", "10%", "$24k", "2.6%", "18%", "0%"],
-          ["AGY009", "Golden Key Insurance", "89", "15", "17%", "$24k", "2.6%", "20%", "0%"]
+          ["AGY008", "Frontier Trust Agency", "102", "16", "16%", "$35k", "3.7%", "31%", "0%", "High 31% cancel rate"],
+          ["AGY014", "Main Street Select", "63", "9", "14%", "$25k", "2.6%", "0%", "108%", "Claim outlier (108% LR)"],
+          ["AGY016", "Oak & Elm Agency", "113", "13", "12%", "$24k", "2.6%", "7.7%", "7.4%", "Healthy anchor partner"],
+          ["AGY013", "Liberty Branch Partners", "105", "11", "10%", "$24k", "2.6%", "18%", "0%", "Zero claims ($24k clean)"],
+          ["AGY009", "Golden Key Insurance", "89", "15", "17%", "$24k", "2.6%", "20%", "0%", "Top bind (17%), zero claims"]
         ]
       },
       st: {
         subtitle: "(Top States by Producer: TX+FL = 78% of Builder Bound $)",
-        headers: ["Producer", "State", "Quotes", "Bounds", "Bind %", "Bound $", "Cancel %", "YTD LR", "Channel Role"],
+        headers: ["Producer", "State", "Quotes", "Bounds", "Bind %", "Bound $", "Cancel %", "YTD LR", "Quick Insight"],
         rows: [
-          ["Builder", "TX", "9,119", "3,016", "33%", "$3.48M", "6.8%", "34%", "57% of Builder $"],
-          ["Builder", "FL", "3,447", "933", "27%", "$1.30M", "7.8%", "36%", "21% of Builder $"],
-          ["National", "TX", "24,696", "1,458", "5.9%", "$2.45M", "6.1%", "19%", "64% of National $"],
-          ["National", "GA", "10,257", "255", "2.5%", "$502k", "9.0%", "10%", "13% of National $"],
-          ["AgencyLink", "TX", "3,965", "209", "5.3%", "$436k", "13%", "58%", "47% of AgencyLink $"]
+          ["Builder", "TX", "9,119", "3,016", "33%", "$3.48M", "6.8%", "34%", "57% of Builder $ (Core market)"],
+          ["Builder", "FL", "3,447", "933", "27%", "$1.30M", "7.8%", "36%", "21% of Builder $ (Coastal CAT)"],
+          ["National", "TX", "24,696", "1,458", "5.9%", "$2.45M", "6.1%", "19%", "64% of National $ (19% LR)"],
+          ["National", "GA", "10,257", "255", "2.5%", "$502k", "9.0%", "10%", "13% of National $ (Low 10% LR)"],
+          ["AgencyLink", "TX", "3,965", "209", "5.3%", "$436k", "13%", "58%", "47% of AgencyLink $ (58% LR)"]
         ]
       }
     };
@@ -1612,15 +1664,19 @@
       });
       const v = SUB_VIEWS[key];
       document.getElementById("s5-qa-subtitle").textContent = v.subtitle;
-      const ths = v.headers.map((h, i) => `<th class="${i >= 2 && i <= 7 + (key !== "st" ? 1 : 0) ? "num" : ""}">${h}</th>`).join("");
+      const ths = v.headers.map((h, i) => {
+        const isNum = i >= 2 && i < v.headers.length - 1;
+        return `<th class="${isNum ? "num" : ""}">${h}</th>`;
+      }).join("");
       const trs = v.rows.map((r) => {
         const tds = r.map((cell, i) => {
-          const isNum = key === "st" ? (i >= 2 && i <= 7) : (i >= 2);
+          const isNum = i >= 2 && i < v.headers.length - 1;
           let style = "";
           if (key === "agy" && i === 7 && parseFloat(cell) >= 20) style = 'style="color:var(--rose);font-weight:700"';
           if (key === "agy" && i === 8 && parseFloat(cell) >= 100) style = 'style="color:var(--rose);font-weight:700"';
           if (key === "st" && i === 7 && parseFloat(cell) >= 50) style = 'style="color:var(--rose);font-weight:700"';
           if (key === "st" && i === 7 && parseFloat(cell) <= 20) style = 'style="color:var(--hippo-deep);font-weight:700"';
+          if (i === v.headers.length - 1) style = 'style="color:var(--muted);font-size:0.78rem;"';
           return `<td class="${isNum ? "num" : ""}" ${style}>${cell}</td>`;
         }).join("");
         return `<tr>${tds}</tr>`;
