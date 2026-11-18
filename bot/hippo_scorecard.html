@@ -266,6 +266,43 @@
       border-color: var(--hippo-mint);
     }
 
+    .ctrl-btn.focus-on {
+      background: rgba(2, 223, 130, 0.22);
+      color: var(--hippo-aqua);
+      border-color: var(--hippo-mint);
+    }
+
+    /* Presenter Spotlight Mode */
+    [data-beat] {
+      transition: opacity 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    }
+
+    .beat-inner {
+      border-radius: 10px;
+      padding: 8px 10px;
+      margin: -8px -10px;
+      border: 1.5px solid transparent;
+    }
+
+    .slide.has-focus [data-beat] {
+      opacity: 0.34;
+    }
+
+    .slide.has-focus [data-beat].beat-parent {
+      opacity: 1;
+    }
+
+    .slide.has-focus [data-beat].beat-active {
+      opacity: 1 !important;
+      border-color: var(--hippo-mint) !important;
+      box-shadow: 0 10px 26px rgba(0, 104, 56, 0.14), 0 0 0 2px rgba(2, 223, 130, 0.45);
+      transform: translateY(-2px);
+    }
+
+    .slide.has-focus .beat-inner.beat-active {
+      background: #F9FCFA;
+    }
+
     .slide-counter {
       font-size: 0.78rem;
       font-weight: 700;
@@ -652,6 +689,7 @@
       </div>
 
       <div class="nav-controls">
+        <button class="ctrl-btn" id="btn-focus" onclick="nextBeat()" title="Spotlight next talking point (Space or Down Arrow)">Focus: All</button>
         <button class="ctrl-btn" id="btn-prev" onclick="prevSlide()">Prev</button>
         <span class="slide-counter" id="slide-counter">1 / 7</span>
         <button class="ctrl-btn primary" id="btn-next" onclick="nextSlide()">Next</button>
@@ -674,13 +712,13 @@
           </div>
         </div>
 
-        <div class="banner">
+        <div class="banner" data-beat="1">
           <strong>Headline Finding:</strong> <strong>Builder</strong> drives over half of 2026 <code class="field-tag">bound_premium</code> at a 47.7% bind rate, but carries 83% High/Very-High CAT concentration. <strong>National</strong> delivers the cleanest risk (21.6% loss ratio) on massive quoting volume (4.1% bind). <strong>AgencyLink</strong> suffers from 15.0% cancellations and a 65.0% loss ratio across 350 fragmented sub-agencies.
         </div>
 
         <div class="grid-3">
           <!-- Builder -->
-          <div class="card">
+          <div class="card" data-beat="2">
             <div class="card-title">
               <span>Builder</span>
               <span class="pill green">Conversion Engine</span>
@@ -694,7 +732,7 @@
           </div>
 
           <!-- National -->
-          <div class="card">
+          <div class="card" data-beat="3">
             <div class="card-title">
               <span>National</span>
               <span class="pill blue">Scale &amp; Cleanest Risk</span>
@@ -708,7 +746,7 @@
           </div>
 
           <!-- AgencyLink -->
-          <div class="card">
+          <div class="card" data-beat="4">
             <div class="card-title">
               <span>AgencyLink</span>
               <span class="pill rose">High Friction</span>
@@ -735,7 +773,7 @@
 
         <div class="grid-2-1">
           <!-- Interactive Monthly Bind Rate SVG -->
-          <div class="card">
+          <div class="card" data-beat="1">
             <div class="card-title">
               <span>Monthly Bind Rate Ramp (Oct 2025 - Apr 2026)</span>
               <span class="pill green">Hover for Monthly Detail</span>
@@ -750,8 +788,8 @@
           </div>
 
           <!-- Share & Price Gap -->
-          <div class="card" style="display:flex; flex-direction:column; justify-content:space-between;">
-            <div>
+          <div class="card beat-container" style="display:flex; flex-direction:column; justify-content:space-between; gap:14px;">
+            <div class="beat-inner" data-beat="2">
               <div class="card-title"><span>2026 Share: Quotes vs Bound $</span></div>
               <div class="bar-wrap">
                 <div class="bar-head"><span>Quotes (74,250)</span><span>Bld 13% | Nat 78% | Agy 9%</span></div>
@@ -761,7 +799,7 @@
                   <div class="bar-fill" style="width:8.9%; background:var(--rose)" title="AgencyLink: 6,600 (8.9%)"></div>
                 </div>
               </div>
-              <div class="bar-wrap">
+              <div class="bar-wrap" style="margin-bottom:0;">
                 <div class="bar-head"><span>Bound $ ($10.00M)</span><span>Bld 52.5% | Nat 38.5% | Agy 9.0%</span></div>
                 <div class="bar-track">
                   <div class="bar-fill" style="width:52.5%; background:var(--hippo-deep)" title="Builder: $5.25M (52.5%)"></div>
@@ -771,7 +809,7 @@
               </div>
             </div>
 
-            <div style="border-top:1px solid var(--border); padding-top:12px;">
+            <div class="beat-inner" data-beat="3" style="border-top:1px solid var(--border); padding-top:14px;">
               <div class="card-title" style="margin-bottom:8px;"><span>Price Sensitivity (Unbound vs Bound)</span></div>
               <div class="metric-row"><span class="metric-label">Builder Quoted</span><span class="metric-val">$1,128 bound vs $1,351 (+20%)</span></div>
               <div class="metric-row"><span class="metric-label">National Quoted</span><span class="metric-val">$1,655 bound vs $1,858 (+12%)</span></div>
@@ -792,7 +830,7 @@
         </div>
 
         <div class="grid-2" style="margin-bottom:18px;">
-          <div class="card">
+          <div class="card" data-beat="1">
             <div class="card-title"><span>Post-Bind Cancellation Rate (All-Time)</span></div>
             <div class="bar-wrap">
               <div class="bar-head"><span>National (155 / 2,350)</span><span>6.6%</span></div>
@@ -808,7 +846,7 @@
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" data-beat="2">
             <div class="card-title"><span>Median Days From Bind to Cancel</span><span class="pill rose">Ops Drag</span></div>
             <div class="grid-3" style="text-align:center; padding-top:8px;">
               <div>
@@ -831,7 +869,7 @@
         </div>
 
         <div class="grid-3">
-          <div class="card">
+          <div class="card" data-beat="3">
             <div class="card-title"><span>Builder Top Cancels (370)</span></div>
             <ul class="clean-list">
               <li>Inspection not resolved (67)</li>
@@ -840,7 +878,7 @@
               <li>Property hazard ineligible (44)</li>
             </ul>
           </div>
-          <div class="card">
+          <div class="card" data-beat="4">
             <div class="card-title"><span>National Top Cancels (155)</span></div>
             <ul class="clean-list">
               <li>Mortgagee / escrow change (40)</li>
@@ -849,7 +887,7 @@
               <li>UW condition not resolved (18)</li>
             </ul>
           </div>
-          <div class="card">
+          <div class="card" data-beat="5">
             <div class="card-title"><span>AgencyLink Top Cancels (73)</span></div>
             <ul class="clean-list">
               <li>Inspection not resolved (19)</li>
@@ -873,7 +911,7 @@
 
         <div class="grid-2">
           <!-- Same-Month Cohort LR: Grouped Bar Chart + Table Toggle -->
-          <div class="card">
+          <div class="card" data-beat="1">
             <div class="card-title">
               <span>Same-Month Bind Cohort Loss Ratio</span>
               <div class="toggle-group">
@@ -914,8 +952,8 @@
           </div>
 
           <!-- CAT Risk & Underwriting Drivers -->
-          <div class="card" style="display:flex; flex-direction:column; justify-content:space-between;">
-            <div>
+          <div class="card beat-container" style="display:flex; flex-direction:column; justify-content:space-between; gap:12px;">
+            <div class="beat-inner" data-beat="2">
               <div class="card-title">
                 <span>CAT Risk Tier &amp; Underwriting Drivers (Bound)</span>
               </div>
@@ -940,7 +978,7 @@
                   <div class="bar-fill" style="width:1.1%; background:var(--rose)" title="Very High: 1.1%"></div>
                 </div>
               </div>
-              <div class="bar-wrap">
+              <div class="bar-wrap" style="margin-bottom:0;">
                 <div class="bar-head"><span>AgencyLink (<code class="field-tag">cat_risk_tier</code>)</span><span style="color:var(--sky)">77.7% Low / Moderate</span></div>
                 <div class="bar-track">
                   <div class="bar-fill" style="width:77.7%; background:var(--hippo-deep)" title="Low/Moderate: 77.7%"></div>
@@ -949,10 +987,10 @@
               </div>
             </div>
 
-            <div style="border-top:1px solid var(--border); padding-top:10px; margin-top:6px;">
-              <div class="metric-row"><span class="metric-label">Avg <code class="field-tag">home_age_years</code></span><span class="metric-val">Bld 0.1y | Nat 10.2y | Agy 33.0y</span></div>
+            <div class="beat-inner" data-beat="3" style="border-top:1px solid var(--border); padding-top:12px;">
+              <div class="metric-row" style="border-top:none; padding-top:0;"><span class="metric-label">Avg <code class="field-tag">home_age_years</code></span><span class="metric-val">Bld 0.1y | Nat 10.2y | Agy 33.0y</span></div>
               <div class="metric-row"><span class="metric-label">Avg <code class="field-tag">insurance_score</code></span><span class="metric-val">Bld 700 | Nat 674 | Agy 600</span></div>
-              <div class="metric-row"><span class="metric-label">Claim Frequency (<code class="field-tag">total_incurred_ytd</code>)</span><span class="metric-val">Bld 1.2% | Nat 2.6% | Agy 5.1%</span></div>
+              <div class="metric-row" style="padding-bottom:0;"><span class="metric-label">Claim Frequency (<code class="field-tag">total_incurred_ytd</code>)</span><span class="metric-val">Bld 1.2% | Nat 2.6% | Agy 5.1%</span></div>
             </div>
           </div>
         </div>
@@ -970,7 +1008,7 @@
 
         <div class="grid-2" style="margin-bottom:16px;">
           <!-- Proportional Sub-Agency Concentration Card -->
-          <div class="card">
+          <div class="card" data-beat="1">
             <div class="card-title">
               <span>Sub-Agency Concentration Breakdown</span>
               <span class="pill amber">364 Total IDs</span>
@@ -1014,7 +1052,7 @@
           </div>
 
           <!-- Data Hygiene Card -->
-          <div class="card">
+          <div class="card" data-beat="2">
             <div class="card-title"><span>Data Hygiene &amp; Normalization Audit</span><span class="pill blue">QA Verified</span></div>
             <ul class="clean-list">
               <li><strong>Unique Grain:</strong> 84,817 unique <code class="field-tag">address_id</code>s (1 quote per property, zero cross-producer overlap).</li>
@@ -1026,7 +1064,7 @@
         </div>
 
         <!-- Compact Interactive Q&A Drill-Down -->
-        <div class="card" style="padding:14px 18px;">
+        <div class="card" data-beat="3" style="padding:14px 18px;">
           <div class="card-title" style="margin-bottom:8px;">
             <span>Live Q&amp;A Drill-Down <span id="s5-qa-subtitle" style="font-weight:500; color:var(--muted); font-size:0.82rem;">(All-Time Bound Portfolio)</span></span>
             <div class="toggle-group">
@@ -1050,7 +1088,7 @@
         </div>
 
         <div class="grid-3">
-          <div class="card" style="border-top: 4px solid var(--hippo-deep);">
+          <div class="card" data-beat="1" style="border-top: 4px solid var(--hippo-deep);">
             <div class="card-title"><span>1. Builder</span><span class="pill green">Protect &amp; Diversify</span></div>
             <ul class="clean-list">
               <li>Maintain embedded point-of-sale closing integration driving 47.7% bind rate.</li>
@@ -1059,7 +1097,7 @@
             </ul>
           </div>
 
-          <div class="card" style="border-top: 4px solid var(--sky);">
+          <div class="card" data-beat="2" style="border-top: 4px solid var(--sky);">
             <div class="card-title"><span>2. National</span><span class="pill blue">Lift Conversion</span></div>
             <ul class="clean-list">
               <li>Test targeted pricing / quoting adjustments on unbound shoppers (currently +12% higher quoted premium).</li>
@@ -1068,7 +1106,7 @@
             </ul>
           </div>
 
-          <div class="card" style="border-top: 4px solid var(--rose);">
+          <div class="card" data-beat="3" style="border-top: 4px solid var(--rose);">
             <div class="card-title"><span>3. AgencyLink</span><span class="pill rose">Tighten &amp; Prune</span></div>
             <ul class="clean-list">
               <li>Stop taking new quotes on <code class="field-tag">home_age_years</code> &gt;15-20, <code class="field-tag">insurance_score</code> &lt;680, and High CAT going forward.</li>
@@ -1090,7 +1128,7 @@
         </div>
 
         <div class="grid-3" style="margin-bottom:18px;">
-          <div class="card">
+          <div class="card" data-beat="1">
             <div class="card-title"><span>Keep From Builder</span><span class="pill green">Conversion</span></div>
             <ul class="clean-list">
               <li>Embedded at home purchase or closing (25-45%+ bind rate).</li>
@@ -1099,7 +1137,7 @@
             </ul>
           </div>
 
-          <div class="card">
+          <div class="card" data-beat="2">
             <div class="card-title"><span>Keep From National</span><span class="pill blue">Risk Balance</span></div>
             <ul class="clean-list">
               <li>75-80% <code class="field-tag">LOW</code> / <code class="field-tag">MODERATE</code> <code class="field-tag">cat_risk_tier</code> mix.</li>
@@ -1108,7 +1146,7 @@
             </ul>
           </div>
 
-          <div class="card" style="background:var(--surface-alt); border-color:var(--hippo-forest);">
+          <div class="card" data-beat="3" style="background:var(--surface-alt); border-color:var(--hippo-forest);">
             <div class="card-title"><span>Target Partner Fit</span><span class="pill green">Who to Sign</span></div>
             <ul class="clean-list">
               <li><strong>National / Regional Mortgage Lenders &amp; Digital Closing Platforms</strong> (embedded at loan lock/escrow).</li>
@@ -1118,7 +1156,7 @@
           </div>
         </div>
 
-        <div class="banner" style="margin-bottom:0;">
+        <div class="banner" data-beat="4" style="margin-bottom:0;">
           <strong>Success Gate (First 90 Days):</strong> Evaluate any new producer on <strong>Bind Rate &gt;20%</strong>, <strong>Cancel Rate &lt;8%</strong>, <strong>High/Very-High CAT &lt;35%</strong>, and <strong>Avg <code class="field-tag">insurance_score</code> &gt;670</strong>.
         </div>
       </section>
@@ -1127,7 +1165,9 @@
         <div class="footer-status">
           <span class="footer-slide-badge" id="footer-slide-badge">Slide 1 of 7</span>
           <span class="footer-dot"></span>
-          <span><span class="kbd-chip">&larr;</span> <span class="kbd-chip">&rarr;</span> Arrows or <strong>Prev / Next</strong></span>
+          <span><span class="kbd-chip">&larr;</span> <span class="kbd-chip">&rarr;</span> Slides</span>
+          <span class="footer-dot"></span>
+          <span><span class="kbd-chip">&uarr;</span> <span class="kbd-chip">&darr;</span> Focus Highlight</span>
         </div>
         <span>Confidential | Hippo Insurance Panel Case Study</span>
       </div>
@@ -1141,6 +1181,75 @@
     const VALID_PASS = "hippo2026";
     let currentSlide = 0;
     const totalSlides = 7;
+    let currentBeat = 0;
+
+    function getSlideBeats(slideIdx) {
+      const slide = document.querySelector(`.slide[data-slide="${slideIdx}"]`);
+      if (!slide) return [];
+      return Array.from(slide.querySelectorAll("[data-beat]")).sort(
+        (a, b) => Number(a.getAttribute("data-beat")) - Number(b.getAttribute("data-beat"))
+      );
+    }
+
+    function applyBeat(beatNum) {
+      const slide = document.querySelector(`.slide[data-slide="${currentSlide}"]`);
+      if (!slide) return;
+      const beats = getSlideBeats(currentSlide);
+      const focusBtn = document.getElementById("btn-focus");
+      currentBeat = (beatNum >= 1 && beatNum <= beats.length) ? beatNum : 0;
+
+      slide.classList.toggle("has-focus", currentBeat > 0);
+      beats.forEach((el) => {
+        const isAct = Number(el.getAttribute("data-beat")) === currentBeat;
+        el.classList.toggle("beat-active", isAct);
+        if (isAct && el.closest(".beat-container")) {
+          el.closest(".beat-container").style.opacity = "1";
+        }
+      });
+
+      if (focusBtn) {
+        if (currentBeat === 0) {
+          focusBtn.textContent = "Focus: All";
+          focusBtn.classList.remove("focus-on");
+        } else {
+          focusBtn.textContent = `Focus: ${currentBeat} / ${beats.length}`;
+          focusBtn.classList.add("focus-on");
+        }
+      }
+    }
+
+    function nextBeat() {
+      const beats = getSlideBeats(currentSlide);
+      if (!beats.length) return;
+      if (currentBeat >= beats.length) {
+        applyBeat(0);
+      } else {
+        applyBeat(currentBeat + 1);
+      }
+    }
+
+    function prevBeat() {
+      const beats = getSlideBeats(currentSlide);
+      if (!beats.length) return;
+      if (currentBeat <= 0) {
+        applyBeat(beats.length);
+      } else {
+        applyBeat(currentBeat - 1);
+      }
+    }
+
+    function clearBeat() { applyBeat(0); }
+
+    function initBeatClicks() {
+      document.querySelectorAll("[data-beat]").forEach((el) => {
+        el.style.cursor = "pointer";
+        el.addEventListener("click", (e) => {
+          if (e.target.closest("button, a, input, .svg-hover-zone")) return;
+          const b = Number(el.getAttribute("data-beat"));
+          applyBeat(currentBeat === b ? 0 : b);
+        });
+      });
+    }
 
     function checkSession() {
       if (sessionStorage.getItem("hippo_auth") === "ok") {
@@ -1181,6 +1290,7 @@
       document.getElementById("footer-slide-badge").textContent = "Slide " + (idx + 1) + " of " + totalSlides;
       document.getElementById("btn-prev").disabled = idx === 0;
       document.getElementById("btn-next").disabled = idx === totalSlides - 1;
+      applyBeat(0);
     }
 
     function nextSlide() { goSlide(currentSlide + 1); }
@@ -1190,6 +1300,15 @@
       if (sessionStorage.getItem("hippo_auth") !== "ok") return;
       if (e.key === "ArrowRight") nextSlide();
       if (e.key === "ArrowLeft") prevSlide();
+      if (e.key === "ArrowDown" || (e.key === " " && !e.target.closest("button, input"))) {
+        e.preventDefault();
+        nextBeat();
+      }
+      if (e.key === "ArrowUp") {
+        e.preventDefault();
+        prevBeat();
+      }
+      if (e.key === "Escape") clearBeat();
     });
 
     /* ==================== SLIDE 1: SCOPE TOGGLE ==================== */
@@ -1501,6 +1620,7 @@
     renderRampChart();
     renderCohortChart();
     setSubView("bld");
+    initBeatClicks();
     goSlide(0);
   </script>
 </body>
