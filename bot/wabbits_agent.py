@@ -115,6 +115,14 @@ def get_effective_gemini_key(gemini_key: str) -> str:
     return gemini_key or vk
 
 
+def get_effective_openrouter_key(gemini_key: str) -> str:
+    env_or = os.environ.get("OPENROUTER_API_KEY", "").strip()
+    if env_or:
+        return env_or
+    vault = load_vault(gemini_key)
+    return str(vault.get("openrouter_key", "")).strip()
+
+
 def tg_api(token: str, method: str, payload: Dict[str, Any]) -> Dict[str, Any]:
     url = f"https://api.telegram.org/bot{token}/{method}"
     data = json.dumps(payload).encode("utf-8")
@@ -297,30 +305,77 @@ def build_context(gemini_key: str, token: str, user_text: str = "") -> str:
     notes_data = sync_notes_from_cloud(token)
     q_lower = (user_text or "").lower()
 
+    CORE_CAPS = {
+        "rules/MasterRules.md": 12000,
+        "memory/ProjectMemory.md": 12000,
+        "memory/Staging.md": 6000,
+        "memory/IdeaBacklog.md": 6000,
+        "memory/ErrorLog.md": 8000,
+        "memory/FullExperience.md": 10000,
+        "profile/resume.md": 8000,
+        "data/interviews.csv": 6000,
+        "data/apps.csv": 8000,
+    }
+    HEAVY_SHEET = ("data/live_google_sheet_apps.json", "data/tuesday_queue.md")
+    is_hippo = any(k in q_lower for k in ("hippo", "panel", "presentation", "case study", "insurance_score", "phase"))
+    is_sheet = any(k in q_lower for k in ("sheet", "queue", "applied", "apps", "job", "salary", "link", "status"))
+    is_prep  = any(k in q_lower for k in ("prep", "question", "mock", "interview", "knownwell", "deepgram", "anduril"))
+
     sections: List[str] = []
+    total_chars = 0
+    MAX_TOTAL = 80000
+
     for rel, content in files.items():
-        if rel.startswith("companies/job_postings/"):
-            fname = rel.split("/")[-1]
-            kw = fname.split("_")[0].split(".")[0].lower()
-            if kw not in q_lower and "posting" not in q_lower and "rundown" not in q_lower and "hippo" not in kw:
+        if total_chars >= MAX_TOTAL:
+            break
+        cap = CORE_CAPS.get(rel)
+        if cap is None:
+            if rel in HEAVY_SHEET:
+                if not is_sheet:
+                    continue
+                cap = 12000
+            elif rel.startswith("companies/job_postings/"):
+                fname = rel.split("/")[-1]
+                kw = fname.split("_")[0].split(".")[0].lower()
+                if kw not in q_lower and "posting" not in q_lower:
+                    continue
+                cap = 8000
+            elif rel.startswith(("Hippo Panel Interview/", "prep/hippo_interview/")):
+                if not is_hippo:
+                    continue
+                cap = 8000
+            elif rel == "interviews/2026-11-05_hippo_round1_machine_transcript.txt":
+                if "transcript" not in q_lower and "round 1" not in q_lower:
+                    continue
+                cap = 8000
+            elif rel.startswith("prep/"):
+                if not is_prep:
+                    continue
+                cap = 6000
+            elif rel.startswith("data/work_projects/"):
+                if not (is_prep or is_hippo or "experience" in q_lower or "project" in q_lower):
+                    continue
+                cap = 5000
+            else:
                 continue
-        if rel == "interviews/2026-11-05_hippo_round1_machine_transcript.txt":
-            if "transcript" not in q_lower and "round 1" not in q_lower and "hippo" not in q_lower:
-                continue
-        sections.append(f"=== {rel} ===\n{content}")
+
+        snippet = content[:cap]
+        total_chars += len(snippet)
+        sections.append(f"=== {rel} ===\n{snippet}")
 
     if notes_data.get("rules") or notes_data.get("notes"):
-        sections.append("=== Persistent Telegram Notes & Saved Job Links ===\n" + json.dumps(notes_data, indent=2))
+        notes_dump = json.dumps(notes_data, indent=2)[-6000:]
+        sections.append("=== Persistent Telegram Notes & Saved Job Links ===\n" + notes_dump)
 
     return "\n\n".join(sections)
 
 
 def call_gemini(gemini_key: str, payload: Dict[str, Any], timeout_sec: int = 75) -> str:
     eff_key = get_effective_gemini_key(gemini_key)
-    models = ["gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.6-flash", "gemini-2.5-flash"]
+    models = ["gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.8-flash", "gemini-3.6-flash"]
     bad_models = set()
     last_err = None
-    for attempt in range(3):
+    for attempt in range(2):
         for model_name in models:
             if model_name in bad_models:
                 continue
@@ -346,8 +401,8 @@ def call_gemini(gemini_key: str, payload: Dict[str, Any], timeout_sec: int = 75)
                 if he.code in (400, 404):
                     bad_models.add(model_name)
                     continue
-                if he.code == 429:
-                    time.sleep(3.0 * (attempt + 1))
+                if he.code in (429, 503):
+                    time.sleep(2.0)
                     continue
                 time.sleep(1.0)
             except Exception as e:
@@ -355,32 +410,33 @@ def call_gemini(gemini_key: str, payload: Dict[str, Any], timeout_sec: int = 75)
                 time.sleep(1.0)
                 continue
 
-    # Optional OpenRouter fallback if Gemini models hit burst rate limits
-    or_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
+    # Automatic OpenRouter fallback (reads OPENROUTER_API_KEY env or encrypted vault openrouter_key)
+    or_key = get_effective_openrouter_key(gemini_key)
     if or_key:
-        try:
-            sys_parts = (payload.get("system_instruction") or {}).get("parts") or []
-            sys_txt = "\n".join(p.get("text", "") for p in sys_parts if isinstance(p, dict)).strip()
-            msgs = []
-            if sys_txt:
-                msgs.append({"role": "system", "content": sys_txt})
-            for c in payload.get("contents", []):
-                role = "assistant" if c.get("role") == "model" else "user"
-                txt = "\n".join(p.get("text", "") for p in c.get("parts", []) if isinstance(p, dict) and p.get("text")).strip()
-                if txt:
-                    msgs.append({"role": role, "content": txt})
-            or_req = urllib.request.Request(
-                "https://openrouter.ai/api/v1/chat/completions",
-                data=json.dumps({"model": "google/gemini-2.5-flash", "messages": msgs, "max_tokens": 1200}).encode("utf-8"),
-                headers={"Content-Type": "application/json", "Authorization": f"Bearer {or_key}"},
-            )
-            with _open_url(or_req, timeout=timeout_sec) as resp:
-                or_res = json.loads(resp.read().decode("utf-8"))
-            txt = ((or_res.get("choices") or [{}])[0].get("message") or {}).get("content", "").strip()
+        sys_parts = (payload.get("system_instruction") or {}).get("parts") or []
+        sys_txt = "\n".join(p.get("text", "") for p in sys_parts if isinstance(p, dict)).strip()
+        msgs = []
+        if sys_txt:
+            msgs.append({"role": "system", "content": sys_txt})
+        for c in payload.get("contents", []):
+            role = "assistant" if c.get("role") == "model" else "user"
+            txt = "\n".join(p.get("text", "") for p in c.get("parts", []) if isinstance(p, dict) and p.get("text")).strip()
             if txt:
-                return txt
-        except Exception as oe:
-            last_err = oe
+                msgs.append({"role": role, "content": txt})
+        for or_model in ("google/gemini-2.5-flash", "openai/gpt-4o-mini"):
+            try:
+                or_req = urllib.request.Request(
+                    "https://openrouter.ai/api/v1/chat/completions",
+                    data=json.dumps({"model": or_model, "messages": msgs, "max_tokens": 1200}).encode("utf-8"),
+                    headers={"Content-Type": "application/json", "Authorization": f"Bearer {or_key}"},
+                )
+                with _open_url(or_req, timeout=timeout_sec) as resp:
+                    or_res = json.loads(resp.read().decode("utf-8"))
+                txt = ((or_res.get("choices") or [{}])[0].get("message") or {}).get("content", "").strip()
+                if txt:
+                    return txt
+            except Exception as oe:
+                last_err = oe
     raise RuntimeError(f"Gemini API error: {last_err}")
 
 
@@ -537,7 +593,7 @@ def _flush_wabbits_batch(gemini_key: str, token: str, chat_id: int):
         is_explicit_idea_dump = (
             "idea dump" in s_lower
             or "this is an idea dump" in s_lower
-            or s_lower.startswith(("note:", "log:", "remember:", "rule:", "add rule", "save note", "idea:"))
+            or s_lower.startswith(("note:", "log:", "remember:", "rule:", "add rule", "save note", "idea:", "staging:", "backlog:"))
             or "don't need this return" in s_lower
             or "dont need this return" in s_lower
             or "don’t need this return" in s_lower
@@ -546,6 +602,8 @@ def _flush_wabbits_batch(gemini_key: str, token: str, chat_id: int):
             or "when i get to my computer" in s_lower
             or "when i get back to my computer" in s_lower
             or "for when i get home" in s_lower
+            or ("once im home" in s_lower and ("staging" in s_lower or "log" in s_lower or "update" in s_lower))
+            or ("once i'm home" in s_lower and ("staging" in s_lower or "log" in s_lower or "update" in s_lower))
         )
         if (
             combined_text
