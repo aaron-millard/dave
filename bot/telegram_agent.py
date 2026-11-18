@@ -1265,6 +1265,19 @@ class BotHTTPHandler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(fc_html.encode("utf-8"))
             return
+        if path == "/hippo-scorecard":
+            hs_path = resolve_path("hippo_scorecard.html", "bot")
+            if os.path.exists(hs_path):
+                with open(hs_path, "r", encoding="utf-8") as f:
+                    hs_html = f.read()
+            else:
+                hs_html = "<h1>Producer Health Scorecard not found</h1>"
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            self.wfile.write(hs_html.encode("utf-8"))
+            return
         if path.startswith("/audio/sql/") and (path.endswith(".wav") or path.endswith(".mp3")):
             safe_name = os.path.basename(path)
             aud_path = resolve_path(os.path.join("audio", "sql", safe_name), "bot")
