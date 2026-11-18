@@ -734,8 +734,92 @@
           </div>
         </div>
 
-        <div class="banner" data-beat="1">
-          <strong>Apples-to-Apples Scope (84,817 Quotes | Through May 15, 2026):</strong> Because our producers launched at different times (<strong>Builder: Oct 2025</strong> · <strong>AgencyLink: Nov 2025</strong> · <strong>National: Jan 1, 2026</strong>), this scorecard defaults to <strong>YTD 2026 (Jan 1 - May 15)</strong> so all three compete on the exact same playing field. Use the toggle above for All-Time.
+        <div class="card" data-beat="1" style="margin-bottom:18px; padding:14px 20px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+            <span style="font-size:0.74rem; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:var(--hippo-forest);">Scope &amp; Launch Timeline</span>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="b1-btn-a" onclick="setBeat1Style('a')">Style A: Timeline</button>
+              <button class="toggle-btn" id="b1-btn-b" onclick="setBeat1Style('b')">Style B: 3 Tiles</button>
+              <button class="toggle-btn" id="b1-btn-c" onclick="setBeat1Style('c')">Style C: Split Bar</button>
+            </div>
+          </div>
+
+          <!-- OPTION A: Timeline Gantt + 84,817 Big Stat -->
+          <div id="s1-b1-a" style="display:grid; grid-template-columns:215px 1fr; gap:20px; align-items:center;">
+            <div style="border-right:1px solid var(--border); padding-right:16px;">
+              <div class="big-stat" style="color:var(--hippo-deep); margin:0;">84,817</div>
+              <div style="font-size:0.78rem; color:var(--muted); font-weight:600; margin-top:4px;">Total Quotes · 3 Producers<br>Through May 15, 2026</div>
+            </div>
+            <svg viewBox="0 0 680 108" width="100%" height="108" aria-label="Launch Timeline">
+              <rect x="292" y="2" width="374" height="82" rx="8" fill="#E6F8EE" stroke="#02DF82" stroke-width="1.5" />
+              <text x="479" y="17" text-anchor="middle" font-size="11" font-weight="800" fill="#006838">YTD 2026 Window (Jan 1 - May 15 · Apples-to-Apples)</text>
+              <line x1="90" y1="88" x2="666" y2="88" stroke="#CBD8D0" stroke-width="1.5" />
+              <text x="90" y="103" text-anchor="middle" font-size="10.5" fill="#52665C">Oct '25</text>
+              <text x="157" y="103" text-anchor="middle" font-size="10.5" fill="#52665C">Nov '25</text>
+              <text x="224" y="103" text-anchor="middle" font-size="10.5" fill="#52665C">Dec '25</text>
+              <text x="292" y="103" text-anchor="middle" font-size="10.5" font-weight="800" fill="#006838">Jan 1</text>
+              <text x="660" y="103" text-anchor="end" font-size="10.5" font-weight="700" fill="#16241D">May 15</text>
+              <text x="8" y="37" font-size="11.5" font-weight="800" fill="#006838">Builder</text>
+              <rect x="90" y="27" width="570" height="11" rx="5.5" fill="#006838" />
+              <circle cx="90" cy="32.5" r="4" fill="#02DF82" stroke="#006838" stroke-width="1.5" />
+              <text x="8" y="57" font-size="11.5" font-weight="800" fill="#DC2626">AgencyLink</text>
+              <rect x="157" y="47" width="503" height="11" rx="5.5" fill="#DC2626" />
+              <circle cx="157" cy="52.5" r="4" fill="#FFFFFF" stroke="#DC2626" stroke-width="1.5" />
+              <text x="8" y="77" font-size="11.5" font-weight="800" fill="#0284C7">National</text>
+              <rect x="292" y="67" width="368" height="11" rx="5.5" fill="#0284C7" />
+              <circle cx="292" cy="72.5" r="4" fill="#FFFFFF" stroke="#0284C7" stroke-width="1.5" />
+            </svg>
+          </div>
+
+          <!-- OPTION B: 3 Clean KPI Tiles -->
+          <div id="s1-b1-b" class="grid-3" style="display:none; gap:14px;">
+            <div style="background:var(--surface-alt); border:1px solid var(--border); border-radius:10px; padding:12px 14px;">
+              <div style="font-size:0.7rem; font-weight:800; text-transform:uppercase; color:var(--muted);">Total Dataset</div>
+              <div class="big-stat" style="color:var(--hippo-deep); margin:2px 0;">84,817</div>
+              <div style="font-size:0.78rem; color:var(--muted); font-weight:600;">Quotes through May 15, 2026</div>
+            </div>
+            <div style="background:var(--surface-alt); border:1px solid var(--border); border-radius:10px; padding:12px 14px;">
+              <div style="font-size:0.7rem; font-weight:800; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Staggered Launches</div>
+              <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                <span class="pill green">Builder · Oct '25</span>
+                <span class="pill rose">AgencyLink · Nov '25</span>
+                <span class="pill blue">National · Jan 1</span>
+              </div>
+            </div>
+            <div style="background:#E6F8EE; border:1px solid var(--hippo-mint); border-radius:10px; padding:12px 14px;">
+              <div style="font-size:0.7rem; font-weight:800; text-transform:uppercase; color:var(--hippo-deep);">Active Window</div>
+              <div class="big-stat" style="color:var(--hippo-deep); font-size:1.65rem; margin:2px 0;">YTD 2026</div>
+              <div style="font-size:0.78rem; color:var(--hippo-deep); font-weight:600;">Jan 1 - May 15 · 74,250 Quotes ($10M)</div>
+            </div>
+          </div>
+
+          <!-- OPTION C: Quote Volume Split Bar + Launch Ladder -->
+          <div id="s1-b1-c" class="grid-2" style="display:none; gap:20px; align-items:center;">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:baseline;">
+                <span class="big-stat" style="color:var(--hippo-deep); margin:0;">84,817 <span style="font-size:0.9rem; font-weight:700; color:var(--muted);">Total Quotes</span></span>
+                <span class="pill green">88% in YTD 2026</span>
+              </div>
+              <div class="bar-track" style="height:14px; margin:8px 0 6px;">
+                <div class="bar-fill" style="width:87.5%; background:var(--hippo-deep);" title="YTD 2026: 74,250 (88%)"></div>
+                <div class="bar-fill" style="width:12.5%; background:#94A3B8;" title="Q4 '25 Ramp: 10,567 (12%)"></div>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:0.76rem; color:var(--muted); font-weight:600;">
+                <span><strong style="color:var(--hippo-deep);">74,250</strong> YTD 2026 (Jan 1 - May 15)</span>
+                <span><strong>10,567</strong> Q4 '25 Ramp (Oct - Dec)</span>
+              </div>
+            </div>
+            <div style="border-left:1px solid var(--border); padding-left:18px;">
+              <div style="font-size:0.72rem; font-weight:800; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Launch Order</div>
+              <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center; font-size:0.82rem; font-weight:700;">
+                <span class="pill green">Oct '25: Builder</span>
+                <span>-&gt;</span>
+                <span class="pill rose">Nov '25: AgencyLink</span>
+                <span>-&gt;</span>
+                <span class="pill blue">Jan 1: National (All 3 Live)</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="grid-3">
@@ -1681,6 +1765,15 @@
         return `<tr>${tds}</tr>`;
       }).join("");
       document.getElementById("s5-qa-body").innerHTML = `<table><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table>`;
+    }
+
+    function setBeat1Style(k) {
+      ["a", "b", "c"].forEach((opt) => {
+        const el = document.getElementById("s1-b1-" + opt);
+        const btn = document.getElementById("b1-btn-" + opt);
+        if (el) el.style.display = (opt === k) ? "grid" : "none";
+        if (btn) btn.classList.toggle("active", opt === k);
+      });
     }
 
     /* ==================== INIT ==================== */
