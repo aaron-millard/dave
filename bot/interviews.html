@@ -620,23 +620,606 @@
       </div>
 
       <div class="company-tabs">
-        <button class="company-tab active" data-company="knownwell" onclick="switchCompany('knownwell')">
+        <button class="company-tab active" data-company="hippo" onclick="switchCompany('hippo')">
+          <span>Hippo</span>
+          <span class="tab-stage-tag">PASSED R3 - Lead Analyst</span>
+        </button>
+        <button class="company-tab" data-company="hippo2" onclick="switchCompany('hippo2')">
+          <span>Hippo 2</span>
+          <span class="tab-stage-tag" style="background: rgba(148, 163, 184, 0.2); color: var(--muted);">Upcoming</span>
+        </button>
+        <button class="company-tab" data-company="knownwell" onclick="switchCompany('knownwell')">
           <span>Knownwell</span>
           <span class="tab-stage-tag">R2 SQL - Thu Nov 19</span>
         </button>
-        <button class="company-tab" data-company="hippo" onclick="switchCompany('hippo')">
-          <span>Hippo Insurance</span>
-          <span class="tab-stage-tag">R3 Passed - Awaiting R4</span>
-        </button>
         <button class="company-tab" data-company="anduril" onclick="switchCompany('anduril')">
-          <span>Anduril Industries</span>
-          <span class="tab-stage-tag">R1 Recruiter Screen</span>
+          <span>Anduril</span>
+          <span class="tab-stage-tag">Invited - Screen</span>
         </button>
       </div>
     </div>
 
-    <!-- ==================== KNOWNWELL PANEL ==================== -->
-    <section id="panel-knownwell" class="company-panel active">
+        <!-- ==================== HIPPO INSURANCE PANEL ==================== -->
+    <section id="panel-hippo" class="company-panel active">
+      <div class="company-header">
+        <div class="company-title-wrap">
+          <h1>Hippo Insurance - Senior Data Analyst</h1>
+          <div class="company-sub">Full Lifecycle Insurance &amp; Funnel Analytics (Downtown Austin Hybrid - 5th St)</div>
+        </div>
+        <div class="status-badge" style="background: rgba(192, 132, 252, 0.18); color: var(--purple); border: 1px solid rgba(192, 132, 252, 0.45);">
+          PASSED R3 (Pushan) - Awaiting R4 Case Study
+        </div>
+      </div>
+
+      <!-- Stage Timeline Tracker -->
+      <div class="card" style="margin-bottom: 24px;">
+        <div class="stage-pipeline">
+          <div class="step completed">
+            <div class="step-label">Stage 1</div>
+            <div class="step-name">Recruiter Screen</div>
+            <div class="step-sub">30-min Overview (PASSED)</div>
+          </div>
+          <div class="step completed">
+            <div class="step-label">Stage 2</div>
+            <div class="step-name">Hiring Manager</div>
+            <div class="step-sub">Jakub Sienkiel (PASSED)</div>
+          </div>
+          <div class="step completed">
+            <div class="step-label">Stage 3</div>
+            <div class="step-name">Technical Screen</div>
+            <div class="step-sub">Pushan, Sr BI Eng (PASSED Nov 16)</div>
+          </div>
+          <div class="step current">
+            <div class="step-label">Stage 4</div>
+            <div class="step-name">Case Study / Exec</div>
+            <div class="step-sub">Awaiting Scheduling</div>
+          </div>
+          <div class="step">
+            <div class="step-label">Stage 5</div>
+            <div class="step-name">Final Offer</div>
+            <div class="step-sub">Downtown Austin Hybrid</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1. Organization, Role Context & AI Stack -->
+      <div class="section-heading">1. Organization, Role Context &amp; AI Stack</div>
+      <div class="grid-2">
+        <div class="card">
+          <h2>Organization &amp; Role Context</h2>
+          <div class="kv-grid">
+            <div class="kv-item">
+              <div class="kv-label">Hiring Manager</div>
+              <div class="kv-val">Jakub Sienkiel (Sr. Mgr)</div>
+            </div>
+            <div class="kv-item">
+              <div class="kv-label">R3 Interviewer</div>
+              <div class="kv-val">Pushan (Sr. BI Engineer)</div>
+            </div>
+            <div class="kv-item">
+              <div class="kv-label">Company Size</div>
+              <div class="kv-val">~500 Employees</div>
+            </div>
+            <div class="kv-item">
+              <div class="kv-label">Office Location</div>
+              <div class="kv-val">5th St Downtown Austin (3 blocks away)</div>
+            </div>
+          </div>
+          <ul class="clean-list">
+            <li>Centralized ~1 year ago into a single analytics + data engineering team supporting Sales, Marketing, Pricing, Actuarial, and Underwriting.</li>
+            <li>Jakub currently has 1 dedicated Sales/Marketing Sr. Analyst and needs a 2nd dedicated Sr. Analyst to co-lead acquisition analytics for a major upcoming product launch.</li>
+            <li>Hybrid policy: Tuesdays &amp; Wednesdays in Austin office with free catered lunches; Jakub lives in Dallas and visits monthly.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2>Tech Stack &amp; Modern Analytics Roadmap</h2>
+          <ul class="clean-list">
+            <li>Warehouse: Migrating to Databricks; actively establishing a centralized semantic layer to prevent rogue ad-hoc SQL definitions.</li>
+            <li>AI &amp; Automation: Daily power users of Claude AI and Devin in engineering workflows.</li>
+            <li>Dashboarding Shift: Moving heavily toward Claude-generated interactive HTML dashboards for rapid executive prototyping rather than drag-and-drop BI overhead.</li>
+            <li>Philosophy: Analysts must operate as strategic business consultants uncovering proactive revenue opportunities rather than reactive ticket-takers.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 2. Technical SQL Positioning & Cheat Sheet Essentials -->
+      <div class="section-heading">2. Technical SQL Positioning &amp; Cheat Sheet Essentials</div>
+      
+      <div class="callout" style="border-left-color: var(--purple); background: rgba(192, 132, 252, 0.08);">
+        <div class="callout-title" style="color: var(--purple);">Technical SQL Positioning (What You Do vs. What You Don't Do)</div>
+        "In my daily production workflow at OneMagnify, I work heavily across complex SELECT queries, multi-table JOINs, modular Views, Stored Procedures, and DML (INSERT, UPDATE, DELETE) to prepare clean data models. The main area I brush up on in raw SQL is analytical window functions (ROW_NUMBER, LAG, LEAD, and rolling frame windows), because in our agency stack we typically push dynamic pacing, rolling periods, and ranking calculations directly into the semantic DAX layer in Power BI."
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h2>Questions to Ask the Second They Put Tables on Screen</h2>
+          <ul class="clean-list">
+            <li>"Is this quotes table one row per quote, or can a customer show up multiple times?"</li>
+            <li>"Can one quote have multiple policies attached, or is it strictly one-to-one?"</li>
+            <li>"Which timestamp are we counting as the bind here: bound date or policy start date?"</li>
+            <li>"For the status column, is 'active' the only one that counts as a bind, or do you count 'pending' too?"</li>
+            <li>"Can user_id or quote_id be null in these tables?"</li>
+            <li>"Do you want this broken out by channel, or just the high-level totals?"</li>
+            <li>"When joining ad spend or marketing touches, what is the attribution window and grain?"</li>
+            <li>"Are timestamps UTC or local, and should cancelled/expired policies be excluded?"</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2>Subtle Practitioner Comments to Drop Along the Way</h2>
+          <ul class="clean-list">
+            <li>"The first thing I check when conversion drops is if an upstream form or CRM tracking field broke before I assume it is an ad issue."</li>
+            <li>"I lock these definitions into modular SQL views so nobody downstream pulls conflicting numbers."</li>
+            <li>"Cost per Bind is what matters here. Cheap quotes mean nothing if they do not convert."</li>
+            <li>"Since y'all are moving toward Claude HTML dashboards, are you pushing most transformations upstream into SQL now so the database delivers clean tables straight to the UI?"</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 3. Insight Framework & Smart Questions -->
+      <div class="section-heading">3. Insight Framework &amp; Questions to Ask</div>
+      <div class="grid-2">
+        <div class="card">
+          <h2>The 3-Part Analytical Insight Framework (Fixing R2 Miss)</h2>
+          <div class="quote-box">
+            <strong>1. Business Question:</strong> "With the Brooklyn Nets, we wanted to know why heavy paid media spend across Meta and Google wasn't driving profitable ticket sales across all home games."<br><br>
+            <strong>2. Data Finding:</strong> "When I joined ad spend with Ticketmaster sales, the data revealed we were pouring heavy budget into low-tier weekday games where ticket demand was completely flat, driving up our Cost Per Order. Meanwhile, weekend matchups had high remaining seat inventory and 3x higher average ticket prices that were under-supported."<br><br>
+            <strong>3. Business Action:</strong> "I recommended cutting ad spend on those low-converting weekday games and reallocating the budget into weekend games with high-margin seat inventory, which drove a much higher return on ad spend and lifted gross ticket revenue with zero increase in total budget."
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Smart Questions to Ask at the End</h2>
+          <ul class="clean-list">
+            <li>"Jakub mentioned you guys are building out a centralized semantic layer to keep metric definitions from breaking downstream. From your day-to-day on the team, which funnel definitions are currently the hardest to keep aligned, and what tables or data sources are the messiest to work with?"</li>
+            <li>"With traditional BI tools, things like row-level security and user permissions are built right in. As you guys lean more into custom HTML dashboards, how are you handling data governance and controlling who has permission to see sensitive funnel numbers?"</li>
+            <li>"When marketing wants to launch a new campaign or tweak a step in the quote funnel, how early does your analytics team get brought in?"</li>
+            <li>"With the Databricks migration coming up next year, which core Sales/Marketing tables are highest priority for the new semantic layer?"</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 4. Verified Production Database Schema -->
+      <div class="section-heading">4. Verified Production Database Schema &amp; Live Tables (From Round 3)</div>
+      <div class="grid-2">
+        <div class="card">
+          <h2>1. customers Table</h2>
+          <div class="kv-grid">
+            <div class="kv-item"><div class="kv-label">Primary Key</div><div class="kv-val">customer_id</div></div>
+            <div class="kv-item"><div class="kv-label">Grain</div><div class="kv-val">1 row per customer</div></div>
+          </div>
+          <ul class="clean-list" style="margin-top: 10px;">
+            <li><code>customer_id</code> (PK, INT/UUID) - Unique customer identifier.</li>
+            <li><code>state</code> (VARCHAR) - Customer's billing / resident state (e.g. 'TX', 'CA').</li>
+            <li><code>customer_tier</code> (VARCHAR) - Risk classification: 'Preferred', 'Standard', 'Substandard'.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2>2. properties Table</h2>
+          <div class="kv-grid">
+            <div class="kv-item"><div class="kv-label">Primary Key</div><div class="kv-val">property_id</div></div>
+            <div class="kv-item"><div class="kv-label">Foreign Key</div><div class="kv-val">customer_id -> customers</div></div>
+          </div>
+          <ul class="clean-list" style="margin-top: 10px;">
+            <li><code>property_id</code> (PK, INT/UUID) - Insured home property identifier.</li>
+            <li><code>customer_id</code> (FK) - Owning customer.</li>
+            <li><code>state</code> (VARCHAR) - Physical property location state (can differ from customer state).</li>
+            <li><code>zip_code</code> (VARCHAR) - Geographic territory.</li>
+            <li><code>year_built</code> (INT) - Construction year.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2>3. policies Table</h2>
+          <div class="kv-grid">
+            <div class="kv-item"><div class="kv-label">Primary Key</div><div class="kv-val">policy_id</div></div>
+            <div class="kv-item"><div class="kv-label">Foreign Key</div><div class="kv-val">property_id -> properties</div></div>
+          </div>
+          <ul class="clean-list" style="margin-top: 10px;">
+            <li><code>policy_id</code> (PK, INT/UUID) - Unique insurance contract policy identifier.</li>
+            <li><code>property_id</code> (FK) - Insured property.</li>
+            <li><code>annual_premium</code> (DECIMAL) - Full-year premium revenue.</li>
+            <li><code>policy_start_date</code> (DATE) - Effective start date of coverage.</li>
+            <li><code>policy_status</code> (VARCHAR) - 'active', 'cancelled', 'expired'.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2>4. claims Table</h2>
+          <div class="kv-grid">
+            <div class="kv-item"><div class="kv-label">Primary Key</div><div class="kv-val">claim_id</div></div>
+            <div class="kv-item"><div class="kv-label">Foreign Key</div><div class="kv-val">policy_id -> policies</div></div>
+          </div>
+          <ul class="clean-list" style="margin-top: 10px;">
+            <li><code>claim_id</code> (PK, INT/UUID) - Loss claim event identifier.</li>
+            <li><code>policy_id</code> (FK) - Bound policy on which claim occurred.</li>
+            <li><code>claim_date</code> (DATE) - Date incident was filed.</li>
+            <li><code>amount_paid</code> (DECIMAL) - Payout amount in losses paid.</li>
+            <li><code>claim_status</code> (VARCHAR) - 'settled', 'open'.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 5. Technical SQL Challenges & Problems -->
+      <div class="section-heading">5. Technical SQL Challenges &amp; Live Problems (Round 3 &amp; Funnel Patterns)</div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h2>R3 Problem 1: State Policy Distribution &amp; Data Hygiene</h2>
+          <p style="font-size: 0.82rem; color: var(--muted); margin-bottom: 8px;">Pushan's challenge: Group active policies by property state, calculate total active policies, and calculate the percentage of total active policies using window functions.</p>
+          <div class="sql-wrap">
+            <div class="sql-header">
+              <span>Window Function Ratio</span>
+              <button class="copy-btn" onclick="copySql(this)">Copy</button>
+            </div>
+            <pre>SELECT
+    pr.state AS property_state,
+    COUNT(DISTINCT p.policy_id) AS active_policy_count,
+    ROUND(
+        COUNT(DISTINCT p.policy_id) * 100.0 / 
+        SUM(COUNT(DISTINCT p.policy_id)) OVER (), 
+        2
+    ) AS pct_of_total_policies
+FROM policies p
+JOIN properties pr ON p.property_id = pr.property_id
+WHERE p.policy_status = 'active'
+GROUP BY pr.state
+ORDER BY active_policy_count DESC;</pre>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>R3 Problem 2: First-Claim Loss by Tier (ROW_NUMBER)</h2>
+          <p style="font-size: 0.82rem; color: var(--muted); margin-bottom: 8px;">Identify each policy's earliest filed claim, aggregate total losses by customer risk tier, and explain the loss ratio denominator.</p>
+          <div class="sql-wrap">
+            <div class="sql-header">
+              <span>ROW_NUMBER() Earliest Claim</span>
+              <button class="copy-btn" onclick="copySql(this)">Copy</button>
+            </div>
+            <pre>WITH ranked_claims AS (
+    SELECT
+        c.claim_id,
+        c.policy_id,
+        c.amount_paid,
+        c.claim_date,
+        ROW_NUMBER() OVER (
+            PARTITION BY c.policy_id 
+            ORDER BY c.claim_date ASC
+        ) AS rn
+    FROM claims c
+)
+SELECT
+    cu.customer_tier,
+    COUNT(DISTINCT rc.policy_id) AS policies_with_claims,
+    SUM(rc.amount_paid) AS total_first_claim_losses
+FROM ranked_claims rc
+JOIN policies p ON rc.policy_id = p.policy_id
+JOIN properties pr ON p.property_id = pr.property_id
+JOIN customers cu ON pr.customer_id = cu.customer_id
+WHERE rc.rn = 1
+GROUP BY cu.customer_tier
+ORDER BY total_first_claim_losses DESC;</pre>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>R3 Problem 3: Junior Analyst Query Bug Fix</h2>
+          <p style="font-size: 0.82rem; color: var(--muted); margin-bottom: 8px;">Fix junior analyst query that had a global WHERE clause on LEFT JOIN (eliminating zero-claim policies) and duplicate premium sums due to claim fan-out.</p>
+          <div class="sql-wrap">
+            <div class="sql-header">
+              <span>Pre-Aggregated CTE Pattern</span>
+              <button class="copy-btn" onclick="copySql(this)">Copy</button>
+            </div>
+            <pre>WITH policy_claims AS (
+    SELECT
+        policy_id,
+        SUM(amount_paid) AS total_loss_paid,
+        COUNT(claim_id) AS total_claims
+    FROM claims
+    WHERE claim_date >= '2026-01-01'
+    GROUP BY policy_id
+)
+SELECT
+    p.policy_id,
+    p.annual_premium,
+    COALESCE(pc.total_loss_paid, 0) AS total_loss_paid,
+    COALESCE(pc.total_claims, 0) AS total_claims
+FROM policies p
+LEFT JOIN policy_claims pc ON p.policy_id = pc.policy_id
+WHERE p.policy_status = 'active';</pre>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Funnel Pattern 1: Quote-to-Bind Funnel (30-Day Window)</h2>
+          <p style="font-size: 0.82rem; color: var(--muted); margin-bottom: 8px;">Measure quotes, binds within 30 days, bind rate, and total premium by channel via LEFT JOIN in ON clause.</p>
+          <div class="sql-wrap">
+            <div class="sql-header">
+              <span>Date Window in ON Clause</span>
+              <button class="copy-btn" onclick="copySql(this)">Copy</button>
+            </div>
+            <pre>SELECT
+    q.channel,
+    COUNT(DISTINCT q.quote_id) AS total_quotes,
+    COUNT(DISTINCT p.policy_id) AS total_binds,
+    COUNT(DISTINCT p.policy_id) * 1.0 / COUNT(DISTINCT q.quote_id) AS bind_rate,
+    SUM(p.annual_premium) AS total_premium
+FROM quotes q
+LEFT JOIN policies p
+    ON q.quote_id = p.quote_id
+   AND p.bound_ts >= q.quote_ts
+   AND p.bound_ts < DATEADD(day, 30, q.quote_ts)
+WHERE q.quote_ts >= '2026-07-01'
+  AND q.quote_ts < '2026-10-01'
+GROUP BY q.channel;</pre>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Funnel Pattern 2: Last-Touch Ad Attribution (ROW_NUMBER)</h2>
+          <p style="font-size: 0.82rem; color: var(--muted); margin-bottom: 8px;">Attribute each quote to the single most recent ad click in the 14 days prior to quote.</p>
+          <div class="sql-wrap">
+            <div class="sql-header">
+              <span>Most Recent Click Within 14 Days</span>
+              <button class="copy-btn" onclick="copySql(this)">Copy</button>
+            </div>
+            <pre>WITH ranked_clicks AS (
+    SELECT
+        q.quote_id, q.user_id, q.quote_ts,
+        c.channel, c.campaign_id, c.click_ts,
+        ROW_NUMBER() OVER (
+            PARTITION BY q.quote_id
+            ORDER BY c.click_ts DESC
+        ) AS rn
+    FROM quotes q
+    LEFT JOIN ad_clicks c
+        ON q.user_id = c.user_id
+       AND c.click_ts <= q.quote_ts
+       AND c.click_ts >= DATEADD(day, -14, q.quote_ts)
+)
+SELECT quote_id, user_id, quote_ts, channel AS last_touch_channel,
+       campaign_id AS last_touch_campaign, click_ts AS last_touch_click_ts
+FROM ranked_clicks
+WHERE rn = 1;</pre>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Funnel Pattern 3: Spend &amp; Binds at Matching Grain (No Fan-Out)</h2>
+          <p style="font-size: 0.82rem; color: var(--muted); margin-bottom: 8px;">Aggregate spend to month/channel in CTE 1, aggregate policies in CTE 2, join 1-to-1 to calculate CAC &amp; ROAS.</p>
+          <div class="sql-wrap">
+            <div class="sql-header">
+              <span>CTE Grain Alignment</span>
+              <button class="copy-btn" onclick="copySql(this)">Copy</button>
+            </div>
+            <pre>WITH monthly_spend AS (
+    SELECT DATE_TRUNC('month', spend_date) AS cohort_month, channel, SUM(spend) AS total_spend
+    FROM daily_ad_spend GROUP BY 1, 2
+),
+monthly_binds AS (
+    SELECT DATE_TRUNC('month', p.bound_date) AS cohort_month, s.channel,
+           COUNT(DISTINCT p.policy_id) AS total_binds, SUM(p.annual_premium) AS total_premium
+    FROM policies p
+    JOIN (SELECT DISTINCT campaign_id, channel FROM daily_ad_spend) s
+        ON p.campaign_id = s.campaign_id
+    GROUP BY 1, 2
+)
+SELECT ms.cohort_month, ms.channel, ms.total_spend, mb.total_binds,
+       ms.total_spend / NULLIF(mb.total_binds, 0) AS cost_per_bind,
+       mb.total_premium / NULLIF(ms.total_spend, 0) AS roas
+FROM monthly_spend ms
+LEFT JOIN monthly_binds mb
+    ON ms.cohort_month = mb.cohort_month AND ms.channel = mb.channel
+ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. Master Question Bank -->
+      <div class="section-heading">6. Master Question Bank &amp; Grounded Answers (From R1, R2 &amp; R3 Audios)</div>
+<div class="grid-2">
+          <div class="card">
+            <h2>Q1: "Walk me through your background and what you are doing day-to-day."</h2>
+            <div class="quote-box">
+              I have spent the last 10 years in data analytics, starting out in sports data at Athlyte where I built ETL pipelines across five sports, and then serving as the sole BI analyst at Rodeo Logistics building their automated Tableau suite. For the past three years at OneMagnify, I have owned the entire data lifecycle across 8 to 10 dedicated client accounts. That means extracting raw ad and marketing data through Azure Data Factory, transforming and modeling it in SQL, and delivering final decision-making dashboards in Power BI and modern MCP workflows.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q2: "Why are you looking to leave OneMagnify, and why Hippo?"</h2>
+            <div class="quote-box">
+              Over the last three years at OneMagnify, I have completely mastered our agency pipeline, but agency work inherently divides your attention across multiple clients and fragmented datasets. I am ready to move in-house to bring my skill set to one company, one data warehouse, and own the full customer journey from quote to bind and retention. On top of that, I live right down the street on 5th Street in downtown Austin, making Hippo a natural personal and professional fit.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q3: "Tell me about some of the dashboards you're creating."</h2>
+            <div class="quote-box">
+              The dashboards I build bridge the gap between marketing spend and bottom-line revenue. For the Brooklyn Nets, I built dynamic pacing dashboards that connect ad spend across Google, Meta, and TikTok to Ticketmaster ticketing inventory, tracking sales against game schedules and opponent tiers. For Pebl, I built executive dashboards that unified conflicting lead qualification definitions across web forms, Salesforce opportunities, and closed deals.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q4: "Can you walk me through a specific complex dashboard you built, how you structured it, and what business problem it solved?"</h2>
+            <div class="quote-box">
+              With the Brooklyn Nets, account leadership had a major blind spot: heavy advertising spend across Google, Meta, and TikTok lived completely separate from Ticketmaster ticket sales, so they couldn't see true ROAS. I integrated both sources into our SQL warehouse and built dynamic pacing models in Power BI that tracked daily ticket sales against upcoming game dates, opponent tiers, and seat categories. This gave leadership a single pane of glass to dynamically shift ad spend to where it actually moved ticket inventory.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q5: "Beyond the dashboard plumbing, did you do any analysis yourself to uncover insights or recommendations?"</h2>
+            <div class="quote-box">
+              When I joined Nets ad spend against Ticketmaster sales, the data revealed we were pouring budget into low-tier weekday games where ticket demand was completely flat, driving up our Cost Per Order. I recommended cutting spend on those low-converting weekday games and reallocating the budget to weekend matchups with high remaining seat inventory and higher average ticket prices. This eliminated wasted spend on dead games and maximized revenue where fan demand actually converted.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q6: "Tell me about a time you built a dashboard from scratch where metric definitions were ambiguous or conflicting."</h2>
+            <div class="quote-box">
+              When onboarding Pebl, a global hiring platform, marketing and sales had conflicting definitions of what counted as a qualified lead. Marketing counted any web form submission, while sales only counted leads that met specific company size and qualification criteria in Salesforce, causing leadership to see lead volume that never turned into closed revenue. I audited both systems from raw ad clicks to closed-won opportunities, facilitated alignment sessions between both department heads, and built a unified SQL view and executive dashboard that standardized lead stages across the entire business.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q7: "How did you communicate that discrepancy to stakeholders and get everyone aligned?"</h2>
+            <div class="quote-box">
+              I brought both team leads together and showed them a clear comparison table laying out what marketing was counting, what sales was seeing in Salesforce, and the exact dollar variance between them. Instead of arguing over opinions, seeing the actual data logic made it obvious that we were measuring two different stages of the funnel. Once they agreed on the criteria, I codified the definition directly into the SQL layer and documented it so neither team could pull conflicting numbers again.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q8: "How do you ensure someone in the future does not query the tables and use the wrong definition again?"</h2>
+            <div class="quote-box">
+              I prevent drift by locking core KPI logic into centralized, production SQL views rather than letting people write ad-hoc queries against raw tables. Alongside that, I maintain clear data dictionary documentation detailing the exact inclusion criteria, status filters, and grain. Moving forward in modern warehouses like Databricks or dbt, this is reinforced with semantic layer definitions and automated schema tests that prevent unvetted queries from entering executive reporting.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q9: "Do you prefer doing transformations in SQL or in Power BI, and do you collaborate with data engineers?"</h2>
+            <div class="quote-box">
+              I prefer to do almost all of my transformations upstream at the SQL database level rather than inside Power BI. Keeping transformations in SQL ensures the data is clean, portable, and reusable across any downstream reporting tool rather than trapped inside proprietary BI formulas. When it comes to data engineers, I have operated as the data engineer across most of my career, managing my own Azure Data Factory pipelines, stored procedures, and warehouse tables directly.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q10: "Do you have a centralized place where you store SQLs, and do you work with data engineers to materialize new metrics?"</h2>
+            <div class="quote-box">
+              In my role at OneMagnify, I handle the data engineering myself—from building Azure Data Factory ingestion pipelines to creating stored procedures and database views. We maintain our modular views and transformation scripts directly in our SQL warehouse, ensuring that every downstream reporting layer pulls from validated production models. I believe in establishing strict database-level views so any analyst querying the warehouse gets consistent, verified data.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q11: "Can you walk me through an example where you actually used an AI tool in your analytics work to make your process much more efficient or streamlined?"</h2>
+            <div class="quote-box">
+              I use Claude paired with Model Context Protocol (MCP) in VS Code to automate SQL modeling, schema validation, and DAX calculations. By feeding the AI agent our exact table schemas, data dictionaries, and business rules, it drafts complex multi-table queries, spots potential fan-out join traps, and runs automated QA checks on datasets before release. This workflow eliminates manual drag-and-drop dashboarding and catches data inconsistencies before anything goes to production.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q12: "What do you think of HTML dashboards vs. traditional BI platforms like Tableau or Power BI?"</h2>
+            <div class="quote-box">
+              I see AI-generated HTML dashboards as incredible accelerators for rapid prototyping and executive storytelling because you can spin up customized visuals from a clean SQL query in seconds without drag-and-drop overhead. However, traditional BI tools like Power BI and Tableau provide enterprise governance, user permissioning, and dynamic slicing for large operational teams. Because I build all my data models and transformations upstream in SQL, my data is portable and ready to feed either Claude HTML dashboards or enterprise BI tools depending on stakeholder needs.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q13: "What is your view on Tableau vs. Power BI, and what tools do you prefer?"</h2>
+            <div class="quote-box">
+              While my daily production work over the last three years at OneMagnify has centered on Power BI, Tableau was my primary tool earlier in my career when I built over 20 automated dashboards from scratch at Rodeo Logistics. Both platforms solve the same core business problem of delivering decision-ready intelligence. Because Hippo is moving toward Claude-generated HTML dashboards and Databricks, my foundation of doing heavy modeling in SQL allows me to deliver clean, pre-aggregated tables to whatever frontend tool the team adopts.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q14: "Sales and marketing is demanding, sometimes everything is a fire drill. If you have multiple conflicting requests and everything needs to be done today, how do you manage your priorities?"</h2>
+            <div class="quote-box">
+              I run a four-step framework: central ticket logging, transparent documentation, regular communication, and business-impact escalation. I log all requests into a centralized queue so nothing gets lost in Slack, and I never let 48 hours pass without giving a stakeholder an update on their request. If two senior leaders have conflicting urgent requests, I assess the direct revenue or operational impact and loop leadership in to make a transparent prioritization call based on business value.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q15: "What AI tools do you use in your daily workflow?"</h2>
+            <div class="quote-box">
+              In my professional workflow, I use Claude paired with Model Context Protocol (MCP) in VS Code to automate SQL modeling, schema validation, and DAX calculations. For personal development and scripting, I use Gemini within Antigravity in VS Code. Both tools act as accelerators for drafting complex queries, finding edge cases, and speeding up documentation, but I always manually validate the logic before anything touches production.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q16: "This role requires being in the office twice a week (Tuesdays and Wednesdays) downtown on 5th Street. How do you feel about that?"</h2>
+            <div class="quote-box">
+              I am 100% on board with the hybrid schedule of two days a week in the office. I actually live three blocks away on 5th Street and walk past the office with my dog regularly, so being downtown and collaborating in person with the team is ideal for me.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q17: "What do you like to do for fun outside of work?"</h2>
+            <div class="quote-box">
+              Outside of work, I am a big sports and college football fan, I work out every morning, and I have a dog that I take everywhere around downtown Austin. I also have family in Colorado, so I head up to the mountains whenever I can to go snowboarding.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q18: "What are your compensation expectations and timeline?"</h2>
+            <div class="quote-box">
+              In my initial recruiter screen, I mentioned $120,000 as my baseline floor. After reviewing the full-funnel scope, technical expectations, and commercial ownership of this Senior role, I am targeting $130,000 to $150,000 base, with flexibility depending on total rewards. In terms of timing, I am ready to start right away after giving a standard two-week notice to my current team.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q19 (Round 3): "Hippo's leadership wants a snapshot of where our policies live across all states. What is our distribution of policies, and walk me through your output?"</h2>
+            <div class="quote-box">
+              I joined policies to properties on property_id, grouped by state, and counted distinct policy_id descending. This gave a clean geographic breakdown of active policies across key operating states.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q20 (Round 3): "If state names in the warehouse are unstandardized (full names vs abbreviations vs typos), what is your short-term and long-term solution?"</h2>
+            <div class="quote-box">
+              For an immediate short-term report, I use SQL CASE statements or UPPER(TRIM(state)) to normalize values on the fly. For the long term, I build an upstream state_lookup mapping table in the ETL/ELT warehouse pipeline (dbt/Databricks) so incoming data is conformed at ingestion.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q21 (Round 3): "Which customer tier sees the most loss activity from a policy's first claim?"</h2>
+            <div class="quote-box">
+              I wrote a CTE using ROW_NUMBER() OVER (PARTITION BY policy_id ORDER BY claim_date ASC) to identify each policy's first claim (rn = 1). Then I joined to properties and customers, grouping by customer_tier and summing amount_paid to show total first-claim losses per tier.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q22 (Round 3): "Substandard tier showed $110k in losses vs Standard at $20k. Should we charge Substandard customers 5x higher premiums based on this output?"</h2>
+            <div class="quote-box">
+              No. Raw total losses only measure aggregate volume, not individual risk. You have to account for exposure—the total number of policyholders in each tier—and total premium collected. We need to evaluate the complete Loss Ratio (Paid Losses / Total Premium) and claim frequency before making any pricing decisions.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q23 (Round 3): "Review this junior analyst query reporting zip code premium, claims, and homes under 10 years old. What flaws do you spot and how do you fix them?"</h2>
+            <div class="quote-box">
+              There were three critical flaws: first, the WHERE clause filtered out homes built before 2016 from the entire query, breaking premium and claim totals; second, inner joins dropped properties without claims; third, joining claims directly to policies creates fan-out duplication on premium. I fixed it by moving the home age filter into conditional aggregation (COUNT(CASE WHEN year_built &gt;= 2016...)) and pre-aggregating policies and claims in separate CTEs.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q24 (Round 3): "How do you handle fan-out risk when joining policies to claims with multiple events?"</h2>
+            <div class="quote-box">
+              When joining 1-to-many relationships, summing amounts across joined tables multiplies the parent table's numbers. I always pre-aggregate claims at the policy or property level in a separate subquery or CTE first, then join the single aggregated row to prevent metric distortion.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q25 (Round 3): "How does Hippo approach semantic layer definitions, data governance, and AI/MCP context protocol integration?"</h2>
+            <div class="quote-box">
+              In my technical discussion with Pushan, we aligned on locking business logic into upstream semantic layers so downstream analysts don't recreate definitions. Pushan highlighted that Hippo maintains strict warehouse access controls while adopting modern BI and AI workflows.
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      
+    </section>
+
+    <!-- ==================== HIPPO 2 PANEL ==================== -->
+    <section id="panel-hippo2" class="company-panel">
+      <div class="company-header">
+        <div class="company-title-wrap">
+          <h1>Hippo Insurance 2</h1>
+          <div class="company-sub">Upcoming Round / Dedicated Workspace (Pending Scheduling)</div>
+        </div>
+        <div class="status-badge" style="background: rgba(148, 163, 184, 0.15); color: var(--muted); border: 1px solid rgba(148, 163, 184, 0.3);">
+          Blank Workspace
+        </div>
+      </div>
+      <div class="card" style="text-align: center; padding: 70px 20px;">
+        <div style="font-size: 1.4rem; font-weight: 700; color: #fff; margin-bottom: 8px;">Hippo 2 Workspace</div>
+        <div style="font-size: 0.9rem; color: var(--muted); max-width: 450px; margin: 0 auto;">Currently completely blank. Ready to receive technical screen debrief, live coding notes, and case study requirements once scheduled.</div>
+      </div>
+    </section>
+
+<!-- ==================== KNOWNWELL PANEL ==================== -->
+    <section id="panel-knownwell" class="company-panel">
       <div class="hero-card">
         <div class="hero-top">
           <div>
@@ -946,422 +1529,6 @@ ORDER BY visit_num;</pre>
         </div>
       </div>
     </section>
-
-    <!-- ==================== HIPPO INSURANCE PANEL ==================== -->
-    <section id="panel-hippo" class="company-panel">
-      <div class="hero-card">
-        <div class="hero-top">
-          <div>
-            <div class="hero-company">Hippo Insurance</div>
-            <div class="hero-role">Senior Data Analyst (Sales, Marketing & Growth Analytics)</div>
-          </div>
-          <div class="hero-badges">
-            <span class="badge badge-green">Passed Round 3: Awaiting R4</span>
-            <span class="badge">$130k Floor / $150k Goal</span>
-            <span class="badge">Austin 5th St (Hybrid Tue/Wed - Free Lunch)</span>
-          </div>
-        </div>
-
-        <div class="pipeline">
-          <div class="step done">
-            <div class="step-label">Completed</div>
-            <div class="step-name">R1: Recruiter</div>
-            <div class="step-sub">Nov 5, 2026</div>
-          </div>
-          <div class="step done">
-            <div class="step-label">Completed</div>
-            <div class="step-name">R2: Hiring Manager</div>
-            <div class="step-sub">Jakub Sienkiel (Nov 12)</div>
-          </div>
-          <div class="step done">
-            <div class="step-label">Completed</div>
-            <div class="step-name">R3: Technical SQL</div>
-            <div class="step-sub">Pushan (Nov 16 - PASSED)</div>
-          </div>
-          <div class="step current">
-            <div class="step-label">Up Next</div>
-            <div class="step-name">R4: Case Study / Exec</div>
-            <div class="step-sub">Leadership Presentation</div>
-          </div>
-          <div class="step">
-            <div class="step-label">Stage 5</div>
-            <div class="step-name">Austin Finals</div>
-            <div class="step-sub">In-Person w/ Jakub & VP</div>
-          </div>
-        </div>
-      </div>
-
-
-
-      <!-- Hippo: FULL JOB PAGE -->
-      <div id="hp-fullpage" class="view-pane active">
-        <div class="section-heading">1. Organization, Role Context &amp; AI Stack</div>
-        <div class="grid-2">
-          <div class="card">
-            <h2>Organization &amp; Role Context</h2>
-            <div class="kv-grid">
-              <div class="kv-item">
-                <div class="kv-label">Hiring Manager</div>
-                <div class="kv-val">Jakub Sienkiel (Sr. Mgr)</div>
-              </div>
-              <div class="kv-item">
-                <div class="kv-label">Company Size</div>
-                <div class="kv-val">~500 Employees</div>
-              </div>
-              <div class="kv-item">
-                <div class="kv-label">Office Location</div>
-                <div class="kv-val">5th St Downtown Austin (3 blocks away)</div>
-              </div>
-              <div class="kv-item">
-                <div class="kv-label">Growth Catalyst</div>
-                <div class="kv-val">Launching Major New Product Line</div>
-              </div>
-            </div>
-            <ul class="clean-list">
-              <li>Centralized ~1 year ago into a single analytics + data engineering team supporting Sales, Marketing, Pricing, Actuarial, and Underwriting.</li>
-              <li>Jakub currently has 1 dedicated Sales/Marketing Sr. Analyst and needs a 2nd dedicated Sr. Analyst to co-lead acquisition analytics for a major upcoming product launch.</li>
-              <li>Hybrid policy: Tuesdays &amp; Wednesdays in Austin office with free catered lunches; Jakub lives in Dallas and visits monthly.</li>
-            </ul>
-          </div>
-
-          <div class="card">
-            <h2>Tech Stack &amp; AI Roadmap</h2>
-            <ul class="clean-list">
-              <li>Warehouse: Migrating from legacy setup to Databricks next year; actively building a centralized semantic layer to stop rogue SQL definitions.</li>
-              <li>AI &amp; Automation: Daily power users of Claude AI and Devin.</li>
-              <li>Dashboarding Shift: Moving heavily toward Claude-generated interactive HTML dashboards for rapid executive prototyping rather than traditional drag-and-drop BI tools.</li>
-              <li>Philosophy: Analysts must operate as strategic business consultants rather than reactive dashboard ticket-takers.</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="section-heading">2. Round 3 Technical SQL Patterns</div>
-        <div class="card">
-          <h2>Questions to Ask Immediately When Tables Appear</h2>
-          <ul class="clean-list">
-            <li>"Is this quotes table one row per quote, or can a customer show up multiple times?"</li>
-            <li>"Can one quote have multiple policies attached, or is it strictly one-to-one?"</li>
-            <li>"Which timestamp counts as the bind: bound date or policy start date?"</li>
-            <li>"For status, is 'active' the only bind status, or do we count 'pending'?"</li>
-            <li>"When joining ad spend or marketing touches, what is the attribution window and grain?"</li>
-            <li>"Are timestamps UTC or local, and should cancelled/expired policies be excluded?"</li>
-          </ul>
-        </div>
-
-        <div class="grid-2">
-          <div class="card">
-            <h2>1. Quote-to-Bind Funnel (30-Day Window)</h2>
-            <div class="sql-wrap" data-explain="hp_funnel">
-              <div class="sql-header">
-                <span>LEFT JOIN w/ Date Window in ON Clause</span>
-                <button class="copy-btn" onclick="copySql(this)">Copy</button>
-              </div>
-              <pre>SELECT
-    q.channel,
-    COUNT(DISTINCT q.quote_id) AS total_quotes,
-    COUNT(DISTINCT p.policy_id) AS total_binds,
-    COUNT(DISTINCT p.policy_id) * 1.0 / COUNT(DISTINCT q.quote_id) AS bind_rate,
-    SUM(p.annual_premium) AS total_premium
-FROM quotes q
-LEFT JOIN policies p
-    ON q.quote_id = p.quote_id
-   AND p.bound_ts &gt;= q.quote_ts
-   AND p.bound_ts &lt; DATEADD(day, 30, q.quote_ts)
-WHERE q.quote_ts &gt;= '2026-07-01'
-  AND q.quote_ts &lt; '2026-10-01'
-GROUP BY q.channel;</pre>
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>2. Last-Touch Ad Attribution (ROW_NUMBER)</h2>
-            <div class="sql-wrap" data-explain="hp_attrib">
-              <div class="sql-header">
-                <span>Most Recent Click Within 14 Days</span>
-                <button class="copy-btn" onclick="copySql(this)">Copy</button>
-              </div>
-              <pre>WITH ranked_clicks AS (
-    SELECT
-        q.quote_id, q.user_id, q.quote_ts,
-        c.channel, c.campaign_id, c.click_ts,
-        ROW_NUMBER() OVER (
-            PARTITION BY q.quote_id
-            ORDER BY c.click_ts DESC
-        ) AS rn
-    FROM quotes q
-    LEFT JOIN ad_clicks c
-        ON q.user_id = c.user_id
-       AND c.click_ts &lt;= q.quote_ts
-       AND c.click_ts &gt;= DATEADD(day, -14, q.quote_ts)
-)
-SELECT quote_id, user_id, channel AS last_touch_channel, campaign_id
-FROM ranked_clicks
-WHERE rn = 1;</pre>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h2>3. Multi-Table Spend &amp; Binds Without Fan-Out (CAC / ROAS)</h2>
-          <div class="sql-wrap" data-explain="hp_cac">
-            <div class="sql-header">
-              <span>Pre-Aggregate to Matching Grain Before Joining</span>
-              <button class="copy-btn" onclick="copySql(this)">Copy</button>
-            </div>
-            <pre>WITH monthly_spend AS (
-    SELECT DATE_TRUNC('month', spend_date) AS cohort_month, channel, SUM(spend) AS total_spend
-    FROM daily_ad_spend
-    GROUP BY 1, 2
-),
-monthly_binds AS (
-    SELECT DATE_TRUNC('month', p.bound_date) AS cohort_month, s.channel,
-           COUNT(DISTINCT p.policy_id) AS total_binds, SUM(p.annual_premium) AS total_premium
-    FROM policies p
-    JOIN (SELECT DISTINCT campaign_id, channel FROM daily_ad_spend) s
-        ON p.campaign_id = s.campaign_id
-    GROUP BY 1, 2
-)
-SELECT ms.cohort_month, ms.channel, ms.total_spend, mb.total_binds,
-       ms.total_spend / NULLIF(mb.total_binds, 0) AS cost_per_bind,
-       mb.total_premium / NULLIF(ms.total_spend, 0) AS roas
-FROM monthly_spend ms
-LEFT JOIN monthly_binds mb
-    ON ms.cohort_month = mb.cohort_month AND ms.channel = mb.channel
-ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
-          </div>
-        </div>
-
-        <div class="section-heading">3. Round 2 Debrief &amp; Practitioner Lines</div>
-        <div class="callout">
-          <div class="callout-title">#1 Priority Fix from Round 2 (Analytical Insights vs. Plumbing)</div>
-          When Jakub asked what insights you uncovered beyond the Brooklyn Nets dashboard, you looped back to dynamic pacing plumbing. For Round 3 and Case Study, ALWAYS separate the pipeline from the business discovery using the 3-Part Insight Framework (Question -&gt; Data Finding -&gt; Business Action).
-        </div>
-
-        <div class="grid-2">
-          <div class="card">
-            <h2>Round 2 Wins (Nov 12 w/ Jakub Sienkiel)</h2>
-            <ul class="clean-list">
-              <li>Standout punchline: "I prefer transformations at the SQL level... I am the data engineer."</li>
-              <li>AI differentiation: Jakub took notes on MCP &amp; automated QA validation to research immediately.</li>
-              <li>Pebl MQL discrepancy story nailed cross-functional metric alignment.</li>
-              <li>Natural Austin rapport: Living 3 blocks from 5th St office + shared Colorado skiing background.</li>
-            </ul>
-          </div>
-
-          <div class="card">
-            <h2>Practitioner Lines to Drop in Round 3</h2>
-            <ul class="clean-list">
-              <li>"The first thing I check when conversion drops is if an upstream form or CRM tracking field broke before assuming it is an ad issue."</li>
-              <li>"Cost per Bind is what matters here. Cheap quotes mean nothing if they do not convert."</li>
-              <li>"I lock metric definitions into modular SQL views so nobody downstream pulls conflicting numbers."</li>
-              <li>"Since y'all are moving toward Claude HTML dashboards, pushing transformations upstream into SQL keeps the UI layer super clean."</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="section-heading">4. Insight Framework &amp; Questions to Ask</div>
-        <div class="grid-2">
-          <div class="card">
-            <h2>3-Part Analytical Insight Answer (Fixing R2 Miss)</h2>
-            <div class="quote-box">
-              1. Business Question: "With the Brooklyn Nets, we wanted to know why heavy paid media spend across Meta and Google wasn't driving profitable ticket sales across all home games."<br><br>
-              2. Data Finding: "Joining ad spend with Ticketmaster sales showed we were pouring heavy budget into low-tier weekday games where fan demand was completely flat, driving up our Cost Per Order. Meanwhile, weekend matchups had high remaining seat inventory and 3x higher average ticket prices that were under-supported."<br><br>
-              3. Business Action: "I recommended cutting ad spend on those low-converting weekday games and reallocating the budget into weekend games with high-margin seat inventory, lifting revenue where demand converted with zero extra ad spend."
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Smart Questions for Round 3 Senior Analyst</h2>
-            <ul class="clean-list">
-              <li>"Jakub mentioned you guys are building out a centralized semantic layer to keep metric definitions from breaking downstream. From your day-to-day on the team, which funnel definitions are currently the hardest to keep aligned, and what tables or data sources are the messiest to work with?"</li>
-              <li>"With traditional BI tools, row-level security and user permissions are built right in. As you guys lean more into custom HTML dashboards, how are you handling data governance and controlling who has permission to see sensitive funnel numbers?"</li>
-              <li>"When marketing wants to launch a new campaign or tweak a step in the quote funnel, how early does analytics get brought in?"</li>
-              <li>"With the Databricks migration coming up next year, which core Sales/Marketing tables are highest priority for the new semantic layer?"</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="section-heading">5. Master Question Bank &amp; Grounded Answers (From R1 &amp; R2 Audios)</div>
-        <div class="grid-2">
-          <div class="card">
-            <h2>Q1: "Walk me through your background and what you are doing day-to-day."</h2>
-            <div class="quote-box">
-              I have spent the last 10 years in data analytics, starting out in sports data at Athlyte where I built ETL pipelines across five sports, and then serving as the sole BI analyst at Rodeo Logistics building their automated Tableau suite. For the past three years at OneMagnify, I have owned the entire data lifecycle across 8 to 10 dedicated client accounts. That means extracting raw ad and marketing data through Azure Data Factory, transforming and modeling it in SQL, and delivering final decision-making dashboards in Power BI and modern MCP workflows.
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Q2: "Why are you looking to leave OneMagnify, and why Hippo?"</h2>
-            <div class="quote-box">
-              Over the last three years at OneMagnify, I have completely mastered our agency pipeline, but agency work inherently divides your attention across multiple clients and fragmented datasets. I am ready to move in-house to bring my skill set to one company, one data warehouse, and own the full customer journey from quote to bind and retention. On top of that, I live right down the street on 5th Street in downtown Austin, making Hippo a natural personal and professional fit.
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Q3: "Tell me about some of the dashboards you're creating."</h2>
-            <div class="quote-box">
-              The dashboards I build bridge the gap between marketing spend and bottom-line revenue. For the Brooklyn Nets, I built dynamic pacing dashboards that connect ad spend across Google, Meta, and TikTok to Ticketmaster ticketing inventory, tracking sales against game schedules and opponent tiers. For Pebl, I built executive dashboards that unified conflicting lead qualification definitions across web forms, Salesforce opportunities, and closed deals.
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Q4: "Can you walk me through a specific complex dashboard you built, how you structured it, and what business problem it solved?"</h2>
-            <div class="quote-box">
-              With the Brooklyn Nets, account leadership had a major blind spot: heavy advertising spend across Google, Meta, and TikTok lived completely separate from Ticketmaster ticket sales, so they couldn't see true ROAS. I integrated both sources into our SQL warehouse and built dynamic pacing models in Power BI that tracked daily ticket sales against upcoming game dates, opponent tiers, and seat categories. This gave leadership a single pane of glass to dynamically shift ad spend to where it actually moved ticket inventory.
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Q5: "Beyond the dashboard plumbing, did you do any analysis yourself to uncover insights or recommendations?"</h2>
-            <div class="quote-box">
-              When I joined Nets ad spend against Ticketmaster sales, the data revealed we were pouring budget into low-tier weekday games where ticket demand was completely flat, driving up our Cost Per Order. I recommended cutting spend on those low-converting weekday games and reallocating the budget to weekend matchups with high remaining seat inventory and higher average ticket prices. This eliminated wasted spend on dead games and maximized revenue where fan demand actually converted.
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Q6: "Tell me about a time you built a dashboard from scratch where metric definitions were ambiguous or conflicting."</h2>
-            <div class="quote-box">
-              When onboarding Pebl, a global hiring platform, marketing and sales had conflicting definitions of what counted as a qualified lead. Marketing counted any web form submission, while sales only counted leads that met specific company size and qualification criteria in Salesforce, causing leadership to see lead volume that never turned into closed revenue. I audited both systems from raw ad clicks to closed-won opportunities, facilitated alignment sessions between both department heads, and built a unified SQL view and executive dashboard that standardized lead stages across the entire business.
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Q7: "How did you communicate that discrepancy to stakeholders and get everyone aligned?"</h2>
-            <div class="quote-box">
-              I brought both team leads together and showed them a clear comparison table laying out what marketing was counting, what sales was seeing in Salesforce, and the exact dollar variance between them. Instead of arguing over opinions, seeing the actual data logic made it obvious that we were measuring two different stages of the funnel. Once they agreed on the criteria, I codified the definition directly into the SQL layer and documented it so neither team could pull conflicting numbers again.
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Q8: "How do you ensure someone in the future does not query the tables and use the wrong definition again?"</h2>
-            <div class="quote-box">
-              I prevent drift by locking core KPI logic into centralized, production SQL views rather than letting people write ad-hoc queries against raw tables. Alongside that, I maintain clear data dictionary documentation detailing the exact inclusion criteria, status filters, and grain. Moving forward in modern warehouses like Databricks or dbt, this is reinforced with semantic layer definitions and automated schema tests that prevent unvetted queries from entering executive reporting.
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Q9: "Do you prefer doing transformations in SQL or in Power BI, and do you collaborate with data engineers?"</h2>
-            <div class="quote-box">
-              I prefer to do almost all of my transformations upstream at the SQL database level rather than inside Power BI. Keeping transformations in SQL ensures the data is clean, portable, and reusable across any downstream reporting tool rather than trapped inside proprietary BI formulas. When it comes to data engineers, I have operated as the data engineer across most of my career, managing my own Azure Data Factory pipelines, stored procedures, and warehouse tables directly.
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Q10: "Do you have a centralized place where you store SQLs, and do you work with data engineers to materialize new metrics?"</h2>
-            <div class="quote-box">
-              In my role at OneMagnify, I handle the data engineering myself—from building Azure Data Factory ingestion pipelines to creating stored procedures and database views. We maintain our modular views and transformation scripts directly in our SQL warehouse, ensuring that every downstream reporting layer pulls from validated production models. I believe in establishing strict database-level views so any analyst querying the warehouse gets consistent, verified data.
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Q11: "Can you walk me through an example where you actually used an AI tool in your analytics work to make your process much more efficient or streamlined?"</h2>
-            <div class="quote-box">
-              I use Claude paired with Model Context Protocol (MCP) in VS Code to automate SQL modeling, schema validation, and DAX calculations. By feeding the AI agent our exact table schemas, data dictionaries, and business rules, it drafts complex multi-table queries, spots potential fan-out join traps, and runs automated QA checks on datasets before release. This workflow eliminates manual drag-and-drop dashboarding and catches data inconsistencies before anything goes to production.
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Q12: "What do you think of HTML dashboards vs. traditional BI platforms like Tableau or Power BI?"</h2>
-            <div class="quote-box">
-              I see AI-generated HTML dashboards as incredible accelerators for rapid prototyping and executive storytelling because you can spin up customized visuals from a clean SQL query in seconds without drag-and-drop overhead. However, traditional BI tools like Power BI and Tableau provide enterprise governance, user permissioning, and dynamic slicing for large operational teams. Because I build all my data models and transformations upstream in SQL, my data is portable and ready to feed either Claude HTML dashboards or enterprise BI tools depending on stakeholder needs.
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Q13: "What is your view on Tableau vs. Power BI, and what tools do you prefer?"</h2>
-            <div class="quote-box">
-              While my daily production work over the last three years at OneMagnify has centered on Power BI, Tableau was my primary tool earlier in my career when I built over 20 automated dashboards from scratch at Rodeo Logistics. Both platforms solve the same core business problem of delivering decision-ready intelligence. Because Hippo is moving toward Claude-generated HTML dashboards and Databricks, my foundation of doing heavy modeling in SQL allows me to deliver clean, pre-aggregated tables to whatever frontend tool the team adopts.
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Q14: "Sales and marketing is demanding, sometimes everything is a fire drill. If you have multiple conflicting requests and everything needs to be done today, how do you manage your priorities?"</h2>
-            <div class="quote-box">
-              I run a four-step framework: central ticket logging, transparent documentation, regular communication, and business-impact escalation. I log all requests into a centralized queue so nothing gets lost in Slack, and I never let 48 hours pass without giving a stakeholder an update on their request. If two senior leaders have conflicting urgent requests, I assess the direct revenue or operational impact and loop leadership in to make a transparent prioritization call based on business value.
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Q15: "What AI tools do you use in your daily workflow?"</h2>
-            <div class="quote-box">
-              In my professional workflow, I use Claude paired with Model Context Protocol (MCP) in VS Code to automate SQL modeling, schema validation, and DAX calculations. For personal development and scripting, I use Gemini within Antigravity in VS Code. Both tools act as accelerators for drafting complex queries, finding edge cases, and speeding up documentation, but I always manually validate the logic before anything touches production.
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Q16: "This role requires being in the office twice a week (Tuesdays and Wednesdays) downtown on 5th Street. How do you feel about that?"</h2>
-            <div class="quote-box">
-              I am 100% on board with the hybrid schedule of two days a week in the office. I actually live three blocks away on 5th Street and walk past the office with my dog regularly, so being downtown and collaborating in person with the team is ideal for me.
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Q17: "What do you like to do for fun outside of work?"</h2>
-            <div class="quote-box">
-              Outside of work, I am a big sports and college football fan, I work out every morning, and I have a dog that I take everywhere around downtown Austin. I also have family in Colorado, so I head up to the mountains whenever I can to go snowboarding.
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Q18: "What are your compensation expectations and timeline?"</h2>
-            <div class="quote-box">
-              In my initial recruiter screen, I mentioned $120,000 as my baseline floor. After reviewing the full-funnel scope, technical expectations, and commercial ownership of this Senior role, I am targeting $130,000 to $150,000 base, with flexibility depending on total rewards. In terms of timing, I am ready to start right away after giving a standard two-week notice to my current team.
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Q19 (Round 3): "Hippo's leadership wants a snapshot of where our policies live across all states. What is our distribution of policies, and walk me through your output?"</h2>
-            <div class="quote-box">
-              I joined policies to properties on property_id, grouped by state, and counted distinct policy_id descending. This gave a clean geographic breakdown of active policies across key operating states.
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Q20 (Round 3): "If state names in the warehouse are unstandardized (full names vs abbreviations vs typos), what is your short-term and long-term solution?"</h2>
-            <div class="quote-box">
-              For an immediate short-term report, I use SQL CASE statements or UPPER(TRIM(state)) to normalize values on the fly. For the long term, I build an upstream state_lookup mapping table in the ETL/ELT warehouse pipeline (dbt/Databricks) so incoming data is conformed at ingestion.
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Q21 (Round 3): "Which customer tier sees the most loss activity from a policy's first claim?"</h2>
-            <div class="quote-box">
-              I wrote a CTE using ROW_NUMBER() OVER (PARTITION BY policy_id ORDER BY claim_date ASC) to identify each policy's first claim (rn = 1). Then I joined to properties and customers, grouping by customer_tier and summing amount_paid to show total first-claim losses per tier.
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Q22 (Round 3): "Substandard tier showed $110k in losses vs Standard at $20k. Should we charge Substandard customers 5x higher premiums based on this output?"</h2>
-            <div class="quote-box">
-              No. Raw total losses only measure aggregate volume, not individual risk. You have to account for exposure—the total number of policyholders in each tier—and total premium collected. We need to evaluate the complete Loss Ratio (Paid Losses / Total Premium) and claim frequency before making any pricing decisions.
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Q23 (Round 3): "Review this junior analyst query reporting zip code premium, claims, and homes under 10 years old. What flaws do you spot and how do you fix them?"</h2>
-            <div class="quote-box">
-              There were three critical flaws: first, the WHERE clause filtered out homes built before 2016 from the entire query, breaking premium and claim totals; second, inner joins dropped properties without claims; third, joining claims directly to policies creates fan-out duplication on premium. I fixed it by moving the home age filter into conditional aggregation (COUNT(CASE WHEN year_built &gt;= 2016...)) and pre-aggregating policies and claims in separate CTEs.
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Q24 (Round 3): "How do you handle fan-out risk when joining policies to claims with multiple events?"</h2>
-            <div class="quote-box">
-              When joining 1-to-many relationships, summing amounts across joined tables multiplies the parent table's numbers. I always pre-aggregate claims at the policy or property level in a separate subquery or CTE first, then join the single aggregated row to prevent metric distortion.
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Q25 (Round 3): "How does Hippo approach semantic layer definitions, data governance, and AI/MCP context protocol integration?"</h2>
-            <div class="quote-box">
-              In my technical discussion with Pushan, we aligned on locking business logic into upstream semantic layers so downstream analysts don't recreate definitions. Pushan highlighted that Hippo maintains strict warehouse access controls while adopting modern BI and AI workflows.
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-      </section>
 
     <!-- ==================== ANDURIL INDUSTRIES PANEL ==================== -->
     <section id="panel-anduril" class="company-panel">
@@ -1740,18 +1907,21 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
 
     function switchCompany(company) {
       stopExplain();
+      const normalized = (company === "hippo2" || company === "knownwell" || company === "anduril") ? company : "hippo";
       document.querySelectorAll(".company-tab").forEach((btn) => {
-        btn.classList.toggle("active", btn.getAttribute("data-company") === company);
+        btn.classList.toggle("active", btn.getAttribute("data-company") === normalized);
       });
       document.querySelectorAll(".company-panel").forEach((panel) => {
-        panel.classList.toggle("active", panel.id === "panel-" + company);
+        panel.classList.toggle("active", panel.id === "panel-" + normalized);
       });
-      toggleCheatSheet(company, false);
+      if (normalized === "knownwell") {
+        toggleCheatSheet('knownwell', false);
+      }
     }
 
     function toggleCheatSheet(company, showCheat) {
       stopExplain();
-      const prefix = company === "knownwell" ? "kw-" : "hp-";
+      const prefix = "kw-";
       const fullPane = document.getElementById(prefix + "fullpage");
       const cheatPane = document.getElementById(prefix + "cheatsheet");
       const viewBar = document.getElementById(prefix + "view-bar");
@@ -1776,9 +1946,11 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
     // Allow deep-linking via ?company=hippo or #hippo
     (function initFromUrl() {
       const params = new URLSearchParams(window.location.search || "");
-      const c = (params.get("company") || window.location.hash.replace("#", "") || "").toLowerCase();
-      if (c === "hippo" || c === "knownwell" || c === "anduril") {
+      const c = (params.get("company") || window.location.hash.replace("#", "") || "hippo").toLowerCase();
+      if (c === "hippo" || c === "hippo2" || c === "knownwell" || c === "anduril") {
         switchCompany(c);
+      } else {
+        switchCompany("hippo");
       }
     })();
   </script>

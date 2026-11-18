@@ -266,8 +266,9 @@
       <div class="tab-group">
         <button class="tab-btn" data-tab="interviews" onclick="switchTab('interviews')">4. Active Interviews</button>
         <div class="sub-pill-wrap">
-          <button class="sub-pill active" id="pillKnownwell" onclick="switchInterviewCompany('knownwell')">Knownwell</button>
-          <button class="sub-pill" id="pillHippo" onclick="switchInterviewCompany('hippo')">Hippo</button>
+          <button class="sub-pill active" id="pillHippo" onclick="switchInterviewCompany('hippo')">Hippo</button>
+          <button class="sub-pill" id="pillHippo2" onclick="switchInterviewCompany('hippo2')">Hippo 2</button>
+          <button class="sub-pill" id="pillKnownwell" onclick="switchInterviewCompany('knownwell')">Knownwell</button>
           <button class="sub-pill" id="pillAnduril" onclick="switchInterviewCompany('anduril')">Anduril</button>
         </div>
       </div>
@@ -320,7 +321,7 @@
     const loadedTabs = { health: false, lifting: false, architecture: false, interviews: false, flashcards: false };
     let activeTab = "health";
     let activeHealthSubtab = "oura";
-    let activeInterviewCompany = "knownwell";
+    let activeInterviewCompany = "hippo";
 
     function updateEnvBadge() {
       const txt = document.getElementById("envStatusText");
@@ -352,15 +353,16 @@
     }
 
     function updateInterviewPills(company) {
-      activeInterviewCompany = (company === "hippo" || company === "anduril") ? company : "knownwell";
-      document.getElementById("pillKnownwell").classList.toggle("active", activeInterviewCompany === "knownwell");
-      document.getElementById("pillHippo").classList.toggle("active", activeInterviewCompany === "hippo");
-      document.getElementById("pillAnduril").classList.toggle("active", activeInterviewCompany === "anduril");
+      activeInterviewCompany = (company === "hippo2" || company === "knownwell" || company === "anduril") ? company : "hippo";
+      if (document.getElementById("pillHippo")) document.getElementById("pillHippo").classList.toggle("active", activeInterviewCompany === "hippo");
+      if (document.getElementById("pillHippo2")) document.getElementById("pillHippo2").classList.toggle("active", activeInterviewCompany === "hippo2");
+      if (document.getElementById("pillKnownwell")) document.getElementById("pillKnownwell").classList.toggle("active", activeInterviewCompany === "knownwell");
+      if (document.getElementById("pillAnduril")) document.getElementById("pillAnduril").classList.toggle("active", activeInterviewCompany === "anduril");
     }
 
     function buildInterviewsUrl(company) {
       const base = URLS.interviews;
-      const target = (company === "hippo" || company === "anduril") ? company : "knownwell";
+      const target = (company === "hippo2" || company === "knownwell" || company === "anduril") ? company : "hippo";
       return base + (base.includes("?") ? "&" : "?") + "company=" + target;
     }
 
@@ -407,7 +409,7 @@
     }
 
     function switchInterviewCompany(company) {
-      const normalized = (company === "hippo" || company === "anduril") ? company : "knownwell";
+      const normalized = (company === "hippo2" || company === "knownwell" || company === "anduril") ? company : "hippo";
       updateInterviewPills(normalized);
       switchTab("interviews");
 
