@@ -317,15 +317,15 @@ def build_context(gemini_key: str, token: str, user_text: str = "") -> str:
 
 def call_gemini(gemini_key: str, payload: Dict[str, Any], timeout_sec: int = 75) -> str:
     eff_key = get_effective_gemini_key(gemini_key)
-    models = ["gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.6-flash"]
+    models = ["gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.6-flash", "gemini-2.5-flash"]
     bad_models = set()
     last_err = None
-    for attempt in range(2):
+    for attempt in range(3):
         for model_name in models:
             if model_name in bad_models:
                 continue
             req_payload = json.loads(json.dumps(payload))
-            if attempt == 1 and "thinkingConfig" in req_payload.get("generationConfig", {}):
+            if attempt >= 1 and "thinkingConfig" in req_payload.get("generationConfig", {}):
                 req_payload["generationConfig"].pop("thinkingConfig", None)
             try:
                 url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={eff_key}"
@@ -346,11 +346,41 @@ def call_gemini(gemini_key: str, payload: Dict[str, Any], timeout_sec: int = 75)
                 if he.code in (400, 404):
                     bad_models.add(model_name)
                     continue
+                if he.code == 429:
+                    time.sleep(3.0 * (attempt + 1))
+                    continue
                 time.sleep(1.0)
             except Exception as e:
                 last_err = e
                 time.sleep(1.0)
                 continue
+
+    # Optional OpenRouter fallback if Gemini models hit burst rate limits
+    or_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
+    if or_key:
+        try:
+            sys_parts = (payload.get("system_instruction") or {}).get("parts") or []
+            sys_txt = "\n".join(p.get("text", "") for p in sys_parts if isinstance(p, dict)).strip()
+            msgs = []
+            if sys_txt:
+                msgs.append({"role": "system", "content": sys_txt})
+            for c in payload.get("contents", []):
+                role = "assistant" if c.get("role") == "model" else "user"
+                txt = "\n".join(p.get("text", "") for p in c.get("parts", []) if isinstance(p, dict) and p.get("text")).strip()
+                if txt:
+                    msgs.append({"role": role, "content": txt})
+            or_req = urllib.request.Request(
+                "https://openrouter.ai/api/v1/chat/completions",
+                data=json.dumps({"model": "google/gemini-2.5-flash", "messages": msgs, "max_tokens": 1200}).encode("utf-8"),
+                headers={"Content-Type": "application/json", "Authorization": f"Bearer {or_key}"},
+            )
+            with _open_url(or_req, timeout=timeout_sec) as resp:
+                or_res = json.loads(resp.read().decode("utf-8"))
+            txt = ((or_res.get("choices") or [{}])[0].get("message") or {}).get("content", "").strip()
+            if txt:
+                return txt
+        except Exception as oe:
+            last_err = oe
     raise RuntimeError(f"Gemini API error: {last_err}")
 
 

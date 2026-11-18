@@ -636,6 +636,10 @@
           <span>Anduril</span>
           <span class="tab-stage-tag">Invited - Screen</span>
         </button>
+        <button class="company-tab" data-company="deepgram" onclick="switchCompany('deepgram')">
+          <span>Deepgram</span>
+          <span class="tab-stage-tag">Invited - Pending</span>
+        </button>
       </div>
     </div>
 
@@ -1689,6 +1693,55 @@ ORDER BY visit_num;</pre>
       </div>
     </section>
 
+    <!-- ==================== DEEPGRAM PANEL ==================== -->
+    <section id="panel-deepgram" class="company-panel">
+      <div class="company-header">
+        <div class="company-title-wrap">
+          <h1>Deepgram - Marketing &amp; GTM Data Analyst</h1>
+          <div class="company-sub">Voice AI API &amp; Speech-to-Text Platform &bull; Go-To-Market &amp; Growth Analytics</div>
+        </div>
+        <div class="stage-badges">
+          <span class="stage-badge stage-next">Interview Invited — Scheduling Pending</span>
+        </div>
+      </div>
+
+      <div class="grid-two">
+        <div>
+          <div class="card">
+            <h2>Pipeline Status &amp; Immediate Prep Focus</h2>
+            <p class="muted" style="font-size:0.86rem;line-height:1.55;">
+              Invitation received for <strong>Marketing &amp; GTM Data Analyst</strong> (date/time pending scheduling). Keep interview prep notes in <span class="mono">executive-assistant</span> ready to sync here once scheduled.
+            </p>
+            <ul>
+              <li><strong>Company Focus:</strong> Enterprise Voice AI, developer-led GTM motion (PLG self-serve API + enterprise sales pipeline).</li>
+              <li><strong>Core Analytics Themes:</strong> Attribution &amp; funnel conversion (Website / Docs / Sandbox &rarr; API Key Signup &rarr; Paid Usage &rarr; Enterprise Expansion).</li>
+              <li><strong>Key Metric Alignment:</strong> CAC payback, pipeline velocity, MQL &rarr; SQL &rarr; Closed-Won conversion, campaign ROI, and multi-touch attribution.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h2>Transferable Proof Points (Grounded)</h2>
+            <ul>
+              <li><strong>Pebl GTM Funnel Audit (OneMagnify):</strong> Audited conflicting Sales vs Marketing pipeline definitions across Inbound Lead, MQL, and SAL; built unified SQL views so both teams trusted funnel reporting.</li>
+              <li><strong>Swish Dental / Multi-Location Marketing ROI:</strong> Built Power BI star-schema models tying marketing spend and lead channels directly to scheduled appointments, patient visits, and cost per new patient across 23 clinics.</li>
+              <li><strong>Production SQL + Stack:</strong> 9+ years complex SQL (modular Views, Stored Procedures, DML), Azure Data Factory, Power BI / DAX, and practical Python API pipelines.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div>
+          <div class="card">
+            <h2>Likely Recruiter &amp; Hiring Manager Screens</h2>
+            <ul>
+              <li><strong>"Walk me through a GTM/marketing funnel analysis you owned end-to-end."</strong> &rarr; Use Pebl (defining MQL/SAL stages across Sales &amp; Marketing) or Swish Dental (channel spend to new-patient conversion).</li>
+              <li><strong>"How do you connect top-of-funnel developer signups or marketing campaigns to revenue?"</strong> &rarr; Clean identity stitching (`user_id` / email / UTM domain), explicit attribution window rules, and cohort conversion tracking.</li>
+              <li><strong>"Why Deepgram?"</strong> &rarr; High-velocity AI API product where product usage and GTM pipeline intersect — ideal mix of self-serve telemetry + B2B sales analytics.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </div>
 
   <script>
@@ -1907,7 +1960,7 @@ ORDER BY visit_num;</pre>
 
     function switchCompany(company) {
       stopExplain();
-      const normalized = (company === "hippo2" || company === "knownwell" || company === "anduril") ? company : "hippo";
+      const normalized = (company === "hippo2" || company === "knownwell" || company === "anduril" || company === "deepgram") ? company : "hippo";
       document.querySelectorAll(".company-tab").forEach((btn) => {
         btn.classList.toggle("active", btn.getAttribute("data-company") === normalized);
       });
@@ -1947,7 +2000,7 @@ ORDER BY visit_num;</pre>
     (function initFromUrl() {
       const params = new URLSearchParams(window.location.search || "");
       const c = (params.get("company") || window.location.hash.replace("#", "") || "hippo").toLowerCase();
-      if (c === "hippo" || c === "hippo2" || c === "knownwell" || c === "anduril") {
+      if (c === "hippo" || c === "hippo2" || c === "knownwell" || c === "anduril" || c === "deepgram") {
         switchCompany(c);
       } else {
         switchCompany("hippo");

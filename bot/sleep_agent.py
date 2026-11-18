@@ -797,21 +797,33 @@ def _resolve_log_night_of(text: str, now_dt: datetime) -> str:
 
 
 def _is_backlog_or_note(text: str) -> bool:
+    for line in (text or "").splitlines():
+        t_low = line.strip().lower()
+        if not t_low:
+            continue
+        if (
+            re.match(r"^(?:backlog|idea\s*dump|note)\b\s*[:\-]?", t_low)
+            or "idea dump" in t_low
+            or "add to backlog" in t_low
+            or "add something to backlog" in t_low
+        ):
+            return True
+    return False
+
+
+def _is_default_setting_cmd(text: str) -> bool:
     t_low = (text or "").strip().lower()
-    return bool(
-        re.match(r"^(?:backlog|idea\s*dump|note)\b\s*[:\-]?", t_low)
-        or "idea dump" in t_low
-        or "add to backlog" in t_low
-        or "add something to backlog" in t_low
-    )
+    return bool(re.search(r"\bdefault\b.*\b(?:nicotine|alcohol)\b", t_low))
 
 
 def format_sleep_status_reply(text: str, gemini_key: str, token: str) -> Optional[str]:
     """Handle 9, /sleep, /lastnight, 'sleep status', 'last night', or '/sleep MM-DD' queries."""
-    if _is_substance_or_hunger_log(text) or _is_backlog_or_note(text):
+    if _is_substance_or_hunger_log(text) or _is_backlog_or_note(text) or _is_default_setting_cmd(text):
         return None
     t_clean = text.strip()
     t_low = t_clean.lower()
+    if any(k in t_low for k in ("ability to", "backlog:", "night hunger:", "nicotine:", "starting today")):
+        return None
 
     is_nine = bool(re.match(r"^/?9(?:\.|$)", t_clean) or t_low in ["9", "9."])
     is_cmd = bool(re.match(r"^/(?:sleep|health|lastnight|status|score|today)\b", t_low))
@@ -1118,68 +1130,104 @@ def _handle_sleep_batch(gemini_key: str, token: str, chat_id: int):
         send_message(token, chat_id, reply)
         return
 
-    if _is_substance_or_hunger_log(text):
-        state = sync_state_from_cloud(token)
-        now = now_cst()
-        night_of_key = _resolve_log_night_of(text, now)
-        logged_msgs = []
+    # Process multi-line logs/backlog/defaults line-by-line so one line never hijacks or overwrites another
+    lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+    action_lines = []
+    unmatched_lines = []
+    state = None
+    now = now_cst()
 
-        if "hunger" in text_lower:
-            level = "None"
-            if "high" in text_lower:
-                level = "High"
-            elif "med" in text_lower:
-                level = "Medium"
-            elif "low" in text_lower:
-                level = "Low"
-            elif "none" in text_lower or "non" in text_lower or "zero" in text_lower or "no hunger" in text_lower:
+    def _get_state():
+        nonlocal state
+        if state is None:
+            state = sync_state_from_cloud(token)
+        return state
+
+    for ln in lines:
+        ln_low = ln.lower()
+        if _is_default_setting_cmd(ln):
+            st = _get_state()
+            if "nicotine" in ln_low:
+                d_val = "Yes" if re.search(r"\byes\b", ln_low) else "No"
+                st.setdefault("defaults", {})["nicotine"] = d_val
+                st["defaults"]["nicotine_from"] = now.strftime("%Y-%m-%d")
+                action_lines.append(f"Set Default Nicotine ({now.strftime('%Y-%m-%d')}+): {d_val}")
+            elif "alcohol" in ln_low:
+                d_val = "Yes" if re.search(r"\byes\b", ln_low) else "No"
+                st.setdefault("defaults", {})["alcohol"] = d_val
+                st["defaults"]["alcohol_from"] = now.strftime("%Y-%m-%d")
+                action_lines.append(f"Set Default Alcohol ({now.strftime('%Y-%m-%d')}+): {d_val}")
+            continue
+
+        if _is_backlog_or_note(ln):
+            st = _get_state()
+            clean_note = re.sub(r"^(?:backlog|idea\s*dump|note)\s*[:\-]?\s*", "", ln, flags=re.I).strip() or ln
+            st.setdefault("notes", []).append({
+                "timestamp": now.isoformat(),
+                "type": "backlog" if "backlog" in ln_low else "note",
+                "note": clean_note,
+            })
+            action_lines.append(f"Added to Backlog: {clean_note}")
+            continue
+
+        if _is_substance_or_hunger_log(ln):
+            st = _get_state()
+            night_of_key = _resolve_log_night_of(ln, now)
+            if "hunger" in ln_low:
                 level = "None"
-            state.setdefault("hunger_logs", {})[night_of_key] = level
-            for m in state.get("medication_logs", []):
-                if m.get("night_of") == night_of_key:
-                    m["hunger_level"] = level
-            logged_msgs.append(f"Logged Night Hunger ({night_of_key}): {level}")
+                if "high" in ln_low:
+                    level = "High"
+                elif "med" in ln_low:
+                    level = "Medium"
+                elif "low" in ln_low:
+                    level = "Low"
+                elif "none" in ln_low or "non" in ln_low or "zero" in ln_low or "no hunger" in ln_low:
+                    level = "None"
+                st.setdefault("hunger_logs", {})[night_of_key] = level
+                for m in st.get("medication_logs", []):
+                    if m.get("night_of") == night_of_key:
+                        m["hunger_level"] = level
+                action_lines.append(f"Logged Night Hunger ({night_of_key}): {level}")
+            if "alcohol" in ln_low:
+                alc_val = "No" if re.search(r"\b(?:no|none|0|false)\b", ln_low) else "Yes"
+                st.setdefault("alcohol_logs", {})[night_of_key] = alc_val
+                for m in st.get("medication_logs", []):
+                    if m.get("night_of") == night_of_key:
+                        m["alcohol"] = alc_val
+                action_lines.append(f"Logged Alcohol ({night_of_key}): {alc_val}")
+            if "nicotine" in ln_low:
+                if "unknown" in ln_low:
+                    nic_val = "Unknown"
+                elif re.search(r"\b(?:no|none|0|false)\b", ln_low):
+                    nic_val = "No"
+                else:
+                    nic_val = "Yes"
+                st.setdefault("nicotine_logs", {})[night_of_key] = nic_val
+                for m in st.get("medication_logs", []):
+                    if m.get("night_of") == night_of_key:
+                        m["nicotine"] = nic_val
+                action_lines.append(f"Logged Nicotine ({night_of_key}): {nic_val}")
+            continue
 
-        if "alcohol" in text_lower:
-            alc_val = "No" if re.search(r"\b(?:no|none|0|false)\b", text_lower) else "Yes"
-            state.setdefault("alcohol_logs", {})[night_of_key] = alc_val
-            for m in state.get("medication_logs", []):
-                if m.get("night_of") == night_of_key:
-                    m["alcohol"] = alc_val
-            logged_msgs.append(f"Logged Alcohol ({night_of_key}): {alc_val}")
+        unmatched_lines.append(ln)
 
-        if "nicotine" in text_lower:
-            if "unknown" in text_lower:
-                nic_val = "Unknown"
-            elif re.search(r"\b(?:no|none|0|false)\b", text_lower):
-                nic_val = "No"
-            else:
-                nic_val = "Yes"
-            state.setdefault("nicotine_logs", {})[night_of_key] = nic_val
-            for m in state.get("medication_logs", []):
-                if m.get("night_of") == night_of_key:
-                    m["nicotine"] = nic_val
-            logged_msgs.append(f"Logged Nicotine ({night_of_key}): {nic_val}")
-
+    if action_lines:
         save_state_to_cloud(token, state)
-        send_message(token, chat_id, "Roger Roger.\n\n" + "\n".join(logged_msgs))
-        return
+        if not unmatched_lines:
+            send_message(token, chat_id, "Roger Roger.\n\n" + "\n".join(f"- {a}" for a in action_lines))
+            return
 
-    if _is_backlog_or_note(text):
-        state = sync_state_from_cloud(token)
-        clean_note = re.sub(r"^(?:backlog|idea\s*dump|note)\s*[:\-]?\s*", "", text, flags=re.I).strip() or text
-        state.setdefault("notes", []).append({
-            "timestamp": now_cst().isoformat(),
-            "type": "backlog" if "backlog" in text_lower else "note",
-            "note": clean_note,
-        })
-        save_state_to_cloud(token, state)
-        send_message(token, chat_id, f"Roger Roger.\n\nUpdate Summary:\n- Added to Backlog: {clean_note}")
-        return
-
-    dose_reply = parse_and_record_dose(text, gemini_key, token)
+    remaining_text = "\n".join(unmatched_lines) if unmatched_lines else text
+    dose_reply = parse_and_record_dose(remaining_text, gemini_key, token)
     if dose_reply:
-        send_message(token, chat_id, dose_reply)
+        if action_lines:
+            send_message(token, chat_id, "Roger Roger.\n\n" + "\n".join(f"- {a}" for a in action_lines) + "\n\n" + dose_reply)
+        else:
+            send_message(token, chat_id, dose_reply)
+        return
+
+    if action_lines:
+        send_message(token, chat_id, "Roger Roger.\n\n" + "\n".join(f"- {a}" for a in action_lines))
         return
 
     status_reply = format_sleep_status_reply(text, gemini_key, token)
