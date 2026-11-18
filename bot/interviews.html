@@ -712,6 +712,104 @@
       border: 1px solid rgba(52, 211, 153, 0.35);
     }
 
+    /* Section 6: Flipping Panelist Flashcards */
+    .hp2-fc-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .hp2-fc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 18px;
+    }
+
+    .hp2-flip-card {
+      perspective: 1000px;
+      height: 330px;
+      cursor: pointer;
+    }
+
+    .hp2-flip-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.52s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .hp2-flip-card.flipped .hp2-flip-inner {
+      transform: rotateY(180deg);
+    }
+
+    .hp2-flip-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+    }
+
+    .hp2-flip-front:hover {
+      border-color: rgba(192, 132, 252, 0.6);
+    }
+
+    .hp2-flip-back {
+      transform: rotateY(180deg);
+      border-color: rgba(52, 211, 153, 0.55);
+      background: #0d1626;
+      justify-content: flex-start;
+      text-align: left;
+      align-items: flex-start;
+    }
+
+    .hp2-avatar {
+      width: 148px;
+      height: 148px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid rgba(52, 211, 153, 0.55);
+      margin-bottom: 14px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.38);
+    }
+
+    .hp2-avatar-monogram {
+      width: 148px;
+      height: 148px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(56, 189, 248, 0.22));
+      border: 3px solid rgba(52, 211, 153, 0.55);
+      margin-bottom: 14px;
+      color: #fff;
+    }
+
+    .hp2-fc-hint {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--purple);
+      background: rgba(192, 132, 252, 0.14);
+      border: 1px solid rgba(192, 132, 252, 0.35);
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-top: 6px;
+    }
+
     .data-table {
       width: 100%;
       border-collapse: collapse;
@@ -1353,6 +1451,7 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
           <button class="hp2-tab" data-hp2="panelists" onclick="switchHp2Tab('panelists')">3. Panelists &amp; Core Rules</button>
           <button class="hp2-tab" data-hp2="morning" onclick="switchHp2Tab('morning')">4. 45m Dry-Run &amp; Data Sheet</button>
           <button class="hp2-tab" data-hp2="script" onclick="switchHp2Tab('script')">5. Full Script</button>
+          <button class="hp2-tab" data-hp2="flashcards" onclick="switchHp2Tab('flashcards')">6. Panelist Flashcards</button>
         </div>
 
         <div class="timer-wrap">
@@ -1367,7 +1466,7 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
       <div id="hp2-pane-speaker" class="hp2-pane active">
         <div class="callout" style="margin-bottom:16px;">
           <div class="callout-title">Live Delivery Guardrails &amp; Controls</div>
-          Speak in short, calm headline sentences. Never read slides aloud. Always use exact schema field <code>insurance_score</code> (never "credit score"). Pause 2 seconds after every headline. Controls: <strong>Left/Right</strong> arrows switch slides | <strong>Down/Up</strong> arrows (or <code>Focus</code> button / clicking any card) highlight each talking point live.
+          Keep it casual, calm, and plain English. Say <strong>Insurance Score</strong>, <strong>Average Home Age</strong>, and <strong>Sub-Agency</strong> (no database column names). Pause 2 seconds after headlines. Controls: <strong>Left/Right</strong> arrows switch slides | <strong>Down/Up</strong> arrows (or <code>Focus</code> / clicking any card) highlight each card live.
         </div>
 
         <div class="cue-card">
@@ -1376,8 +1475,8 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
             <span class="cue-clock">0:30 | Clock 0:30</span>
           </div>
           <ul class="clean-list">
-            <li><strong>Say:</strong> "Before we dive in, I put a quick login gate in front of this - even on mock data, I like keeping partner and policyholder data governed."</li>
-            <li><strong>Hook:</strong> Reinforces security awareness for Jakub right away. <strong>Transition:</strong> "Let's start at the top with the normalized 2026 scorecard."</li>
+            <li><strong>Say:</strong> "Even with sample data, I like putting basic security in front of partner and customer numbers. Let's unlock it and jump in."</li>
+            <li><strong>Hook:</strong> Reinforces security awareness for Jakub right away.</li>
           </ul>
         </div>
 
@@ -1387,9 +1486,9 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
             <span class="cue-clock">2:00 | Clock 2:30</span>
           </div>
           <ul class="clean-list">
-            <li><strong>YTD 2026 Scope (<code>74,250</code> quotes | <code>$10.00M</code> <code>bound_premium</code>):</strong> Normalized Jan 1 - May 15 because National launched Jan 1 vs Builder (Oct 10) and AgencyLink (Nov 9). Full dataset: <code>84,817</code> quotes.</li>
-            <li><strong>Answer-First Verdict:</strong> Builder = conversion engine (<code>47.7%</code> bind, <code>$5.25M</code>, watchout <code>83.1%</code> High/VH CAT). National = scale &amp; cleanest risk (<code>57.8k</code> quotes, <code>4.1%</code> bind, <code>$3.85M</code>, <code>6.6%</code> cancel, <code>21.6%</code> LR). AgencyLink = high friction (<code>7.2%</code> bind, <code>$0.90M</code>, <code>15.0%</code> cancel, <code>65.0%</code> LR across <code>350</code> IDs).</li>
-            <li><strong>Cue:</strong> Point out the YTD/All-Time toggle for Ken. <strong>[PAUSE 2s]:</strong> "Any questions on the YTD window before I walk through the funnel?"</li>
+            <li><strong>2026 Scope (74,250 quotes | $10.00M bound premium):</strong> Nearly 85k total quotes; defaulted to YTD 2026 (Jan 1 - May 15) because Builder started Oct '25, AgencyLink Nov '25, and National Jan 1st.</li>
+            <li><strong>Headline Verdict:</strong> Builder = conversion engine (<strong>48%</strong> bind, $5.25M bound, 6.8% cancel, <strong>31%</strong> LR, watchout: <strong>83%</strong> High/VH CAT). National = scale &amp; cleanest risk (57,800 quotes = <strong>78%</strong>, 4.1% bind, $3.85M, 6.6% cancel, <strong>22%</strong> LR). AgencyLink = high friction (7.2% bind, <strong>$900k</strong> bound, <strong>15%</strong> cancel, <strong>65%</strong> LR across 350 sub-agencies).</li>
+            <li><strong>Cue:</strong> Mention the YTD / All-Time toggle in the top right for Ken. <strong>[PAUSE 2s]:</strong> "Any questions on the 2026 baseline before I walk through the funnel?"</li>
           </ul>
         </div>
 
@@ -1399,10 +1498,9 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
             <span class="cue-clock">2:30 | Clock 5:00</span>
           </div>
           <ul class="clean-list">
-            <li><strong>Share Gap:</strong> Builder drives <code>52.5%</code> of <code>bound_premium</code> from <code>13.3%</code> of quotes; National drives <code>77.8%</code> of quotes -> <code>38.5%</code> of premium.</li>
-            <li><strong>Jan-Apr Ramp (May excluded - partial 1-15):</strong> Builder <code>45.9% -> 53.8%</code> | AgencyLink <code>5.8% -> 8.1%</code> | National <code>2.1% -> 5.0%</code> (more than doubled).</li>
-            <li><strong>Price Gap:</strong> Unbound <code>quote_premium</code> is <code>+12%</code> to <code>+27%</code> higher across all 3 channels (Bld <code>$1,351</code> vs <code>$1,128</code>; Nat <code>$1,858</code> vs <code>$1,655</code>; Agy <code>$2,445</code> vs <code>$1,918</code>).</li>
-            <li><strong>Transition:</strong> "Binding is half the equation - next is whether those policies actually stick."</li>
+            <li><strong>Share Gap:</strong> Builder brings in <strong>52%</strong> of bound dollars from <strong>13%</strong> of quotes; National brings in <strong>78%</strong> of quotes for <strong>39%</strong> of bound dollars.</li>
+            <li><strong>Jan-Apr Ramp (May left off - partial month):</strong> Builder started Oct at 0.9%, jumped to <strong>46% to 54%</strong> | AgencyLink 5.8% to 8.1% | National more than doubled from <strong>2.1% to 5.0%</strong>.</li>
+            <li><strong>Price Gap:</strong> Unbound quotes were <strong>12% to 27% pricier</strong> across all three (Builder $1,128 bound vs $1,351 unbound; National $1,655 vs $1,858; AgencyLink $1,918 vs $2,445).</li>
           </ul>
         </div>
 
@@ -1412,9 +1510,8 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
             <span class="cue-clock">2:00 | Clock 7:00</span>
           </div>
           <ul class="clean-list">
-            <li><strong>Numbers (All-Time):</strong> National <code>6.6%</code> cancel (<code>8d</code> median) | Builder <code>6.8%</code> cancel (<code>7d</code> median) | AgencyLink <code>15.0%</code> cancel (<code>18d</code> median - <code>2.5x</code> slower).</li>
-            <li><strong>Why:</strong> AgencyLink drags 18 days because <code>45%</code> (<code>33/73</code>) are unresolved inspection/UW conditions; Builder is ~70% closing/escrow/inspection; National is mortgagee changes (<code>40</code>) &amp; carrier shopping (<code>28</code>).</li>
-            <li><strong>Transition:</strong> "Once a policy stays on the books, what does the underlying risk look like?"</li>
+            <li><strong>Numbers (All-Time):</strong> National 6.6% cancel (93% kept, 8d median) | Builder 6.8% cancel (93% kept, 7d median) | AgencyLink <strong>15%</strong> cancel (85% kept, <strong>18d</strong> median - 2.5x slower).</li>
+            <li><strong>Why:</strong> Builder <strong>70%</strong> = normal new-home closing &amp; property/UW hurdles; National <strong>44%</strong> = mortgagee changes &amp; carrier shopping; AgencyLink <strong>45% (33/73)</strong> = unresolved inspection &amp; UW paperwork dragging on nearly 3 weeks.</li>
           </ul>
         </div>
 
@@ -1424,9 +1521,9 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
             <span class="cue-clock">2:30 | Clock 9:30</span>
           </div>
           <ul class="clean-list">
-            <li><strong>Maturity Check (Jan-Apr Cohort LR):</strong> National beats AgencyLink every single month (<code>22.5/17.5/33.3/16.9%</code> vs <code>90.3/144.9/49.2/45.9%</code>). Dec '25 Builder = <code>55.6%</code> (most mature).</li>
-            <li><strong>CAT vs <code>insurance_score</code>:</strong> Builder has top <code>insurance_score</code> (<code>700</code>), <code>0.1y</code> <code>home_age_years</code>, and lowest claim freq (<code>1.2%</code>), but <code>83.1%</code> High/VH <code>cat_risk_tier</code> (<code>78.0%</code> bound <code>$</code> in TX <code>56.8%</code> + FL <code>21.2%</code>) -> <code>$30,440</code> avg claim severity.</li>
-            <li><strong>AgencyLink Bleed:</strong> <code>33.0y</code> avg <code>home_age_years</code> + <code>600</code> avg <code>insurance_score</code> (plus <code>8.8%</code> <code>no_hit</code>/<code>no_score</code>) -> <code>5.1%</code> claim frequency. <strong>[PAUSE 2s]</strong></li>
+            <li><strong>Maturity Check:</strong> Same-month Jan-Apr cohorts prove <strong>both National (17-33%) and Builder (16-43%) outdo AgencyLink (46-145%) in every single month</strong>, and National beats Builder Jan-Mar. Dec '25 Builder baseline = <strong>56%</strong>.</li>
+            <li><strong>CAT vs Insurance Score:</strong> Builder has new homes (0.1y), 700 Insurance Score, and 1.2% claim frequency - but <strong>83%</strong> High/VH CAT (TX 57% + FL 21% = <strong>78%</strong> of $) drives <strong>$30k</strong> average storm claims and a <strong>31%</strong> LR.</li>
+            <li><strong>AgencyLink Bleed:</strong> 33-year-old homes, 600 score (8.8% missing scores) -&gt; 5.1% claim frequency (4x higher). <strong>[PAUSE 2s]</strong></li>
           </ul>
         </div>
 
@@ -1436,21 +1533,21 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
             <span class="cue-clock">1:30 | Clock 11:00</span>
           </div>
           <ul class="clean-list">
-            <li><strong>Pareto Structure:</strong> National = <code>1</code> pipe (<code>NAT001</code>). Builder = <code>13</code> IDs (Top 5 = <code>75.2%</code> of <code>$</code>; watchout <code>BLD006</code> at <code>72.3%</code> LR &amp; <code>BLD010</code> at <code>11.8%</code> cancel). AgencyLink = <code>350</code> IDs (<code>160</code> zero-bound, <code>116</code> 1-bound, <code>37</code> 2-bound, <code>37</code> 3+-bound).</li>
-            <li><strong>AgencyLink Bright Spots:</strong> <code>166</code> binding IDs have <code>$0</code> claims (<code>$720k</code>); <code>home_age_years</code> 0-15 runs <code>8.0%</code> LR; <code>insurance_score &gt;680</code> runs <code>18.6%</code> LR.</li>
-            <li><strong>Hygiene (For Ken):</strong> <code>84,817</code> unique <code>address_id</code>s; <code>235</code> unbound <code>HI</code> quotes with <code>quote_id = 0</code>; <code>AGY349</code> has 2 name variants (<code>351</code> pairs).</li>
+            <li><strong>Structure:</strong> National = 1 direct partner | Builder = 13 sub-agencies (Top 5 = <strong>75%</strong> at ~29% bind; Keystone outlier at <strong>72%</strong> LR) | AgencyLink = 350 sub-agencies (160 with zero binds, 116 with one).</li>
+            <li><strong>Bright Spots Inside AgencyLink:</strong> 166 binding partners have <strong>$0 claims ($720k)</strong>; homes 0-15 yrs run <strong>8.0%</strong> LR; 680+ Insurance Scores run <strong>19%</strong>.</li>
+            <li><strong>Hygiene:</strong> 84,817 unique property addresses; 235 unbound Hawaii quotes came in with Quote ID = 0 in late 2025; 1 sub-agency had 2 name spellings.</li>
           </ul>
         </div>
 
         <div class="cue-card">
           <div class="cue-head">
-            <span class="cue-title">Slide 6: 90-Day Channel Actions</span>
+            <span class="cue-title">Slide 6: Recommended 90-Day Channel Actions</span>
             <span class="cue-clock">1:30 | Clock 12:30</span>
           </div>
           <ul class="clean-list">
-            <li><strong>Builder:</strong> Protect closing workflow; steer expansion outside TX/FL; tighten pre-close escrow handoffs.</li>
-            <li><strong>National:</strong> Test pricing nudges on unbound shoppers (<code>+12%</code> gap); lifting bind <code>4.1% -> 6.0%</code> adds <code>~$1.8M+</code> <code>bound_premium</code> with zero new traffic.</li>
-            <li><strong>AgencyLink:</strong> Restrict new business on <code>home_age_years &gt;15-20</code>, <code>insurance_score &lt;680</code>, High CAT; prune bottom ~276 tail IDs; 90-day probation (<code>&lt;10%</code> cancel, <code>&lt;45%</code> LR).</li>
+            <li><strong>Builder:</strong> Keep embedded closing flow (48% bind); expand new builder communities outside TX/FL; tighten pre-close handoffs.</li>
+            <li><strong>National:</strong> Test pricing nudges on unbound shoppers (57,800 quotes); lifting bind 4.1% to 6.0% adds <strong>~$1.8M</strong> bound premium with zero extra traffic.</li>
+            <li><strong>AgencyLink:</strong> Block new quotes on homes &gt;15-20 yrs, Insurance Score &lt;680, and High CAT; cut ~276 zero/1-bound tail partners; put active ~35-50 on a 90-day gate (&lt;10% cancel, &lt;45% LR).</li>
           </ul>
         </div>
 
@@ -1460,115 +1557,111 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
             <span class="cue-clock">1:30 | Clock 14:00</span>
           </div>
           <ul class="clean-list">
-            <li><strong>Blueprint:</strong> Builder's embedded conversion (<code>&lt;15</code> sub-agencies, <code>insurance_score 680+</code>, <code>home_age_years &lt;15</code>) + National's <code>75-80%</code> Low/Mod CAT outside TX/FL.</li>
-            <li><strong>Who to Sign:</strong> National/regional mortgage lenders &amp; digital closing platforms; Midwest/Mid-Atlantic homebuilders; curated digital agencies.</li>
-            <li><strong>90-Day Gate &amp; Close:</strong> Bind <code>&gt;20%</code> | Cancel <code>&lt;8%</code> | High/VH CAT <code>&lt;35%</code> | <code>insurance_score &gt;670</code>. "That wraps the core deck - where would you like to dig in first?"</li>
+            <li><strong>Blueprint:</strong> Pair Builder's embedded workflow (25-45%+ bind, &lt;15 sub-agencies, 680+ score, &lt;15y homes) with National's 75-80% Low/Mod CAT outside TX/FL and single API.</li>
+            <li><strong>Who to Sign:</strong> National/regional mortgage lenders &amp; digital closing platforms; Midwest/Mid-Atlantic homebuilders; curated digital agencies with score/age filters.</li>
+            <li><strong>90-Day Gate &amp; Close:</strong> Bind &gt;20% | Cancel &lt;8% | High CAT &lt;35% | Avg Insurance Score &gt;670. "That wraps it up - where would you like to dig in?"</li>
           </ul>
         </div>
       </div>
 
       <!-- TAB 2: Q&A BANK & STAR -->
       <div id="hp2-pane-qa" class="hp2-pane">
-        <div class="section-heading">1. Process &amp; Tooling Answers</div>
-        <div class="grid-2">
+        <div class="section-heading">1. Process, Tools &amp; Ramp Answers (Plain English)</div>
+        <div class="grid-3">
           <div class="card">
-            <h2>Q1: "Walk us through your start-to-finish process on this project."</h2>
+            <h2>Q1: "Walk us through your start-to-finish process."</h2>
             <div class="quote-box">
-              <strong>Headline:</strong> I started by manually inspecting the raw Excel schema and forming hypotheses before touching code, then ran Python audits to normalize cohorts and check hygiene, and built a standalone HTML/JS deck with zero live AI tools running during this call.<br><br>
-              - Verified grain (<code>84,817</code> unique <code>address_id</code>s), staggered launch dates, <code>235</code> <code>HI</code> <code>quote_id = 0</code> rows, and <code>AGY349</code> naming split.<br>
-              - Built single verified JSON summary (<code>phase1_summary.json</code>) to guarantee every chart and table ties out.
+              I started by opening the spreadsheet to see what columns we had and jotted down a few early hypotheses - like different launch dates, pricing gaps, and sub-agency sprawl. From there I used Python to clean it up, normalize everything to 2026 so it was a fair comparison, and double-check all the numbers before putting together a clean web deck we could walk through today.
             </div>
           </div>
 
           <div class="card">
             <h2>Q2: "What tools did you use? What is Antigravity?"</h2>
             <div class="quote-box">
-              <strong>Headline:</strong> I used Python (<code>pandas</code>) for all cohort profiling and hygiene auditing, then used Google Antigravity - an agentic AI coding IDE - to rapidly scaffold the interactive HTML/JS/SVG slide deck while I directed the narrative and verified every number.<br><br>
-              - Built 100% self-contained (zero external CDNs, offline-safe, interactive tooltips, login gate) matching modern SQL-to-HTML executive reporting workflows.
+              I used Python to analyze the 85k rows and check for any weird data quirks. Then I used Google Antigravity - an AI coding assistant - to help me quickly put the interactive dashboard together while I directed the story and verified every single number myself.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q3: "Why was the Q4 build-up period so slow in Oct-Nov?"</h2>
+            <div class="quote-box">
+              Two big clues show up in the data. First, all 235 unbound Hawaii quotes with a Quote ID of zero came in during October through December before stopping completely on January 1st - which looks like early state testing pulling down early bind rates to 1 or 2%. Second, normal ramp timing: Builder binds track home closings (just 15 binds in October before jumping to 702 in December), while AgencyLink spent November and December onboarding over 200 sub-agencies during the slower holiday season.
             </div>
           </div>
         </div>
 
-        <div class="section-heading">2. Hard Panelist Pushback Q&amp;A</div>
+        <div class="section-heading">2. Panelist Pushback Q&amp;A (Casual &amp; Direct)</div>
         <div class="grid-2">
           <div class="card">
-            <h2>Q3 (Michal): "Why not put 100% growth budget into Builder if it binds at 47.7%?"</h2>
+            <h2>Q4 (Michal): "Why not put 100% of our growth budget into Builder if it binds at 48%?"</h2>
             <div class="quote-box">
-              Builder is our strongest conversion engine (<code>47.7%</code> YTD bind, <code>$5.25M</code>), but <code>83.1%</code> of its bound book sits in <code>HIGH</code>/<code>VERY_HIGH</code> <code>cat_risk_tier</code> with <code>78.0%</code> in TX (<code>56.8%</code>) and FL (<code>21.2%</code>), driving <code>$30,440</code> avg claim severity vs National's <code>$13,000</code>. Steer new builder communities into lower-CAT states.
+              Because putting all our budget into Builder concentrates way too much storm and hurricane risk in one basket. Over 80% of Builder's policies sit in High or Very-High CAT areas, and nearly 80% of its dollars are packed into just Texas and Florida. One bad hurricane or hail season could wipe out a full year of underwriting profit with $30k+ average claims - twice National's average. We want a diversified portfolio, so the smart move is keeping Builder healthy while steering new growth outside TX and FL.
             </div>
           </div>
 
           <div class="card">
-            <h2>Q4 (Michal): "How does your Ideal Producer fit our existing JV economics?"</h2>
+            <h2>Q5 (Michal): "How does your Ideal Producer fit our existing JV economics?"</h2>
             <div class="quote-box">
-              Our best unit economics pair Builder's point-of-closing trust (<code>47.7%</code> bind, <code>700</code> <code>insurance_score</code>) with National's <code>79.6%</code> Low/Mod <code>cat_risk_tier</code>. Mortgage lenders and digital closing platforms capture homeowners at loan lock without locking Hippo into coastal TX/FL subdivisions.
+              Our healthiest economics pair Builder's embedded conversion at closing (48% bind, 700 Insurance Score) with National's 80% Low-to-Moderate CAT balance. Mortgage lenders and digital closing platforms capture buyers right at loan lock just like a builder JV, except spread across the country instead of concentrated in coastal subdivisions.
             </div>
           </div>
 
           <div class="card">
-            <h2>Q5 (Michael Dodge): "Why fix &amp; prune AgencyLink instead of dropping it today?"</h2>
+            <h2>Q6 (Michael Dodge): "Why fix &amp; prune AgencyLink instead of shutting it off today?"</h2>
             <div class="quote-box">
-              Dropping it today throws away <code>$720k</code> in claim-free <code>bound_premium</code> across <code>166</code> sub-agencies, plus profitable slices like <code>home_age_years 0-15</code> (<code>8.0%</code> LR) and <code>insurance_score &gt;680</code> (<code>18.6%</code> LR). Deactivate the ~276 zero/1-bound tail IDs, block older homes &amp; sub-680 scores going forward, and give the active core a 90-day gate.
+              Shutting it off overnight walks away from $720k in completely claim-free premium across 166 binding sub-agencies, plus strong pockets like newer homes under 15 years (8.0% LR) and 680+ Insurance Scores (19% LR). The bleed comes from 350 sprawling sub-agencies quoting older 33-year homes and lower scores. Cut the ~276 inactive zero- or 1-bound tail partners, tighten rules going forward, and give the active ~35-50 a 90-day prove-it gate.
             </div>
           </div>
 
           <div class="card">
-            <h2>Q6 (Michael Dodge): "How do we cut AgencyLink's 18-day cancel drag?"</h2>
+            <h2>Q7 (Michael Dodge): "How do we actually reduce AgencyLink's 18-day cancel drag?"</h2>
             <div class="quote-box">
-              <code>45%</code> (<code>33/73</code>) of AgencyLink cancels are unresolved inspection (<code>19</code>) and UW conditions (<code>14</code>) taking <code>18 days</code> median vs <code>7-8d</code> elsewhere. Require upfront roof/age photo validation pre-bind and auto-cancel unresolved conditions at day 10.
+              45% (33 out of 73) of AgencyLink cancels happen because inspection and underwriting conditions sit unresolved for 18 days median compared to 7 or 8 days elsewhere. Requiring upfront roof and property info before bind and auto-expiring stalled applications at day 10 stops ops from chasing dead deals for three weeks.
             </div>
           </div>
 
           <div class="card">
-            <h2>Q7 (Ken Jelinek): "Why YTD 2026 default, and what hygiene bugs did you catch?"</h2>
+            <h2>Q8 (Ken Jelinek): "Why YTD 2026 default, and what data bugs did you catch?"</h2>
             <div class="quote-box">
-              National launched Jan 1 vs Q4 starts for Builder/AgencyLink, so YTD 2026 gives an apples-to-apples baseline (with an All-Time toggle on Slide 1). Hygiene catches: <code>235</code> unbound <code>HI</code> quotes with <code>quote_id = 0</code>, <code>AGY349</code> split across 2 names, and <code>8.8%</code> <code>no_hit</code>/<code>no_score</code> on AgencyLink bounds.
+              National didn't launch until January 1st, so all-time totals mix in Q4 ramp months that pull Builder's 48% 2026 bind rate down to 29% - though I left an All-Time toggle right on Slide 1. On data checks, I caught 235 unbound Hawaii quotes coming through with Quote ID = 0 in late 2025, one AgencyLink sub-agency under two slightly different spellings, and almost 9% missing insurance scores on AgencyLink policies.
             </div>
           </div>
 
           <div class="card">
-            <h2>Q8 (Jakub Sienkiel): "Isn't National's 21.6% LR just immature policies? Why is Builder 30.9% with 700 score?"</h2>
+            <h2>Q9 (Jakub Sienkiel): "Isn't National's 22% LR just newer policies? Why is Builder 31% with a 700 score?"</h2>
             <div class="quote-box">
-              Same-month Jan-Apr cohorts prove National beats AgencyLink every month (<code>22.5/17.5/33.3/16.9%</code> vs <code>90.3/144.9/49.2/45.9%</code>) and beats Builder in Feb (<code>17.5%</code> vs <code>22.0%</code>). Builder's LR is severity-driven (<code>$30.4k</code>/claim from <code>83%</code> High/VH CAT), plus outlier <code>BLD006</code> at <code>72.3%</code> LR.
+              Testing January through April bind cohorts month-by-month proves both National (17-33%) and Builder (16-43%) outdo AgencyLink (46-145%) in every single month, and National beats Builder Jan through March too. Builder's 31% loss ratio comes down to claim size, not frequency: its homeowners rarely file claims (1.2%), but TX and FL storm claims average ~$30k vs ~$13k at National - plus one Builder partner (Keystone) is an outlier at 72% LR.
             </div>
           </div>
         </div>
 
-        <div class="section-heading">3. 4 STAR Behavioral Stories (Hippo Core Values)</div>
+        <div class="section-heading">3. 4 STAR Behavioral Stories (Plain Conversational English)</div>
         <div class="grid-2">
           <div class="card">
-            <h2>Act Like an Owner - SQL Reconciliation &amp; MCP QA (Brooklyn Nets)</h2>
+            <h2>Act Like an Owner - Catching a Rounding Bug Before Client Launch</h2>
             <div class="quote-box">
-              <strong>S/T:</strong> Auditing a ~197k-row paid-media Power BI model ($4-5M spend) before client delivery.<br>
-              <strong>A:</strong> Ran Power BI MCP DAX <code>EVALUATE</code> checks + independent Azure SQL tie-outs; caught a CPM rounding order bug (<code>$23.80</code> vs <code>$23.77</code>).<br>
-              <strong>R:</strong> Achieved <strong>76/76 exact metric tie-outs</strong> across all WoW/MoM tables before launch.
+              While building weekly and monthly reporting on a ~200k-row ad spend model ($4-5M spend), I didn't want to just assume the charts looked right. I ran automated checks directly against our source SQL data and caught a tiny math-order bug rounding cost per thousand impressions to $23.80 instead of $23.77. Fixing that gave us <strong>76 out of 76 exact metric matches</strong> before the client saw it and made independent reconciliation our team standard.
             </div>
           </div>
 
           <div class="card">
-            <h2>Innovate for Impact - Router Engine &amp; Dynamic Pacing (Swish Dental)</h2>
+            <h2>Innovate for Impact - One Clean Model for 23 Texas Dental Clinics</h2>
             <div class="quote-box">
-              <strong>S/T:</strong> 23 Texas dental clinics needing daily/weekly/monthly cost-per-new-patient pacing across Azure SQL spend and Jarvis clinic visits.<br>
-              <strong>A:</strong> Built conformed dimensions anchored to max loaded data dates plus a <code>SELECTEDVALUE</code>/<code>SWITCH</code> metric router.<br>
-              <strong>R:</strong> Powered ~100 visual containers with 1-line KPI additions, spotting <code>&gt;20%</code> market acquisition swings mid-month.
+              A 23-clinic Texas dental group needed daily, weekly, and monthly cost-per-new-patient pacing across ad spend and clinic visits without a shared campaign ID. Instead of copying dozens of brittle formulas, I built one shared clinic calendar and clean metric switch so adding a new KPI took one line. It powered ~100 visuals and let managers shift budget mid-month whenever clinic costs jumped over 20%.
             </div>
           </div>
 
           <div class="card">
-            <h2>In It Together - Reconciling Funnel Definitions (Pebl)</h2>
+            <h2>In It Together - Solving the Marketing vs. Sales Funnel Dispute</h2>
             <div class="quote-box">
-              <strong>S/T:</strong> Marketing and Sales Ops disagreed on counting Salesforce Opportunities by MQL cohort date vs Opp creation date ($15.8M ad spend).<br>
-              <strong>A:</strong> Built a star schema with explicit counting flags, inactive <code>USERELATIONSHIP</code>, a live toggle, and a lead-level QA audit tab.<br>
-              <strong>R:</strong> Eliminated weekly metric disputes with zero silent row drops.
+              On a $15M B2B account, Marketing and Sales Ops argued weekly over whether to count pipeline by lead creation date or opportunity date. Instead of picking a side or building two competing reports, I kept every CRM record in one model with a live toggle between views plus a transparent audit tab for unmapped leads - ending the weekly definition debate for good.
             </div>
           </div>
 
           <div class="card">
-            <h2>Embrace Diverse Ideas - $3.7M Key Fix &amp; Stakeholder Alignment</h2>
+            <h2>Embrace Diverse Ideas - Uncovering a $3.7M Key Mismatch Respectfully</h2>
             <div class="quote-box">
-              <strong>S/T:</strong> Account teams blamed "messy source naming" for $4.12M of unmatched seasonal spend (similar to multi-division homebuilder reporting like Lennar).<br>
-              <strong>A:</strong> Tested their hypothesis via <code>RELATED()</code> checks and found a dimension key mismatch (<code>2526</code> vs <code>FY26</code>).<br>
-              <strong>R:</strong> Cut unmatched spend from <strong>$4.12M to $0.46M (~89% drop)</strong> through transparent evidence.
+              Account managers blamed messy client naming for ~$4.1M in unmapped seasonal campaign spend (similar to multi-division homebuilder reporting like Lennar). Instead of dismissing their guess, I tested it first and traced the lookup join - finding one table used "2526" while SQL sent "FY26". Fixing that key dropped unmatched spend from <strong>~$4.1M down to ~$460k (~89% drop)</strong> and turned skepticism into trust.
             </div>
           </div>
         </div>
@@ -1576,9 +1669,9 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
         <div class="section-heading">4. Smart Questions to Ask the Panel at the End</div>
         <div class="card">
           <ul class="clean-list">
-            <li><strong>Michal / Michael:</strong> "When you onboard a new producer today, what usually surprises you most in the first 60 days — quoting volume, cancellation friction, or underwriting mix?"</li>
-            <li><strong>Ken / Jakub:</strong> "In this dataset, 235 unbound Hawaii quotes came through with <code>quote_id = 0</code>. Are those known routing/test artifacts in production, and how tightly are producer ingestion schemas governed before hitting analytics?"</li>
-            <li><strong>All:</strong> "Looking 6 months out from this new role, what single producer or channel decision would prove this Senior Analyst hire was a massive win?"</li>
+            <li><strong>Michal / Michael:</strong> "When you onboard a new producer today, what usually surprises you most in the first 60 days - quoting volume, cancellation friction, or underwriting mix?"</li>
+            <li><strong>Ken / Jakub:</strong> "In this dataset, 235 unbound Hawaii quotes came through with Quote ID = 0 back in Q4. Are those typical routing or test artifacts, and how tightly are partner feeds validated before hitting analytics?"</li>
+            <li><strong>All:</strong> "Looking 6 months out from this new role, what single producer or channel decision would prove this Senior Analyst hire was a big win?"</li>
           </ul>
         </div>
       </div>
@@ -1590,42 +1683,42 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
             <h2>Michal Shapira - Director, GTM Strategy</h2>
             <ul class="clean-list">
               <li><strong>Background:</strong> Nearly 5 yrs at Hippo; managed 7 JVs including <strong>Lennar</strong> and <strong>PennyMac</strong>; previously CPO at Whole Foods &amp; NCR Exec Director.</li>
-              <li><strong>Lens:</strong> Holistic P&amp;L (sales + claims + ops together) &amp; partner strategy.</li>
-              <li><strong>Your Hook:</strong> Drop 1 natural sentence: <em>"At OneMagnify I've worked on division-level funnel and lead-quality pacing for Lennar, so connecting top-of-funnel volume to downstream quality is second nature."</em></li>
+              <li><strong>What she cares about:</strong> Full P&amp;L picture (sales + claims + ops together) &amp; partner strategy.</li>
+              <li><strong>Your Hook:</strong> Drop 1 natural sentence: <em>"At OneMagnify I've worked on division-level funnel and lead-quality pacing for Lennar, so tying top-of-funnel volume to downstream quality is second nature."</em></li>
             </ul>
           </div>
 
           <div class="card">
-            <h2>Michael Dodge - Sr. Director, Agency Sales</h2>
+            <h2>Michael Dodge - Sr. Director, Sales</h2>
             <ul class="clean-list">
-              <li><strong>Background:</strong> 8 yrs at Hippo (Inside Sales -> Partner Sales -> Agency Direct -> Sr. Director Sales); 10 yrs Amica before that.</li>
-              <li><strong>Lens:</strong> Real-world agent friction, bind rates, cancellations, sub-agency execution.</li>
-              <li><strong>Your Hook:</strong> Frame AgencyLink constructively as "tighten rules &amp; prune the inactive tail on 90-day probation" before killing the relationship.</li>
+              <li><strong>Background:</strong> 8 yrs at Hippo across Inside, Partner, and Agency Direct Sales; 10 yrs at Amica before that.</li>
+              <li><strong>What he cares about:</strong> Real-world agent friction, conversion rates, cancellations, and sub-agency follow-through.</li>
+              <li><strong>Your Hook:</strong> Frame AgencyLink constructively as "tighten rules &amp; prune the inactive tail on a 90-day prove-it gate" before walking away from $720k in clean business.</li>
             </ul>
           </div>
 
           <div class="card">
             <h2>Ken Jelinek - Sr. Manager, GTM Strategy Analytics</h2>
             <ul class="clean-list">
-              <li><strong>Background:</strong> Joined Hippo Jul 2025; previously Sr Mgr Commercial Analytics at Evolve; 25+ yrs leading Sales Ops BI &amp; Data Governance at Dell (PMP).</li>
-              <li><strong>Lens:</strong> Apples-to-apples cohorts, data hygiene, repeatable scorecards.</li>
-              <li><strong>Your Hook:</strong> Highlight YTD 2026 normalization, excluding partial May from the ramp line, and catching <code>quote_id = 0</code> Hawaii rows + <code>AGY349</code>.</li>
+              <li><strong>Background:</strong> Joined Hippo Jul 2025; previously Commercial Analytics at Evolve; 25+ yrs leading Sales Ops BI &amp; Governance at Dell.</li>
+              <li><strong>What he cares about:</strong> Apples-to-apples comparisons, clean data hygiene, and repeatable scorecards.</li>
+              <li><strong>Your Hook:</strong> Mention defaulting to YTD 2026, leaving partial May off the trend line, and catching the 235 Hawaii Quote ID = 0 rows.</li>
             </ul>
           </div>
 
           <div class="card">
-            <h2>Jakub Sienkiel - Sr. Manager, Insurance Analytics (HM)</h2>
+            <h2>Jakub Sienkiel - Sr. Manager, Insurance Analytics (Hiring Manager)</h2>
             <ul class="clean-list">
-              <li><strong>Background:</strong> Your R2 Hiring Manager leading centralized analytics + data engineering (Databricks migration, semantic layer, HTML dashboards).</li>
-              <li><strong>Lens:</strong> Beyond dashboard plumbing -> real underwriting &amp; risk insights (CAT, <code>insurance_score</code>, claims maturity, security).</li>
-              <li><strong>Your Hook:</strong> Opening login gate + same-month cohort LR proof + Builder severity vs frequency explanation.</li>
+              <li><strong>Background:</strong> Your R2 Hiring Manager leading centralized analytics + data engineering (Databricks, semantic layer, HTML decks).</li>
+              <li><strong>What he cares about:</strong> Moving past chart plumbing into real underwriting &amp; risk insights (CAT risk, Insurance Score, claims maturity, security).</li>
+              <li><strong>Your Hook:</strong> Login gate upfront + same-month cohort proof + Builder storm severity vs claim frequency explanation.</li>
             </ul>
           </div>
         </div>
 
         <div class="callout" style="margin-top:16px;">
-          <div class="callout-title">Hippo Values &amp; Zoom Rules Check</div>
-          Values: <strong>Act like an owner</strong>, <strong>Innovate for impact</strong>, <strong>In it together</strong>, <strong>Embrace diverse ideas</strong> (approach pushback with curiosity, not defensiveness). Note: Zoom AI Companion transcribes; keep zero live AI tools running on screen during the call.
+          <div class="callout-title">Hippo Core Values &amp; Live Call Rules</div>
+          Values: <strong>Act like an owner</strong>, <strong>Innovate for impact</strong>, <strong>In it together</strong>, <strong>Embrace diverse ideas</strong> (treat tough questions with curiosity, never defensiveness). Zoom AI Companion transcribes; keep zero live AI tools running during the call.
         </div>
       </div>
 
@@ -1633,47 +1726,47 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
       <div id="hp2-pane-morning" class="hp2-pane">
         <div class="grid-2" style="margin-bottom:18px;">
           <div class="card">
-            <h2>45-Min Morning Walkthrough &amp; Mom Dry-Run</h2>
+            <h2>45-Min Morning Walkthrough &amp; Dry-Run</h2>
             <ul class="clean-list">
-              <li><strong>0:00 - 0:15 | 4-Piece Data Refresher:</strong> Summarize (1) YTD Normalization &amp; Hygiene, (2) Funnel &amp; Price Gap, (3) Cancels &amp; Cohort LR/CAT, (4) Actions &amp; Ideal Partner in 1 sentence each.</li>
-              <li><strong>0:15 - 0:29 | Timed 14m Run-Through:</strong> Start Deck Clock in Tab 1; hit Slide 2 by <code>5:00</code>, Slide 4 by <code>9:30</code>, Slide 7 by <code>14:00</code> without Mom interrupting.</li>
-              <li><strong>0:29 - 0:45 | Mom Mock Panel Q&amp;A:</strong> Have Mom fire 5-6 questions from Tab 2 (interrupting once after Slide 1 on AgencyLink). Check: 1-2 sentence direct answer first + zero "um/like".</li>
+              <li><strong>0:00 - 0:15 | 4-Part Story Recap:</strong> Say the headline of (1) YTD Scope, (2) Funnel &amp; Price Gap, (3) Cancels &amp; Cohort/CAT Risk, (4) Actions &amp; Ideal Partner in 1 casual sentence each.</li>
+              <li><strong>0:15 - 0:29 | Timed 14m Run-Through:</strong> Start Deck Clock in Tab 1; hit Slide 2 by <code>5:00</code>, Slide 4 by <code>9:30</code>, Slide 7 by <code>14:00</code> using Right/Down arrows cleanly.</li>
+              <li><strong>0:29 - 0:45 | Rapid Q&amp;A Drill:</strong> Run through Q1-Q9 in Tab 2 + flip Panelist Flashcards in Tab 6 until every name and lens clicks immediately.</li>
             </ul>
           </div>
 
           <div class="card">
-            <h2>Mom's Quick Starter Questions</h2>
+            <h2>Top Quick-Fire Practice Questions</h2>
             <ul class="clean-list">
               <li>"Walk me through your start-to-finish process on this project."</li>
+              <li>"Why did Builder and AgencyLink have such a slow build-up period in Oct-Nov?"</li>
+              <li>"Why not put 100% of our budget into Builder if it binds at 48%?"</li>
               <li>"Why keep AgencyLink if its loss ratio is 65% and cancel rate is 15%?"</li>
-              <li>"Builder binds at 48% - why not put 100% of budget there?"</li>
-              <li>"Isn't National's 21.6% loss ratio just low because it started in January?"</li>
-              <li>"Tell me about a time you caught a data bug before stakeholders saw it."</li>
+              <li>"Isn't National's 22% loss ratio just low because it started in January?"</li>
             </ul>
           </div>
         </div>
 
         <div class="card">
-          <h2>Verified Master Data Cheat Sheet (<code>phase1_summary.json</code>)</h2>
+          <h2>Verified Master Data Cheat Sheet (Clean Rounded View)</h2>
           <table class="data-table">
             <thead>
               <tr>
                 <th>Metric</th>
-                <th>Builder (YTD '26 / All)</th>
+                <th>Builder (YTD '26 / All-Time)</th>
                 <th>National (YTD '26)</th>
-                <th>AgencyLink (YTD '26 / All)</th>
+                <th>AgencyLink (YTD '26 / All-Time)</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td>Launch Date</td><td>Oct 10, 2025 (218d)</td><td>Jan 1, 2026 (135d)</td><td>Nov 9, 2025 (188d)</td></tr>
-              <tr><td>Quotes</td><td>9,850 / 18,865</td><td>57,800</td><td>6,600 / 8,152</td></tr>
-              <tr><td>Bound Policies (Bind %)</td><td>4,700 (47.7%) / 5,467 (29.0%)</td><td>2,350 (4.1%)</td><td>475 (7.2%) / 488 (6.0%)</td></tr>
-              <tr><td>Bound Premium</td><td>$5.25M / $6.13M</td><td>$3.85M</td><td>$0.90M / $0.93M</td></tr>
-              <tr><td>Cancel Rate / Median Days</td><td>6.8% / 7 days</td><td>6.6% / 8 days</td><td>15.0% / 18 days</td></tr>
-              <tr><td>Loss Ratio (YTD / All)</td><td>30.9% / 33.8%</td><td>21.6%</td><td>65.0% / 62.8%</td></tr>
-              <tr><td>Avg <code>home_age_years</code> / <code>insurance_score</code></td><td>0.1y / 700</td><td>10.2y / 674</td><td>33.0y / 600 (8.8% no_hit/score)</td></tr>
-              <tr><td>CAT Mix (<code>cat_risk_tier</code>)</td><td>83.1% High / Very High</td><td>79.6% Low / Moderate</td><td>77.7% Low / Moderate</td></tr>
-              <tr><td>Sub-Agencies</td><td>13 IDs (Top 5 = 75.2%)</td><td>1 ID (<code>NAT001</code>)</td><td>350 IDs (160 0-bound, 166 $0 claims)</td></tr>
+              <tr><td>Launch Date</td><td>Oct 2025</td><td>Jan 1, 2026</td><td>Nov 2025</td></tr>
+              <tr><td>Quotes (2026 Share)</td><td>9,850 (13%) / 18,865</td><td>57,800 (78%)</td><td>6,600 (9%) / 8,152</td></tr>
+              <tr><td>Bound Policies (Bind %)</td><td>4,700 (48%) / 5,467 (29%)</td><td>2,350 (4.1%)</td><td>475 (7.2%) / 488 (6.0%)</td></tr>
+              <tr><td>Bound Premium</td><td>$5.25M / $6.13M</td><td>$3.85M</td><td>$900k / $931k</td></tr>
+              <tr><td>Cancel Rate / Median Days</td><td>6.8% (93% kept) / 7 days</td><td>6.6% (93% kept) / 8 days</td><td>15% (85% kept) / 18 days</td></tr>
+              <tr><td>Loss Ratio (YTD / All-Time)</td><td>31% / 34%</td><td>22%</td><td>65% / 63%</td></tr>
+              <tr><td>Average Home Age / Insurance Score</td><td>0.1y / 700</td><td>10.2y / 674</td><td>33.0y / 600 (8.8% unscored)</td></tr>
+              <tr><td>CAT Exposure Mix</td><td>83% High / Very High</td><td>80% Low / Moderate</td><td>78% Low / Moderate</td></tr>
+              <tr><td>Sub-Agencies</td><td>12 YTD / 13 All (Top 5 = 75%)</td><td>1 Direct Partner</td><td>350 Sub-Agencies (160 0-bound, 166 $0 claims)</td></tr>
             </tbody>
           </table>
         </div>
@@ -1682,8 +1775,8 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
       <!-- TAB 5: FULL WORD-FOR-WORD SCRIPT -->
       <div id="hp2-pane-script" class="hp2-pane">
         <div class="callout" style="margin-bottom:16px;">
-          <div class="callout-title">Word-for-Word Practice Script (~13-14 Min)</div>
-          Read this through once or twice to lock in natural phrasing and beat cues (<code>Right Arrow</code> = Next Slide, <code>Down Arrow</code> = Highlight Next Card). During the live Zoom call, switch back to <strong>Tab 1: Speaker Guide</strong> cue cards so you sound natural rather than reading off a screen.
+          <div class="callout-title">Word-for-Word Practice Script (~13-14 Min | Casual Spoken Flow)</div>
+          Read this through once or twice to lock in the natural rhythm and spotlight beats (<code>Right Arrow</code> = Next Slide, <code>Down Arrow</code> = Highlight Next Card). On the real Zoom call, switch back to <strong>Tab 1: Speaker Guide</strong> cue cards so you sound natural instead of reading off a screen.
         </div>
 
         <div class="cue-card">
@@ -1692,7 +1785,7 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
             <span class="cue-clock">0:30 | Clock 0:30</span>
           </div>
           <div class="quote-box">
-            "Hey everyone, thanks for taking the time today. Before we jump into the numbers, you'll notice I put a quick login gate in front of this deck. Even on mock data, I like treating customer and partner data with basic governance and access control. Let's unlock it and get started."
+            "Hey everyone, thanks for taking the time today. Before we jump into the numbers, you'll notice I put a quick login gate in front of this deck. Even with sample data, I like treating customer and partner numbers with basic security and access control. Let's unlock it and get started."
             <br><br><em>[Unlock -&gt; Press Down Arrow to highlight Slide 1 Beat 1]</em>
           </div>
         </div>
@@ -1704,13 +1797,13 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
           </div>
           <div class="quote-box">
             <strong>[Down Arrow -&gt; Beat 1: Headline Banner]</strong><br>
-            "So we looked at just under 85,000 quotes - 84,817 total - across three producers: Builder, National, and AgencyLink, through May 15th of 2026. Before comparing them, one important caveat: they didn't launch at the same time. Builder started October 10th, AgencyLink started November 9th, and National didn't launch until January 1st. So instead of penalizing National for starting three months later, I defaulted this scorecard to YTD 2026 - January 1st through May 15th - so we're comparing all three apples-to-apples on the exact same playing field. And I left a toggle in the top right if you want to flip back to all-time numbers at any point. Here's the headline takeaway upfront across the three channels:"
+            "So we looked at just under 85,000 quotes across three producers: Builder, National, and AgencyLink, through May 15th of 2026. Before comparing them, one important caveat: they didn't launch at the same time. Builder started October 2025, AgencyLink started November 2025, and National didn't launch until January 1st of this year. So instead of penalizing National for starting three months later, I defaulted this scorecard to YTD 2026 - January 1st through May 15th - so we're comparing all three apples-to-apples on the exact same playing field. And I left a toggle in the top right if you want to flip back to all-time numbers at any point. Here's the headline takeaway upfront across the three channels:"
             <br><br><strong>[Down Arrow -&gt; Beat 2: Builder]</strong><br>
-            "First, Builder is clearly our conversion powerhouse. In 2026, it converted 47.7% of its quotes - generating 5.25 million dollars in bound premium on just 9,850 quotes, with a low 6.8% cancel rate. The big catch to watch here is catastrophe concentration, which we'll dig into on Slide 4."
+            "First, Builder is clearly our conversion powerhouse. So far this year, it converted 48% of its quotes - bringing in 5.25 million dollars in bound premium on just under 10,000 quotes, with a low 6.8% cancel rate. The main thing to keep an eye on here is storm exposure, which we'll break down on Slide 4."
             <br><br><strong>[Down Arrow -&gt; Beat 3: National]</strong><br>
-            "Second, National is our massive top-of-funnel engine and our cleanest risk book. It brought in 57,800 quotes this year - nearly 80% of all quoting volume - at a much lower 4.1% bind rate. But once policies bind, they stick - a 6.6% cancel rate - and it holds the lowest YTD loss ratio at 21.6%."
+            "Second, National is our big top-of-funnel engine and our cleanest risk book. It brought in 57,800 quotes this year - 78% of all our quoting volume - at a much lower 4.1% bind rate. But once policies bind, they stick - only a 6.6% cancel rate - and it holds our lowest YTD loss ratio at 22%."
             <br><br><strong>[Down Arrow -&gt; Beat 4: AgencyLink]</strong><br>
-            "And third, AgencyLink is where we're seeing the most friction. It binds at 7.2% for 900 thousand dollars in 2026 bound premium, but carries a 15% cancel rate - more than double the other two - and a 65% YTD loss ratio spread thin across 350 sub-agencies."
+            "And third, AgencyLink is where we're seeing the most friction. It binds at 7.2% for 900 thousand dollars in 2026 bound premium, but carries a 15% cancel rate - more than double the other two - and a 65% YTD loss ratio spread across 350 different sub-agencies."
             <br><br><em>[Pause 2s]:</em> "Before I walk through how the funnel and pricing behaved, any quick questions on that 2026 baseline?"
           </div>
         </div>
@@ -1722,12 +1815,12 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
           </div>
           <div class="quote-box">
             <strong>[Right Arrow -&gt; Slide 2 | Down Arrow -&gt; Beat 1: Ramp Chart]</strong><br>
-            "This chart on the left shows why normalizing to 2026 was so important. Both Builder and AgencyLink spent October and November barely binding anything - around 1 to 2% - while getting ramped up. Once we hit January, Builder jumped straight into the 45 to 54% range. And look at the blue line for National: even though its overall 2026 bind rate is 4.1%, it actually more than doubled from 2.1% in January up to 5.0% by April. One quick methodology note: I excluded May from this trend line because the snapshot cuts off on May 15th, and late-May quotes haven't finished closing yet."
+            "This chart on the left shows why normalizing to 2026 mattered so much. Builder started out barely binding anything in October and November - around 1 to 2% while ramping up and waiting on closings. Once we hit January, Builder jumped right into the 46 to 54% range. And look at the blue line for National: even though its 2026 average is 4.1%, it actually more than doubled from 2.1% in January up to 5.0% by April. One quick note on the chart: I left May off this trend line because the data cuts off on May 15th, so late-May quotes haven't had time to close yet."
             <br><br><strong>[Down Arrow -&gt; Beat 2: 2026 Share]</strong><br>
-            "On the top right, you can really see the efficiency gap. National generates 78% of all 2026 quote volume, yet produces 39% of bound premium. Builder only sends 13% of quotes, yet generates over half - 52.5% - of total bound premium because almost one out of every two quotes binds."
+            "On the top right, you can really see the conversion gap side-by-side. National brings in 78% of all 2026 quotes, yet drives 39% of our bound premium. Builder only sends 13% of quotes, yet brings in over half - 52% - of our bound dollars because almost half of its quotes turn into policies."
             <br><br><strong>[Down Arrow -&gt; Beat 3: Price Sensitivity]</strong><br>
-            "And if we look at why unbound quotes walked away, price stands out across every single producer. Across all three channels, average quoted premium on unbound quotes was 12 to 27% higher than on policies that actually bound - 1,858 dollars versus 1,655 in National, and over 2,400 dollars versus 1,918 in AgencyLink. That tells me price competitiveness is a huge lever if we want to lift National's 4.1% conversion rate."
-            <br><br><em>[Pause 2s]:</em> "Now binding a policy is only half the story - next let's look at whether those policies actually stay on the books."
+            "And when we look at why people walked away without binding, price jumps off the page in every channel. Across all three producers, unbound quotes were priced 12 to 27% higher than the policies that actually bound - 1,858 dollars unbound versus 1,655 bound in National, and 2,445 dollars unbound versus 1,918 in AgencyLink. That tells me sharpening our pricing or quote competitiveness is a huge lever if we want to lift National's 4.1% bind rate."
+            <br><br><em>[Pause 2s]:</em> "Now getting a customer to bind is only half the battle - next let's look at whether those policies actually stick."
           </div>
         </div>
 
@@ -1738,12 +1831,12 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
           </div>
           <div class="quote-box">
             <strong>[Right Arrow -&gt; Slide 3 | Down Arrow -&gt; Beat 1: Cancel Rate]</strong><br>
-            "Looking at retention, National and Builder are super consistent - 6.6% and 6.8% cancellation rates, meaning over 93% of bound policies stay active. AgencyLink, on the other hand, loses 15% of everything it binds."
+            "On retention, National and Builder are remarkably consistent - 6.6% and 6.8% cancellation rates, which means 93% of bound policies stay on the books. AgencyLink, meanwhile, loses 15% of everything it binds."
             <br><br><strong>[Down Arrow -&gt; Beat 2: Days to Cancel]</strong><br>
-            "Even more telling is how fast they cancel. When Builder or National cancels, it fails fast - 7 to 8 days median. AgencyLink policies sit on the books for 18 days median before canceling - two and a half times slower."
+            "What's even more interesting is how quickly those cancellations happen. When Builder or National cancels, it fails fast - 7 to 8 days median. With AgencyLink, policies sit open for 18 days median before canceling - two and a half times longer."
             <br><br><strong>[Down Arrow -&gt; Beat 3, 4, 5: Cancellation Drivers]</strong><br>
-            "In Builder <em>[Beat 3]</em>, roughly 70% of cancels are normal new-home closing friction - inspections not resolved, home sales falling through, or escrow payments missing. In National <em>[Beat 4]</em>, it's mostly mortgagee or escrow updates and classic comparison-shopping switches. In AgencyLink <em>[Beat 5]</em>, nearly half of all cancellations - 33 out of 73 - are unresolved inspection and underwriting conditions. That explains the 18-day drag: our ops and underwriting teams are spending two to three weeks chasing paperwork on properties that shouldn't have cleared quoting cleanly in the first place."
-            <br><br><em>[Pause 2s]:</em> "So once a policy actually stays active, what does the underlying risk quality look like? Let's flip to Slide 4."
+            "Looking underneath at the top reasons, in Builder <em>[Beat 3]</em>, 70% of cancels are normal new-home closing and property hurdles - unresolved inspections, home sales falling through, missed escrow payments, or property conditions. In National <em>[Beat 4]</em>, 44% is just routine mortgagee and escrow updates or customers deciding to switch carriers. But in AgencyLink <em>[Beat 5]</em>, 45% of all cancellations - 33 out of 73 - are unresolved inspection and underwriting conditions. That explains the 18-day drag: our ops and underwriting teams are spending two to three weeks chasing paperwork on homes that shouldn't have cleared quoting cleanly upfront."
+            <br><br><em>[Pause 2s]:</em> "So once a policy stays active, how healthy is the underlying risk? Let's flip to Slide 4."
           </div>
         </div>
 
@@ -1754,12 +1847,12 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
           </div>
           <div class="quote-box">
             <strong>[Right Arrow -&gt; Slide 4 | Down Arrow -&gt; Beat 1: Cohort Chart]</strong><br>
-            "Before trusting National's 21.6% overall loss ratio, I wanted to test an obvious question: is National only low because it launched in January and its policies haven't been active long enough to file claims? To check that, I broke out loss ratio by the exact month each policy bound. Look at January, February, March, and April cohorts head-to-head: National beats AgencyLink in every single month - 17 to 33% versus 46 to 145% in AgencyLink - and even beats Builder in January and February. I also flagged December 2025 Builder policies at 55.6% as our most mature baseline, just as a reminder not to over-celebrate brand-new policies too early."
+            "Before trusting National's 22% overall loss ratio, I wanted to double-check one obvious thing: is National only low because it launched in January and its policies haven't been active long enough to rack up claims? To test that fairly, I broke out loss ratio by the exact month each policy bound. Look at January, February, March, and April head-to-head: both National and Builder outperform AgencyLink in every single month - 17 to 33% in National and 16 to 43% in Builder versus 46 to 145% in AgencyLink - and National even beats Builder from January through March. I also left December 2025 Builder policies on there at 56% as our oldest baseline, just as a reminder not to over-celebrate brand-new policies too soon."
             <br><br><strong>[Down Arrow -&gt; Beat 2: CAT Risk Tiers]</strong><br>
-            "Here on the right is the biggest strategic catch in the dataset. Look at <code>cat_risk_tier</code>: 83.1% of Builder's bound policies sit in HIGH or VERY HIGH catastrophe risk tiers, mostly because 78% of Builder's premium is concentrated in Texas and Florida. Compare that to National, where nearly 80% of the book sits in Low and Moderate CAT tiers."
-            <br><br><strong>[Down Arrow -&gt; Beat 3: Home Age &amp; insurance_score]</strong><br>
-            "And down at the bottom, the underwriting profile explains why loss performance separates so cleanly. Builder brings brand-new homes - 0.1 years average <code>home_age_years</code> - and a top <code>insurance_score</code> of 700, giving it the lowest claim frequency at 1.2%. Its 30.9% YTD loss ratio isn't driven by frequent claims, it's driven by higher claim severity from storm exposure. Meanwhile, AgencyLink insures 33-year-old homes on average with a 600 average <code>insurance_score</code> - plus nearly 9% <code>no_hit</code> or <code>no_score</code> - which drives a 5.1% claim frequency, more than 4x higher than Builder."
-            <br><br><em>[Pause 2s]:</em> "Does that tradeoff between Builder's conversion and CAT concentration line up with how you view those channels internally?"
+            "On the top right is the biggest strategic tradeoff in the data. In Builder, 83% of bound policies sit in High or Very-High CAT risk tiers, largely because 78% of Builder's dollars are concentrated in Texas and Florida. Compare that to National, where 80% of the book sits in Low or Moderate CAT risk."
+            <br><br><strong>[Down Arrow -&gt; Beat 3: Home Age &amp; Insurance Score]</strong><br>
+            "And at the bottom right, the underwriting numbers show why claim performance splits so cleanly. Builder insures brand-new homes - basically zero years old on average - with a 700 average Insurance Score, giving it our lowest claim frequency at 1.2%. So Builder's 31% YTD loss ratio isn't happening because homeowners file lots of claims; it's because when a Texas or Florida storm hits, the average claim costs around 30 thousand dollars. AgencyLink is the exact opposite: 33-year-old homes on average, a 600 Insurance Score - plus almost 9% missing scores - which pushes claim frequency up to 5.1%, more than four times higher than Builder."
+            <br><br><em>[Pause 2s]:</em> "Does that tradeoff between Builder's conversion and storm concentration line up with how you think about those channels today?"
           </div>
         </div>
 
@@ -1770,11 +1863,11 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
           </div>
           <div class="quote-box">
             <strong>[Right Arrow -&gt; Slide 5 | Down Arrow -&gt; Beat 1: Sub-Agencies]</strong><br>
-            "Next, I looked underneath the producer averages at sub-agency concentration. National flows through 1 centralized pipe (<code>NAT001</code>). Builder works cleanly across 13 sub-agencies, where the top 5 drive 75% of premium at a steady ~29% bind rate - though one Builder sub-agency, <code>BLD006</code> (Keystone), stands out at a 72.3% loss ratio and deserves a quick check. AgencyLink is the exact opposite: 350 unique sub-agency IDs, where 160 bound zero policies and 116 bound just one. That said, there are real bright spots buried inside AgencyLink: 166 binding agencies had zero claims - 720 thousand dollars in clean premium - and policies on 0-to-15-year-old homes ran an 8.0% loss ratio, while <code>insurance_score</code> 680+ ran 18.6%."
+            "Next, I zoomed in below the producer level to see how concentrated these partners are. National runs through one single direct partner. Builder runs cleanly through just 13 sub-agencies, where the top 5 drive 75% of premium at a steady ~29% bind rate - though one Builder partner, Keystone, is an outlier at a 72% loss ratio and worth checking in on. AgencyLink is completely fragmented across 350 sub-agencies: 160 bound zero policies and another 116 bound just one. Still, there's good business hidden inside AgencyLink - 166 binding sub-agencies have zero claims, representing 720 thousand dollars in clean premium. Policies on homes under 15 years old ran just an 8.0% loss ratio, and customers with Insurance Scores of 680+ ran 19%."
             <br><br><strong>[Down Arrow -&gt; Beat 2: Data Hygiene]</strong><br>
-            "Quickly on data hygiene before moving to recommendations: I verified all 84,817 rows have unique property <code>address_id</code>s with zero overlap across producers. I did catch 235 unbound Hawaii quotes with <code>quote_id = 0</code> across Builder and AgencyLink, plus one AgencyLink <code>sub_agency_id</code> split across two slightly different names - so relying blindly on distinct <code>quote_id</code> counts would have slightly skewed totals."
+            "Quickly on data quality before we wrap up with actions: every one of the 84,817 quotes represents a unique property address with zero overlap across channels. I did catch 235 unbound Hawaii quotes that came through with a Quote ID of zero in late 2025, plus one AgencyLink sub-agency listed under two slightly different names - good catches so those quirks don't throw off totals."
             <br><br><strong>[Down Arrow -&gt; Beat 3: Q&amp;A Drill-Down]</strong><br>
-            "Down below, I included interactive drill-downs on the top Builder and AgencyLink sub-agencies plus state mixes if you want to inspect specific names during Q&amp;A."
+            "At the bottom, I put interactive tables with the top sub-agencies and state breakdowns so we can pull up specific names if we want to dig deeper during Q&amp;A."
           </div>
         </div>
 
@@ -1785,11 +1878,11 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
           </div>
           <div class="quote-box">
             <strong>[Right Arrow -&gt; Slide 6 | Down Arrow -&gt; Beat 1: Builder]</strong><br>
-            "So turning this into concrete actions over the next 90 days: First, for Builder: protect that embedded closing integration driving our 47.7% bind rate, tighten pre-closing escrow and inspection handoffs to trim those 7-day cancels, and partner with leadership to steer new community expansion outside Texas and Florida to bring down that 83% High CAT concentration."
+            "Turning all of this into clear priorities for the next 90 days: First, for Builder: protect the embedded closing experience driving that 48% bind rate, tighten pre-closing escrow and inspection handoffs to shave off those 7-day cancels, and work with leadership to steer new community launches outside Texas and Florida so we bring down that 83% High CAT concentration."
             <br><br><strong>[Down Arrow -&gt; Beat 2: National]</strong><br>
-            "Second, for National: we have 57,800 quotes already coming in the door with clean underwriting quality. Running targeted pricing and quote-conversion tests on those unbound shoppers - even lifting bind rate from 4.1% to 6.0% - unlocks roughly 1.8 million dollars in incremental bound premium with zero extra acquisition traffic."
+            "Second, for National: we already have 57,800 quotes coming in the door with clean risk quality. Running targeted pricing tests on unbound shoppers - even nudging bind rate from 4.1% to 6.0% - adds roughly 1.8 million dollars in bound premium without buying a single extra lead."
             <br><br><strong>[Down Arrow -&gt; Beat 3: AgencyLink]</strong><br>
-            "And third, for AgencyLink: rather than shutting off the whole channel and losing 720 thousand dollars in claim-free business, I recommend we tighten rules going forward and prune the tail. Block or re-price new quotes on homes over 15 to 20 years old, <code>insurance_score</code> under 680, and High CAT; turn off the bottom ~276 zero- and single-bound sub-agencies; and put the active ~35 to 50 core agencies on a 90-day gate under 10% cancellations and 45% loss ratio."
+            "And third, for AgencyLink: rather than turning off the channel overnight and walking away from 720 thousand dollars in claim-free business, I'd tighten rules going forward and clean up the tail. Stop taking new quotes on older homes over 15 to 20 years, Insurance Scores under 680, and High CAT; deactivate the ~276 sub-agencies binding zero or one policy; and put the top 35 to 50 active partners on a 90-day gate under 10% cancellations and 45% loss ratio."
           </div>
         </div>
 
@@ -1800,13 +1893,108 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
           </div>
           <div class="quote-box">
             <strong>[Right Arrow -&gt; Slide 7 | Down Arrow -&gt; Beat 1: Keep From Builder]</strong><br>
-            "Finally, if Hippo adds a fourth producer, the data gives us a crystal-clear blueprint. From Builder, we want that embedded point-of-purchase workflow that drives 25 to 45%+ conversion, a tight sub-agency footprint under 15 partners, high <code>insurance_score</code> customers at 680+, and newer homes under 15 years."
+            "Finally, if Hippo brings on a fourth producer, the data gives us a really clear blueprint. From Builder, we want that embedded buying workflow that converts at 25 to 45%+, a small roster under 15 sub-agencies, strong Insurance Scores at 680+, and newer homes under 15 years old."
             <br><br><strong>[Down Arrow -&gt; Beat 2: Keep From National]</strong><br>
-            "From National, we want the risk discipline: 75 to 80% Low or Moderate <code>cat_risk_tier</code>, geographic diversity outside Texas and Florida storm corridors, and a single clean API integration."
+            "From National, we want the risk balance: 75 to 80% Low or Moderate CAT exposure, geographic spread outside Texas and Florida storm corridors, and one clean centralized API integration."
             <br><br><strong>[Down Arrow -&gt; Beat 3: Target Partner Archetypes]</strong><br>
-            "Who actually fits both sides of that profile? Number one, national or regional mortgage lenders and digital closing platforms - because they embed right at loan lock with built-in credit quality and broad national reach. Number two, Midwest and Mid-Atlantic homebuilders for low-CAT new construction. And number three, curated digital agencies with pre-bind score and home-age filters enforced upfront."
+            "Who fits both halves of that profile? Number one, national or regional mortgage lenders and digital closing platforms - they meet buyers right at loan lock with built-in credit quality and broad reach. Number two, Midwest and Mid-Atlantic homebuilders for lower-CAT new construction. And number three, curated digital agencies with upfront Insurance Score and home-age filters."
             <br><br><strong>[Down Arrow -&gt; Beat 4: 90-Day Success Gate &amp; Close | Esc to Clear Focus]</strong><br>
-            "And to keep any new partner accountable right out of the gate, I'd measure their first 90 days against four clear thresholds: bind rate above 20%, cancel rate under 8%, High and Very-High CAT under 35%, and average <code>insurance_score</code> above 670. That wraps up my walkthrough - I'd love to hand it back to you guys and dive into wherever you want to probe deeper."
+            "And to hold any new partner accountable right away, I'd set a clear 90-day bar: bind rate above 20%, cancellations under 8%, High and Very-High CAT under 35%, and average Insurance Score above 670. That wraps up my walkthrough - I'd love to hand it back to you guys and dig into whatever part you want to explore first."
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 6: PANELIST FLASHCARDS -->
+      <div id="hp2-pane-flashcards" class="hp2-pane">
+        <div class="hp2-fc-bar">
+          <div>
+            <h2 style="margin:0; font-size:1.05rem;">Panelist Face-to-Name Memory Drill</h2>
+            <div style="font-size:0.82rem; color:var(--muted);">Look at the face, say their name, title, and key focus out loud, then click any card to flip and check.</div>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="timer-btn" onclick="flipAllHp2Cards(false)">Reset All (Faces)</button>
+            <button class="timer-btn" onclick="flipAllHp2Cards(true)">Reveal All</button>
+          </div>
+        </div>
+
+        <div class="hp2-fc-grid">
+          <div class="hp2-flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="hp2-flip-inner">
+              <div class="hp2-flip-face hp2-flip-front">
+                <img class="hp2-avatar" src="data:image/jpeg;base64,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" alt="Panelist 1" />
+                <div style="font-size:0.9rem; font-weight:700; color:#fff;">Panelist #1 (GTM / JV P&amp;L)</div>
+                <span class="hp2-fc-hint">Click to flip &amp; reveal name</span>
+              </div>
+              <div class="hp2-flip-face hp2-flip-back">
+                <span class="pill" style="background:rgba(192,132,252,0.16); color:var(--purple); padding:3px 10px; border-radius:999px; font-size:0.72rem; font-weight:700; margin-bottom:10px;">Director, GTM Strategy</span>
+                <h2 style="font-size:1.25rem; margin-bottom:8px;">Michal Shapira</h2>
+                <ul class="clean-list" style="font-size:0.82rem;">
+                  <li>Managed 7 Hippo JVs (Lennar, PennyMac); ex-Whole Foods CPO.</li>
+                  <li><strong>Lens:</strong> Holistic P&amp;L (sales + claims + ops) &amp; partner risk diversification.</li>
+                  <li><strong>Hook:</strong> Mention Lennar multi-division reporting at OneMagnify.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="hp2-flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="hp2-flip-inner">
+              <div class="hp2-flip-face hp2-flip-front">
+                <img class="hp2-avatar" src="data:image/jpeg;base64,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" alt="Panelist 2" />
+                <div style="font-size:0.9rem; font-weight:700; color:#fff;">Panelist #2 (Sales &amp; Agencies)</div>
+                <span class="hp2-fc-hint">Click to flip &amp; reveal name</span>
+              </div>
+              <div class="hp2-flip-face hp2-flip-back">
+                <span class="pill" style="background:rgba(56,189,248,0.16); color:var(--blue); padding:3px 10px; border-radius:999px; font-size:0.72rem; font-weight:700; margin-bottom:10px;">Sr. Director, Sales</span>
+                <h2 style="font-size:1.25rem; margin-bottom:8px;">Michael Dodge</h2>
+                <ul class="clean-list" style="font-size:0.82rem;">
+                  <li>8 yrs at Hippo (Inside -&gt; Partner -&gt; Agency Direct Sales); 10 yrs Amica.</li>
+                  <li><strong>Lens:</strong> Real-world agent friction, 18-day cancel drag, pruning tail agencies.</li>
+                  <li><strong>Hook:</strong> Keep AgencyLink's $720k clean book while tightening rules &amp; pruning tail.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="hp2-flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="hp2-flip-inner">
+              <div class="hp2-flip-face hp2-flip-front">
+                <img class="hp2-avatar" src="data:image/jpeg;base64,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" alt="Panelist 3" />
+                <div style="font-size:0.9rem; font-weight:700; color:#fff;">Panelist #3 (GTM Analytics)</div>
+                <span class="hp2-fc-hint">Click to flip &amp; reveal name</span>
+              </div>
+              <div class="hp2-flip-face hp2-flip-back">
+                <span class="pill" style="background:rgba(251,191,36,0.16); color:var(--amber); padding:3px 10px; border-radius:999px; font-size:0.72rem; font-weight:700; margin-bottom:10px;">Sr. Manager, GTM Analytics</span>
+                <h2 style="font-size:1.25rem; margin-bottom:8px;">Ken Jelinek</h2>
+                <ul class="clean-list" style="font-size:0.82rem;">
+                  <li>Joined Jul 2025 from Evolve; 25+ yrs leading Sales Ops BI &amp; Governance at Dell.</li>
+                  <li><strong>Lens:</strong> Fair YTD 2026 baseline, excluding partial May, catching Quote ID = 0 bugs.</li>
+                  <li><strong>Hook:</strong> Call out the All-Time toggle &amp; clean data checks upfront.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="hp2-flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="hp2-flip-inner">
+              <div class="hp2-flip-face hp2-flip-front">
+                <div class="hp2-avatar-monogram">
+                  <span style="font-size:2.4rem; font-weight:900; letter-spacing:-0.03em;">JS</span>
+                  <span style="font-size:0.7rem; color:var(--muted); margin-top:4px;">Met in R2 Video</span>
+                </div>
+                <div style="font-size:0.9rem; font-weight:700; color:#fff;">Panelist #4 (Your R2 Hiring Mgr)</div>
+                <span class="hp2-fc-hint">Click to flip &amp; reveal name</span>
+              </div>
+              <div class="hp2-flip-face hp2-flip-back">
+                <span class="pill" style="background:rgba(52,211,153,0.16); color:var(--green); padding:3px 10px; border-radius:999px; font-size:0.72rem; font-weight:700; margin-bottom:10px;">Hiring Manager</span>
+                <h2 style="font-size:1.25rem; margin-bottom:8px;">Jakub Sienkiel</h2>
+                <ul class="clean-list" style="font-size:0.82rem;">
+                  <li>Sr. Manager, Insurance Analytics (Dallas-based; visits Austin monthly).</li>
+                  <li><strong>Lens:</strong> Beyond chart plumbing -&gt; underwriting risk, CAT, cohort checks, security.</li>
+                  <li><strong>Hook:</strong> Login gate upfront + same-month cohort LR proof + $30k Builder severity.</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -2603,6 +2791,12 @@ ORDER BY visit_num;</pre>
       });
       document.querySelectorAll(".hp2-pane").forEach((pane) => {
         pane.classList.toggle("active", pane.id === "hp2-pane-" + name);
+      });
+    }
+
+    function flipAllHp2Cards(flipped) {
+      document.querySelectorAll("#hp2-pane-flashcards .hp2-flip-card").forEach((c) => {
+        c.classList.toggle("flipped", !!flipped);
       });
     }
 
