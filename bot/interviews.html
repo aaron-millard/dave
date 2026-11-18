@@ -608,6 +608,131 @@
       color: #fff;
       margin-top: 2px;
     }
+
+    /* Hippo 2 Sub-Tabs & Presenter Timer */
+    .hp2-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding: 12px 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .hp2-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .hp2-tab {
+      padding: 8px 14px;
+      border-radius: 9px;
+      background: #080d18;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .hp2-tab:hover { color: #fff; border-color: var(--border-bright); }
+    .hp2-tab.active {
+      background: rgba(192, 132, 252, 0.18);
+      border-color: rgba(192, 132, 252, 0.55);
+      color: #fff;
+    }
+
+    .hp2-pane { display: none; }
+    .hp2-pane.active { display: block; }
+
+    .timer-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #080d18;
+      border: 1px solid var(--border-bright);
+      padding: 6px 12px;
+      border-radius: 9px;
+    }
+
+    .timer-readout {
+      font-family: "Cascadia Code", Consolas, monospace;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--green);
+      min-width: 52px;
+    }
+
+    .timer-btn {
+      background: rgba(56, 189, 248, 0.14);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: var(--blue);
+      padding: 4px 9px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .timer-btn:hover { color: #fff; border-color: var(--blue); }
+
+    .cue-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--purple);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 14px;
+    }
+
+    .cue-head {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .cue-title { font-size: 1rem; font-weight: 800; color: #fff; }
+    .cue-clock {
+      font-family: "Cascadia Code", Consolas, monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(52, 211, 153, 0.15);
+      color: var(--green);
+      border: 1px solid rgba(52, 211, 153, 0.35);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    .data-table th {
+      text-align: left;
+      color: var(--muted);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border-bright);
+    }
+
+    .data-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+      color: #e2e8f0;
+    }
   </style>
 </head>
 <body>
@@ -626,7 +751,7 @@
         </button>
         <button class="company-tab" data-company="hippo2" onclick="switchCompany('hippo2')">
           <span>Hippo 2</span>
-          <span class="tab-stage-tag" style="background: rgba(148, 163, 184, 0.2); color: var(--muted);">Upcoming</span>
+          <span class="tab-stage-tag" style="background: rgba(192, 132, 252, 0.22); color: var(--purple);">R4 Panel - Thu 4pm</span>
         </button>
         <button class="company-tab" data-company="knownwell" onclick="switchCompany('knownwell')">
           <span>Knownwell</span>
@@ -638,7 +763,7 @@
         </button>
         <button class="company-tab" data-company="deepgram" onclick="switchCompany('deepgram')">
           <span>Deepgram</span>
-          <span class="tab-stage-tag">Invited - Pending</span>
+          <span class="tab-stage-tag" style="background: rgba(56, 189, 248, 0.22); color: var(--blue);">Thu 11am - Phone</span>
         </button>
       </div>
     </div>
@@ -1209,16 +1334,348 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
     <section id="panel-hippo2" class="company-panel">
       <div class="company-header">
         <div class="company-title-wrap">
-          <h1>Hippo Insurance 2</h1>
-          <div class="company-sub">Upcoming Round / Dedicated Workspace (Pending Scheduling)</div>
+          <h1>Hippo Insurance - Round 4 Panel Prep &amp; Presenter Guide</h1>
+          <div class="company-sub">Thu Nov 19, 4:00 - 4:45 PM CST | Zoom Screen-Share | Deck Login: <code>aaronmillard</code> / <code>hippo2026</code></div>
         </div>
-        <div class="status-badge" style="background: rgba(148, 163, 184, 0.15); color: var(--muted); border: 1px solid rgba(148, 163, 184, 0.3);">
-          Blank Workspace
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+          <a href="/hippo-scorecard" target="_blank" rel="noopener" style="text-decoration:none; background:rgba(52,211,153,0.18); border:1px solid rgba(52,211,153,0.45); color:var(--green); padding:8px 14px; border-radius:9px; font-size:0.8rem; font-weight:700;">Open Standalone Deck</a>
+          <div class="status-badge" style="background: rgba(192, 132, 252, 0.18); color: var(--purple); border: 1px solid rgba(192, 132, 252, 0.45);">
+            14:00 Walkthrough + 31m Q&amp;A
+          </div>
         </div>
       </div>
-      <div class="card" style="text-align: center; padding: 70px 20px;">
-        <div style="font-size: 1.4rem; font-weight: 700; color: #fff; margin-bottom: 8px;">Hippo 2 Workspace</div>
-        <div style="font-size: 0.9rem; color: var(--muted); max-width: 450px; margin: 0 auto;">Currently completely blank. Ready to receive technical screen debrief, live coding notes, and case study requirements once scheduled.</div>
+
+      <!-- Sub-Tab Switcher + Live 14-Min Presenter Timer -->
+      <div class="hp2-toolbar">
+        <div class="hp2-tabs">
+          <button class="hp2-tab active" data-hp2="speaker" onclick="switchHp2Tab('speaker')">1. Speaker Guide (14m)</button>
+          <button class="hp2-tab" data-hp2="qa" onclick="switchHp2Tab('qa')">2. Q&amp;A Bank &amp; STAR</button>
+          <button class="hp2-tab" data-hp2="panelists" onclick="switchHp2Tab('panelists')">3. Panelists &amp; Core Rules</button>
+          <button class="hp2-tab" data-hp2="morning" onclick="switchHp2Tab('morning')">4. 45m Dry-Run &amp; Data Sheet</button>
+        </div>
+
+        <div class="timer-wrap">
+          <span style="font-size:0.74rem; color:var(--muted); font-weight:700;">DECK CLOCK</span>
+          <span class="timer-readout" id="hp2-timer">00:00</span>
+          <button class="timer-btn" id="hp2-timer-toggle" onclick="toggleHp2Timer()">Start</button>
+          <button class="timer-btn" onclick="resetHp2Timer()">Reset</button>
+        </div>
+      </div>
+
+      <!-- TAB 1: SPEAKER GUIDE -->
+      <div id="hp2-pane-speaker" class="hp2-pane active">
+        <div class="callout" style="margin-bottom:16px;">
+          <div class="callout-title">Live Delivery Guardrails</div>
+          Speak in short, calm headline sentences. Never read slides aloud. Always use exact schema field <code>insurance_score</code> (never "credit score"). Pause 2 seconds after every headline so Michal, Michael, Ken, or Jakub can jump in.
+        </div>
+
+        <div class="cue-card">
+          <div class="cue-head">
+            <span class="cue-title">0. Login Gate (<code>aaronmillard</code> / <code>hippo2026</code>)</span>
+            <span class="cue-clock">0:30 | Clock 0:30</span>
+          </div>
+          <ul class="clean-list">
+            <li><strong>Say:</strong> "Before we dive in, I put a quick login gate in front of this - even on mock data, I like keeping partner and policyholder data governed."</li>
+            <li><strong>Hook:</strong> Reinforces security awareness for Jakub right away. <strong>Transition:</strong> "Let's start at the top with the normalized 2026 scorecard."</li>
+          </ul>
+        </div>
+
+        <div class="cue-card">
+          <div class="cue-head">
+            <span class="cue-title">Slide 1: Executive Scorecard</span>
+            <span class="cue-clock">2:00 | Clock 2:30</span>
+          </div>
+          <ul class="clean-list">
+            <li><strong>YTD 2026 Scope (<code>74,250</code> quotes | <code>$10.00M</code> <code>bound_premium</code>):</strong> Normalized Jan 1 - May 15 because National launched Jan 1 vs Builder (Oct 10) and AgencyLink (Nov 9). Full dataset: <code>84,817</code> quotes.</li>
+            <li><strong>Answer-First Verdict:</strong> Builder = conversion engine (<code>47.7%</code> bind, <code>$5.25M</code>, watchout <code>83.1%</code> High/VH CAT). National = scale &amp; cleanest risk (<code>57.8k</code> quotes, <code>4.1%</code> bind, <code>$3.85M</code>, <code>6.6%</code> cancel, <code>21.6%</code> LR). AgencyLink = high friction (<code>7.2%</code> bind, <code>$0.90M</code>, <code>15.0%</code> cancel, <code>65.0%</code> LR across <code>350</code> IDs).</li>
+            <li><strong>Cue:</strong> Point out the YTD/All-Time toggle for Ken. <strong>[PAUSE 2s]:</strong> "Any questions on the YTD window before I walk through the funnel?"</li>
+          </ul>
+        </div>
+
+        <div class="cue-card">
+          <div class="cue-head">
+            <span class="cue-title">Slide 2: Funnel Efficiency &amp; Monthly Ramp</span>
+            <span class="cue-clock">2:30 | Clock 5:00</span>
+          </div>
+          <ul class="clean-list">
+            <li><strong>Share Gap:</strong> Builder drives <code>52.5%</code> of <code>bound_premium</code> from <code>13.3%</code> of quotes; National drives <code>77.8%</code> of quotes -> <code>38.5%</code> of premium.</li>
+            <li><strong>Jan-Apr Ramp (May excluded - partial 1-15):</strong> Builder <code>45.9% -> 53.8%</code> | AgencyLink <code>5.8% -> 8.1%</code> | National <code>2.1% -> 5.0%</code> (more than doubled).</li>
+            <li><strong>Price Gap:</strong> Unbound <code>quote_premium</code> is <code>+12%</code> to <code>+27%</code> higher across all 3 channels (Bld <code>$1,351</code> vs <code>$1,128</code>; Nat <code>$1,858</code> vs <code>$1,655</code>; Agy <code>$2,445</code> vs <code>$1,918</code>).</li>
+            <li><strong>Transition:</strong> "Binding is half the equation - next is whether those policies actually stick."</li>
+          </ul>
+        </div>
+
+        <div class="cue-card">
+          <div class="cue-head">
+            <span class="cue-title">Slide 3: Post-Bind Retention &amp; Cancellation Drivers</span>
+            <span class="cue-clock">2:00 | Clock 7:00</span>
+          </div>
+          <ul class="clean-list">
+            <li><strong>Numbers (All-Time):</strong> National <code>6.6%</code> cancel (<code>8d</code> median) | Builder <code>6.8%</code> cancel (<code>7d</code> median) | AgencyLink <code>15.0%</code> cancel (<code>18d</code> median - <code>2.5x</code> slower).</li>
+            <li><strong>Why:</strong> AgencyLink drags 18 days because <code>45%</code> (<code>33/73</code>) are unresolved inspection/UW conditions; Builder is ~70% closing/escrow/inspection; National is mortgagee changes (<code>40</code>) &amp; carrier shopping (<code>28</code>).</li>
+            <li><strong>Transition:</strong> "Once a policy stays on the books, what does the underlying risk look like?"</li>
+          </ul>
+        </div>
+
+        <div class="cue-card">
+          <div class="cue-head">
+            <span class="cue-title">Slide 4: Risk, Cohort Loss Ratio &amp; CAT Exposure</span>
+            <span class="cue-clock">2:30 | Clock 9:30</span>
+          </div>
+          <ul class="clean-list">
+            <li><strong>Maturity Check (Jan-Apr Cohort LR):</strong> National beats AgencyLink every single month (<code>22.5/17.5/33.3/16.9%</code> vs <code>90.3/144.9/49.2/45.9%</code>). Dec '25 Builder = <code>55.6%</code> (most mature).</li>
+            <li><strong>CAT vs <code>insurance_score</code>:</strong> Builder has top <code>insurance_score</code> (<code>700</code>), <code>0.1y</code> <code>home_age_years</code>, and lowest claim freq (<code>1.2%</code>), but <code>83.1%</code> High/VH <code>cat_risk_tier</code> (<code>78.0%</code> bound <code>$</code> in TX <code>56.8%</code> + FL <code>21.2%</code>) -> <code>$30,440</code> avg claim severity.</li>
+            <li><strong>AgencyLink Bleed:</strong> <code>33.0y</code> avg <code>home_age_years</code> + <code>600</code> avg <code>insurance_score</code> (plus <code>8.8%</code> <code>no_hit</code>/<code>no_score</code>) -> <code>5.1%</code> claim frequency. <strong>[PAUSE 2s]</strong></li>
+          </ul>
+        </div>
+
+        <div class="cue-card">
+          <div class="cue-head">
+            <span class="cue-title">Slide 5: Sub-Agencies &amp; Data Hygiene</span>
+            <span class="cue-clock">1:30 | Clock 11:00</span>
+          </div>
+          <ul class="clean-list">
+            <li><strong>Pareto Structure:</strong> National = <code>1</code> pipe (<code>NAT001</code>). Builder = <code>13</code> IDs (Top 5 = <code>75.2%</code> of <code>$</code>; watchout <code>BLD006</code> at <code>72.3%</code> LR &amp; <code>BLD010</code> at <code>11.8%</code> cancel). AgencyLink = <code>350</code> IDs (<code>160</code> zero-bound, <code>116</code> 1-bound, <code>37</code> 2-bound, <code>37</code> 3+-bound).</li>
+            <li><strong>AgencyLink Bright Spots:</strong> <code>166</code> binding IDs have <code>$0</code> claims (<code>$720k</code>); <code>home_age_years</code> 0-15 runs <code>8.0%</code> LR; <code>insurance_score &gt;680</code> runs <code>18.6%</code> LR.</li>
+            <li><strong>Hygiene (For Ken):</strong> <code>84,817</code> unique <code>address_id</code>s; <code>235</code> unbound <code>HI</code> quotes with <code>quote_id = 0</code>; <code>AGY349</code> has 2 name variants (<code>351</code> pairs).</li>
+          </ul>
+        </div>
+
+        <div class="cue-card">
+          <div class="cue-head">
+            <span class="cue-title">Slide 6: 90-Day Channel Actions</span>
+            <span class="cue-clock">1:30 | Clock 12:30</span>
+          </div>
+          <ul class="clean-list">
+            <li><strong>Builder:</strong> Protect closing workflow; steer expansion outside TX/FL; tighten pre-close escrow handoffs.</li>
+            <li><strong>National:</strong> Test pricing nudges on unbound shoppers (<code>+12%</code> gap); lifting bind <code>4.1% -> 6.0%</code> adds <code>~$1.8M+</code> <code>bound_premium</code> with zero new traffic.</li>
+            <li><strong>AgencyLink:</strong> Restrict new business on <code>home_age_years &gt;15-20</code>, <code>insurance_score &lt;680</code>, High CAT; prune bottom ~276 tail IDs; 90-day probation (<code>&lt;10%</code> cancel, <code>&lt;45%</code> LR).</li>
+          </ul>
+        </div>
+
+        <div class="cue-card">
+          <div class="cue-head">
+            <span class="cue-title">Slide 7: Ideal Future Producer Profile</span>
+            <span class="cue-clock">1:30 | Clock 14:00</span>
+          </div>
+          <ul class="clean-list">
+            <li><strong>Blueprint:</strong> Builder's embedded conversion (<code>&lt;15</code> sub-agencies, <code>insurance_score 680+</code>, <code>home_age_years &lt;15</code>) + National's <code>75-80%</code> Low/Mod CAT outside TX/FL.</li>
+            <li><strong>Who to Sign:</strong> National/regional mortgage lenders &amp; digital closing platforms; Midwest/Mid-Atlantic homebuilders; curated digital agencies.</li>
+            <li><strong>90-Day Gate &amp; Close:</strong> Bind <code>&gt;20%</code> | Cancel <code>&lt;8%</code> | High/VH CAT <code>&lt;35%</code> | <code>insurance_score &gt;670</code>. "That wraps the core deck - where would you like to dig in first?"</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- TAB 2: Q&A BANK & STAR -->
+      <div id="hp2-pane-qa" class="hp2-pane">
+        <div class="section-heading">1. Process &amp; Tooling Answers</div>
+        <div class="grid-2">
+          <div class="card">
+            <h2>Q1: "Walk us through your start-to-finish process on this project."</h2>
+            <div class="quote-box">
+              <strong>Headline:</strong> I started by manually inspecting the raw Excel schema and forming hypotheses before touching code, then ran Python audits to normalize cohorts and check hygiene, and built a standalone HTML/JS deck with zero live AI tools running during this call.<br><br>
+              - Verified grain (<code>84,817</code> unique <code>address_id</code>s), staggered launch dates, <code>235</code> <code>HI</code> <code>quote_id = 0</code> rows, and <code>AGY349</code> naming split.<br>
+              - Built single verified JSON summary (<code>phase1_summary.json</code>) to guarantee every chart and table ties out.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q2: "What tools did you use? What is Antigravity?"</h2>
+            <div class="quote-box">
+              <strong>Headline:</strong> I used Python (<code>pandas</code>) for all cohort profiling and hygiene auditing, then used Google Antigravity - an agentic AI coding IDE - to rapidly scaffold the interactive HTML/JS/SVG slide deck while I directed the narrative and verified every number.<br><br>
+              - Built 100% self-contained (zero external CDNs, offline-safe, interactive tooltips, login gate) matching modern SQL-to-HTML executive reporting workflows.
+            </div>
+          </div>
+        </div>
+
+        <div class="section-heading">2. Hard Panelist Pushback Q&amp;A</div>
+        <div class="grid-2">
+          <div class="card">
+            <h2>Q3 (Michal): "Why not put 100% growth budget into Builder if it binds at 47.7%?"</h2>
+            <div class="quote-box">
+              Builder is our strongest conversion engine (<code>47.7%</code> YTD bind, <code>$5.25M</code>), but <code>83.1%</code> of its bound book sits in <code>HIGH</code>/<code>VERY_HIGH</code> <code>cat_risk_tier</code> with <code>78.0%</code> in TX (<code>56.8%</code>) and FL (<code>21.2%</code>), driving <code>$30,440</code> avg claim severity vs National's <code>$13,000</code>. Steer new builder communities into lower-CAT states.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q4 (Michal): "How does your Ideal Producer fit our existing JV economics?"</h2>
+            <div class="quote-box">
+              Our best unit economics pair Builder's point-of-closing trust (<code>47.7%</code> bind, <code>700</code> <code>insurance_score</code>) with National's <code>79.6%</code> Low/Mod <code>cat_risk_tier</code>. Mortgage lenders and digital closing platforms capture homeowners at loan lock without locking Hippo into coastal TX/FL subdivisions.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q5 (Michael Dodge): "Why fix &amp; prune AgencyLink instead of dropping it today?"</h2>
+            <div class="quote-box">
+              Dropping it today throws away <code>$720k</code> in claim-free <code>bound_premium</code> across <code>166</code> sub-agencies, plus profitable slices like <code>home_age_years 0-15</code> (<code>8.0%</code> LR) and <code>insurance_score &gt;680</code> (<code>18.6%</code> LR). Deactivate the ~276 zero/1-bound tail IDs, block older homes &amp; sub-680 scores going forward, and give the active core a 90-day gate.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q6 (Michael Dodge): "How do we cut AgencyLink's 18-day cancel drag?"</h2>
+            <div class="quote-box">
+              <code>45%</code> (<code>33/73</code>) of AgencyLink cancels are unresolved inspection (<code>19</code>) and UW conditions (<code>14</code>) taking <code>18 days</code> median vs <code>7-8d</code> elsewhere. Require upfront roof/age photo validation pre-bind and auto-cancel unresolved conditions at day 10.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q7 (Ken Jelinek): "Why YTD 2026 default, and what hygiene bugs did you catch?"</h2>
+            <div class="quote-box">
+              National launched Jan 1 vs Q4 starts for Builder/AgencyLink, so YTD 2026 gives an apples-to-apples baseline (with an All-Time toggle on Slide 1). Hygiene catches: <code>235</code> unbound <code>HI</code> quotes with <code>quote_id = 0</code>, <code>AGY349</code> split across 2 names, and <code>8.8%</code> <code>no_hit</code>/<code>no_score</code> on AgencyLink bounds.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Q8 (Jakub Sienkiel): "Isn't National's 21.6% LR just immature policies? Why is Builder 30.9% with 700 score?"</h2>
+            <div class="quote-box">
+              Same-month Jan-Apr cohorts prove National beats AgencyLink every month (<code>22.5/17.5/33.3/16.9%</code> vs <code>90.3/144.9/49.2/45.9%</code>) and beats Builder in Feb (<code>17.5%</code> vs <code>22.0%</code>). Builder's LR is severity-driven (<code>$30.4k</code>/claim from <code>83%</code> High/VH CAT), plus outlier <code>BLD006</code> at <code>72.3%</code> LR.
+            </div>
+          </div>
+        </div>
+
+        <div class="section-heading">3. 4 STAR Behavioral Stories (Hippo Core Values)</div>
+        <div class="grid-2">
+          <div class="card">
+            <h2>Act Like an Owner - SQL Reconciliation &amp; MCP QA (Brooklyn Nets)</h2>
+            <div class="quote-box">
+              <strong>S/T:</strong> Auditing a ~197k-row paid-media Power BI model ($4-5M spend) before client delivery.<br>
+              <strong>A:</strong> Ran Power BI MCP DAX <code>EVALUATE</code> checks + independent Azure SQL tie-outs; caught a CPM rounding order bug (<code>$23.80</code> vs <code>$23.77</code>).<br>
+              <strong>R:</strong> Achieved <strong>76/76 exact metric tie-outs</strong> across all WoW/MoM tables before launch.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Innovate for Impact - Router Engine &amp; Dynamic Pacing (Swish Dental)</h2>
+            <div class="quote-box">
+              <strong>S/T:</strong> 23 Texas dental clinics needing daily/weekly/monthly cost-per-new-patient pacing across Azure SQL spend and Jarvis clinic visits.<br>
+              <strong>A:</strong> Built conformed dimensions anchored to max loaded data dates plus a <code>SELECTEDVALUE</code>/<code>SWITCH</code> metric router.<br>
+              <strong>R:</strong> Powered ~100 visual containers with 1-line KPI additions, spotting <code>&gt;20%</code> market acquisition swings mid-month.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>In It Together - Reconciling Funnel Definitions (Pebl)</h2>
+            <div class="quote-box">
+              <strong>S/T:</strong> Marketing and Sales Ops disagreed on counting Salesforce Opportunities by MQL cohort date vs Opp creation date ($15.8M ad spend).<br>
+              <strong>A:</strong> Built a star schema with explicit counting flags, inactive <code>USERELATIONSHIP</code>, a live toggle, and a lead-level QA audit tab.<br>
+              <strong>R:</strong> Eliminated weekly metric disputes with zero silent row drops.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Embrace Diverse Ideas - $3.7M Key Fix &amp; Stakeholder Alignment</h2>
+            <div class="quote-box">
+              <strong>S/T:</strong> Account teams blamed "messy source naming" for $4.12M of unmatched seasonal spend (similar to multi-division homebuilder reporting like Lennar).<br>
+              <strong>A:</strong> Tested their hypothesis via <code>RELATED()</code> checks and found a dimension key mismatch (<code>2526</code> vs <code>FY26</code>).<br>
+              <strong>R:</strong> Cut unmatched spend from <strong>$4.12M to $0.46M (~89% drop)</strong> through transparent evidence.
+            </div>
+          </div>
+        </div>
+
+        <div class="section-heading">4. Smart Questions to Ask the Panel at the End</div>
+        <div class="card">
+          <ul class="clean-list">
+            <li><strong>Michal / Michael:</strong> "When you onboard a new producer today, what usually surprises you most in the first 60 days — quoting volume, cancellation friction, or underwriting mix?"</li>
+            <li><strong>Ken / Jakub:</strong> "In this dataset, 235 unbound Hawaii quotes came through with <code>quote_id = 0</code>. Are those known routing/test artifacts in production, and how tightly are producer ingestion schemas governed before hitting analytics?"</li>
+            <li><strong>All:</strong> "Looking 6 months out from this new role, what single producer or channel decision would prove this Senior Analyst hire was a massive win?"</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- TAB 3: PANELISTS & CORE RULES -->
+      <div id="hp2-pane-panelists" class="hp2-pane">
+        <div class="grid-2">
+          <div class="card">
+            <h2>Michal Shapira - Director, GTM Strategy</h2>
+            <ul class="clean-list">
+              <li><strong>Background:</strong> Nearly 5 yrs at Hippo; managed 7 JVs including <strong>Lennar</strong> and <strong>PennyMac</strong>; previously CPO at Whole Foods &amp; NCR Exec Director.</li>
+              <li><strong>Lens:</strong> Holistic P&amp;L (sales + claims + ops together) &amp; partner strategy.</li>
+              <li><strong>Your Hook:</strong> Drop 1 natural sentence: <em>"At OneMagnify I've worked on division-level funnel and lead-quality pacing for Lennar, so connecting top-of-funnel volume to downstream quality is second nature."</em></li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h2>Michael Dodge - Sr. Director, Agency Sales</h2>
+            <ul class="clean-list">
+              <li><strong>Background:</strong> 8 yrs at Hippo (Inside Sales -> Partner Sales -> Agency Direct -> Sr. Director Sales); 10 yrs Amica before that.</li>
+              <li><strong>Lens:</strong> Real-world agent friction, bind rates, cancellations, sub-agency execution.</li>
+              <li><strong>Your Hook:</strong> Frame AgencyLink constructively as "tighten rules &amp; prune the inactive tail on 90-day probation" before killing the relationship.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h2>Ken Jelinek - Sr. Manager, GTM Strategy Analytics</h2>
+            <ul class="clean-list">
+              <li><strong>Background:</strong> Joined Hippo Jul 2025; previously Sr Mgr Commercial Analytics at Evolve; 25+ yrs leading Sales Ops BI &amp; Data Governance at Dell (PMP).</li>
+              <li><strong>Lens:</strong> Apples-to-apples cohorts, data hygiene, repeatable scorecards.</li>
+              <li><strong>Your Hook:</strong> Highlight YTD 2026 normalization, excluding partial May from the ramp line, and catching <code>quote_id = 0</code> Hawaii rows + <code>AGY349</code>.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h2>Jakub Sienkiel - Sr. Manager, Insurance Analytics (HM)</h2>
+            <ul class="clean-list">
+              <li><strong>Background:</strong> Your R2 Hiring Manager leading centralized analytics + data engineering (Databricks migration, semantic layer, HTML dashboards).</li>
+              <li><strong>Lens:</strong> Beyond dashboard plumbing -> real underwriting &amp; risk insights (CAT, <code>insurance_score</code>, claims maturity, security).</li>
+              <li><strong>Your Hook:</strong> Opening login gate + same-month cohort LR proof + Builder severity vs frequency explanation.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout" style="margin-top:16px;">
+          <div class="callout-title">Hippo Values &amp; Zoom Rules Check</div>
+          Values: <strong>Act like an owner</strong>, <strong>Innovate for impact</strong>, <strong>In it together</strong>, <strong>Embrace diverse ideas</strong> (approach pushback with curiosity, not defensiveness). Note: Zoom AI Companion transcribes; keep zero live AI tools running on screen during the call.
+        </div>
+      </div>
+
+      <!-- TAB 4: 45M DRY-RUN & DATA SHEET -->
+      <div id="hp2-pane-morning" class="hp2-pane">
+        <div class="grid-2" style="margin-bottom:18px;">
+          <div class="card">
+            <h2>45-Min Morning Walkthrough &amp; Mom Dry-Run</h2>
+            <ul class="clean-list">
+              <li><strong>0:00 - 0:15 | 4-Piece Data Refresher:</strong> Summarize (1) YTD Normalization &amp; Hygiene, (2) Funnel &amp; Price Gap, (3) Cancels &amp; Cohort LR/CAT, (4) Actions &amp; Ideal Partner in 1 sentence each.</li>
+              <li><strong>0:15 - 0:29 | Timed 14m Run-Through:</strong> Start Deck Clock in Tab 1; hit Slide 2 by <code>5:00</code>, Slide 4 by <code>9:30</code>, Slide 7 by <code>14:00</code> without Mom interrupting.</li>
+              <li><strong>0:29 - 0:45 | Mom Mock Panel Q&amp;A:</strong> Have Mom fire 5-6 questions from Tab 2 (interrupting once after Slide 1 on AgencyLink). Check: 1-2 sentence direct answer first + zero "um/like".</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h2>Mom's Quick Starter Questions</h2>
+            <ul class="clean-list">
+              <li>"Walk me through your start-to-finish process on this project."</li>
+              <li>"Why keep AgencyLink if its loss ratio is 65% and cancel rate is 15%?"</li>
+              <li>"Builder binds at 48% - why not put 100% of budget there?"</li>
+              <li>"Isn't National's 21.6% loss ratio just low because it started in January?"</li>
+              <li>"Tell me about a time you caught a data bug before stakeholders saw it."</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Verified Master Data Cheat Sheet (<code>phase1_summary.json</code>)</h2>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Builder (YTD '26 / All)</th>
+                <th>National (YTD '26)</th>
+                <th>AgencyLink (YTD '26 / All)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Launch Date</td><td>Oct 10, 2025 (218d)</td><td>Jan 1, 2026 (135d)</td><td>Nov 9, 2025 (188d)</td></tr>
+              <tr><td>Quotes</td><td>9,850 / 18,865</td><td>57,800</td><td>6,600 / 8,152</td></tr>
+              <tr><td>Bound Policies (Bind %)</td><td>4,700 (47.7%) / 5,467 (29.0%)</td><td>2,350 (4.1%)</td><td>475 (7.2%) / 488 (6.0%)</td></tr>
+              <tr><td>Bound Premium</td><td>$5.25M / $6.13M</td><td>$3.85M</td><td>$0.90M / $0.93M</td></tr>
+              <tr><td>Cancel Rate / Median Days</td><td>6.8% / 7 days</td><td>6.6% / 8 days</td><td>15.0% / 18 days</td></tr>
+              <tr><td>Loss Ratio (YTD / All)</td><td>30.9% / 33.8%</td><td>21.6%</td><td>65.0% / 62.8%</td></tr>
+              <tr><td>Avg <code>home_age_years</code> / <code>insurance_score</code></td><td>0.1y / 700</td><td>10.2y / 674</td><td>33.0y / 600 (8.8% no_hit/score)</td></tr>
+              <tr><td>CAT Mix (<code>cat_risk_tier</code>)</td><td>83.1% High / Very High</td><td>79.6% Low / Moderate</td><td>77.7% Low / Moderate</td></tr>
+              <tr><td>Sub-Agencies</td><td>13 IDs (Top 5 = 75.2%)</td><td>1 ID (<code>NAT001</code>)</td><td>350 IDs (160 0-bound, 166 $0 claims)</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
 
@@ -2006,6 +2463,51 @@ ORDER BY visit_num;</pre>
         switchCompany("hippo");
       }
     })();
+
+    function switchHp2Tab(name) {
+      document.querySelectorAll(".hp2-tab").forEach((btn) => {
+        btn.classList.toggle("active", btn.getAttribute("data-hp2") === name);
+      });
+      document.querySelectorAll(".hp2-pane").forEach((pane) => {
+        pane.classList.toggle("active", pane.id === "hp2-pane-" + name);
+      });
+    }
+
+    let hp2Sec = 0;
+    let hp2Interval = null;
+    function formatHp2Time(s) {
+      const m = String(Math.floor(s / 60)).padStart(2, "0");
+      const r = String(s % 60).padStart(2, "0");
+      return m + ":" + r;
+    }
+    function toggleHp2Timer() {
+      const btn = document.getElementById("hp2-timer-toggle");
+      const out = document.getElementById("hp2-timer");
+      if (hp2Interval) {
+        clearInterval(hp2Interval);
+        hp2Interval = null;
+        btn.textContent = "Start";
+      } else {
+        hp2Interval = setInterval(() => {
+          hp2Sec++;
+          out.textContent = formatHp2Time(hp2Sec);
+          out.style.color = hp2Sec > 840 ? "var(--rose)" : hp2Sec > 720 ? "var(--amber)" : "var(--green)";
+        }, 1000);
+        btn.textContent = "Pause";
+      }
+    }
+    function resetHp2Timer() {
+      if (hp2Interval) {
+        clearInterval(hp2Interval);
+        hp2Interval = null;
+      }
+      hp2Sec = 0;
+      const out = document.getElementById("hp2-timer");
+      const btn = document.getElementById("hp2-timer-toggle");
+      out.textContent = "00:00";
+      out.style.color = "var(--green)";
+      btn.textContent = "Start";
+    }
   </script>
 </body>
 </html>
