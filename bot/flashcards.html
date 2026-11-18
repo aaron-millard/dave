@@ -599,68 +599,71 @@
         sql: "",
         example: "At OneMagnify for the Brooklyn Nets, I designed star schemas joining Ticketmaster transactions and paid media facts to shared Date and Campaign dimensions for instant executive filtering."
       },
-      {
+            {
         id: "agentic-analytics",
-        term: "Agentic Analytics",
+        term: "Agentic Workflows & Analytics",
         category: "ai",
         catLabel: "AI & Modern Stack",
-        quick: "Instead of just answering a prompt, the AI actually connects to your data model, runs checks on its own, and flags what's broken or why a metric moved.",
-        definition: "Using autonomous AI agents that actively connect to governed semantic models, run schema and QA validation checks, query live data, and surface root-cause insights via protocols like MCP — rather than passively answering static chat prompts.",
+        quick: "Instead of just answering a prompt, the AI connects directly to your database or BI model, runs checks autonomously, and flags what broke or why a metric moved.",
+        definition: "Using autonomous AI agents equipped with local tools, live database connections, and governed semantic models to actively audit schemas, run reconciliation checks, query live data, and surface root-cause insights via protocols like MCP — rather than passively answering static chat prompts.",
         anchors: [
           "Semantic Layer Interaction: Agents query governed models (Power BI / Tableau Data Apps via MCP) where metrics are already defined.",
-          "Autonomous Tool Use: Checks schema integrity, tests DAX/SQL measures, and catches discrepancies before production.",
-          "Active vs Passive: Moves beyond static dashboards to proactive anomaly investigation and action recommendations."
+          "Autonomous Tool Execution: Inspects schema integrity, tests SQL/DAX measures, and flags anomalies before production release.",
+          "Active vs Passive Analytics: Moves beyond static reporting to proactive anomaly investigation, root-cause diagnosis, and action recommendations.",
+          "Real-World Production: Connecting Claude and Gemini to VS Code workspaces to automate SQL modeling, schema validation, and reporting pipelines."
         ],
         sql: "",
         example: "At OneMagnify, I use MCP daily with Power BI to automate DAX measure validation and audit complex schemas across 8-10 client accounts before dashboards go live."
       },
       {
         id: "modular-modeling",
-        term: "Modular Data Modeling",
+        term: "Modular SQL & Data Modeling",
         category: "sql",
         catLabel: "SQL",
-        quick: "Instead of one giant 500-line SQL script, you break it into clean reusable building blocks so every report uses the exact same metric logic.",
-        definition: "Structuring SQL transformations into clean, layered, reusable stages (staging -> intermediate -> mart) instead of giant monolithic scripts, so business logic is defined once, tested, and shared across every downstream report.",
+        quick: "Instead of one giant 500-line SQL script, you break logic into clean reusable building blocks (staging, intermediate, mart) so every report uses the exact same verified metric logic.",
+        definition: "Structuring SQL transformations into clean, layered, reusable stages (staging -> intermediate -> mart) using views and modular models rather than monolithic queries, ensuring core business logic is defined once, tested, and shared across every downstream report.",
         anchors: [
-          "Staging Layer: 1-to-1 source cleanup, casting, renaming, and deduplication.",
-          "Intermediate Layer: Joins, attribution windows, and business-day pacing logic.",
+          "Staging Layer: 1-to-1 source cleanup, casting, column renaming, and deduplication (e.g., stg_patient_visits).",
+          "Intermediate Layer: Multi-table joins, attribution windows, and business-day pacing calculations.",
           "Mart Layer: Final fact/dimension tables and semantic views consumed by BI and leadership.",
-          "Single Source of Truth: Prevents two analysts from writing conflicting MQL or Cost per Bind definitions."
+          "Single Source of Truth: Prevents two analysts from writing conflicting MQL, CAC, or Bind definitions."
         ],
-        sql: "",
+        sql: "-- Stage 1: Clean Staging View\nCREATE VIEW stg_patient_visits AS\nSELECT visit_id, patient_id, clinic_id, CAST(visit_ts AS DATE) AS visit_date, status\nFROM raw_jarvis_visits\nWHERE status = 'completed';\n\n-- Stage 2: Governed Business Mart View\nCREATE VIEW mart_clinic_pacing AS\nSELECT v.clinic_id, c.clinic_name, v.visit_date, COUNT(DISTINCT v.patient_id) AS completed_patients\nFROM stg_patient_visits v\nJOIN dim_clinics c ON v.clinic_id = c.clinic_id\nGROUP BY v.clinic_id, c.clinic_name, v.visit_date;",
         example: "At Pebl, Marketing and Sales had conflicting MQL counts; I audited the funnel and locked 3 clean stages (Inbound, MQL, SAL) into modular SQL views so both teams pulled identical numbers."
       },
       {
         id: "dbt",
-        term: "dbt (Data Build Tool)",
+        term: "dbt (Data Build Tool & Testing)",
         category: "ai",
         catLabel: "AI & Modern Stack",
-        quick: "It lets analysts build warehouse tables using just SQL SELECTs while adding software-style version control, dependency order, and automated data tests.",
+        quick: "It lets analysts build warehouse tables using just SQL SELECTs while adding software-style version control, dependency order (ref), and automated data tests.",
         definition: "A SQL-first transformation framework that brings software engineering best practices — modular SELECT models, ref() dependency DAGs, version control, automated data tests, and lineage documentation — to the Transform step inside cloud data warehouses.",
         anchors: [
           "SELECT-Only Models: You write modular SQL SELECTs; dbt handles CREATE TABLE/VIEW materializations and dependency order via ref().",
           "Built-In Testing: Automated unique, not_null, accepted_values, and relationship tests catch broken upstream CRM fields early.",
-          "Lineage & Docs: Auto-generates end-to-end column/table lineage from raw ingestion to executive metrics."
+          "Lineage & Docs: Auto-generates end-to-end column/table lineage from raw ingestion to executive metrics.",
+          "Jinja & Macros: Write reusable SQL logic and dynamic partition filters across disparate environments."
         ],
-        sql: "",
+        sql: "-- models/marts/fct_quotes_bound.sql\nWITH quotes AS (\n    SELECT * FROM {{ ref('stg_quotes') }}\n),\npolicies AS (\n    SELECT * FROM {{ ref('stg_policies') }}\n)\nSELECT q.quote_id, q.channel, p.policy_id, p.annual_premium\nFROM quotes q\nLEFT JOIN policies p ON q.quote_id = p.quote_id;",
         example: "I structure my SQL warehouse layers using dbt-style staging/mart patterns and automated schema/metric QA checks (currently completing official dbt certification)."
       },
       {
-        id: "mcp",
-        term: "MCP (Model Context Protocol)",
+        id: "mcp-qa",
+        term: "MCP QA Automation (Model Context Protocol)",
         category: "ai",
         catLabel: "AI & Modern Stack",
-        quick: "It's basically a USB-C plug that lets an AI read your real Power BI or database schema directly instead of guessing.",
-        definition: "An open protocol that lets AI assistants securely connect to external tools, live schemas, databases, and BI semantic models so the AI can inspect real structures and run deterministic checks instead of hallucinating.",
+        quick: "It's a protocol that lets an AI read your live database or Power BI semantic model directly, running automated tests and DAX checks to catch broken data before humans see it.",
+        definition: "Using Model Context Protocol (MCP) to automate quality assurance across data models by programmatically exposing schema structures, relationship graphs, and query engines to AI agents for automated reconciliation, DAX EVALUATE testing, and schema drift detection.",
         anchors: [
-          "Live Schema Context: AI reads actual table names, columns, DAX measures, and relationships directly.",
-          "Deterministic Verification: Pairs LLM reasoning with real tool calls (SQL execution, Power BI model checks, QA scripts).",
-          "Workflow Acceleration: Eliminates repetitive boilerplate and manual QA formatting so analysts focus on business insights."
+          "Automated Model Auditing: MCP tools programmatically inspect semantic models to verify relationship integrity and enforce clean star schemas.",
+          "Automated DAX EVALUATE Testing: Executes test queries that validate calculations against raw SQL warehouse tables, catching discrepancies before report release.",
+          "Catching Fan-Out & Schema Drift: Spots unintended 1-to-many join multiplications and schema changes before stakeholders notice.",
+          "Deterministic Assurance: Combines LLM reasoning with live query execution so data checks are deterministic and verifiable."
         ],
-        sql: "",
-        example: "I connect Claude/Antigravity to Power BI semantic models via MCP to validate DAX measures and catch relationship or grain bugs in minutes instead of hours."
+        sql: "// Automated MCP DAX EVALUATE reconciliation test\nEVALUATE\nSUMMARIZECOLUMNS(\n    dim_campaigns[channel],\n    \"Calculated_ROAS\", [Ticket Revenue ROAS],\n    \"Warehouse_Expected_Spend\", SUM(fct_daily_spend[spend]),\n    \"Variance_Flag\", IF(ISBLANK([Ticket Revenue ROAS]), \"FAIL\", \"PASS\")\n)",
+        example: "At OneMagnify, I use MCP workflows to run automated DAX EVALUATE tests and schema audits on Power BI enterprise models (like Fairview's 38 tables), catching measure discrepancies before client reviews."
       },
-      {
+{
         id: "antigravity",
         term: "Antigravity",
         category: "ai",
@@ -818,7 +821,19 @@
       renderCards();
     }
 
-    const SQL_WALKTHROUGHS = {
+        const SQL_WALKTHROUGHS = {
+      "modular-modeling": [
+        { lines: [1, 2, 3, 4, 5, 6, 7], text: "Stage 1 creates a clean staging view that filters to completed visits, casts timestamps, and cleans column types." },
+        { lines: [8, 9, 10, 11, 12, 13, 14, 15], text: "Stage 2 builds a governed business mart view joining staging visits to clinic dimensions, grouping by date and clinic." }
+      ],
+      dbt: [
+        { lines: [1, 2, 3, 4, 5, 6], text: "The CTEs use dbt's ref() macro to reference upstream staging models, establishing automated DAG dependencies." },
+        { lines: [7, 8, 9, 10, 11, 12], text: "The main SELECT joins quotes to bound policies, creating an analytical fact mart without procedural DDL." }
+      ],
+      "mcp-qa": [
+        { lines: [1, 2], text: "EVALUATE begins a DAX query executed programmatically by an MCP tool against the live semantic model." },
+        { lines: [3, 4, 5, 6], text: "SUMMARIZECOLUMNS groups by channel, evaluating production ROAS against raw warehouse spend and flagging any calculation variance." }
+      ],
       cte: [
         { lines: [1], text: "WITH monthly_spend AS opens a temporary named result set at the top of the query." },
         { lines: [2, 3, 4], text: "Inside the CTE, we truncate spend_date to month and sum spend per channel, rolling daily data up to monthly grain." },
