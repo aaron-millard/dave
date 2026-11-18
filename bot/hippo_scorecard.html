@@ -441,6 +441,34 @@
 
     .banner strong { color: var(--hippo-deep); }
 
+    .metric-row.spoken-hl {
+      background: #EEF6F1;
+      border-left: 3px solid var(--hippo-mint);
+      border-top-color: transparent;
+      border-radius: 6px;
+      margin: 2px -8px;
+      padding: 7px 8px;
+    }
+
+    .metric-row.spoken-hl .metric-label {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .metric-row.spoken-hl-rose {
+      background: #FEF2F2;
+      border-left: 3px solid var(--rose);
+      border-top-color: transparent;
+      border-radius: 6px;
+      margin: 2px -8px;
+      padding: 7px 8px;
+    }
+
+    .metric-row.spoken-hl-rose .metric-label {
+      color: var(--text);
+      font-weight: 700;
+    }
+
     /* Toggle Button Group */
     .toggle-group {
       display: inline-flex;
@@ -787,10 +815,10 @@
               <span class="pill green">Conversion Engine</span>
             </div>
             <div class="big-stat" id="s1-bld-prem">$5.25M</div>
-            <div class="metric-row"><span class="metric-label">Quotes</span><span class="metric-val" id="s1-bld-q">9,850 (13%)</span></div>
+            <div class="metric-row spoken-hl"><span class="metric-label">Quotes</span><span class="metric-val" id="s1-bld-q">9,850 (13%)</span></div>
             <div class="metric-row"><span class="metric-label">Bound Policies</span><span class="metric-val" id="s1-bld-b">4,700</span></div>
-            <div class="metric-row"><span class="metric-label">Bind Rate</span><span class="metric-val" style="color:var(--hippo-deep)" id="s1-bld-br">48%</span></div>
-            <div class="metric-row"><span class="metric-label">Cancel Rate</span><span class="metric-val" id="s1-bld-cr">6.8%</span></div>
+            <div class="metric-row spoken-hl"><span class="metric-label">Bind Rate</span><span class="metric-val" style="color:var(--hippo-deep)" id="s1-bld-br">48%</span></div>
+            <div class="metric-row spoken-hl"><span class="metric-label">Cancel Rate</span><span class="metric-val" id="s1-bld-cr">6.8%</span></div>
             <div class="metric-row"><span class="metric-label">YTD Loss Ratio</span><span class="metric-val" style="color:var(--amber)" id="s1-bld-lr">31%</span></div>
             <div class="metric-row"><span class="metric-label">Sub-Agencies</span><span class="metric-val" id="s1-bld-sa">12</span></div>
           </div>
@@ -802,11 +830,11 @@
               <span class="pill blue">Scale &amp; Cleanest Risk</span>
             </div>
             <div class="big-stat" id="s1-nat-prem">$3.85M</div>
-            <div class="metric-row"><span class="metric-label">Quotes</span><span class="metric-val" id="s1-nat-q">57,800 (78%)</span></div>
+            <div class="metric-row spoken-hl"><span class="metric-label">Quotes</span><span class="metric-val" id="s1-nat-q">57,800 (78%)</span></div>
             <div class="metric-row"><span class="metric-label">Bound Policies</span><span class="metric-val" id="s1-nat-b">2,350</span></div>
-            <div class="metric-row"><span class="metric-label">Bind Rate</span><span class="metric-val" id="s1-nat-br">4.1%</span></div>
-            <div class="metric-row"><span class="metric-label">Cancel Rate</span><span class="metric-val" style="color:var(--hippo-deep)" id="s1-nat-cr">6.6%</span></div>
-            <div class="metric-row"><span class="metric-label">YTD Loss Ratio</span><span class="metric-val" style="color:var(--hippo-deep)" id="s1-nat-lr">22%</span></div>
+            <div class="metric-row spoken-hl"><span class="metric-label">Bind Rate</span><span class="metric-val" id="s1-nat-br">4.1%</span></div>
+            <div class="metric-row spoken-hl"><span class="metric-label">Cancel Rate</span><span class="metric-val" style="color:var(--hippo-deep)" id="s1-nat-cr">6.6%</span></div>
+            <div class="metric-row spoken-hl"><span class="metric-label">YTD Loss Ratio</span><span class="metric-val" style="color:var(--hippo-deep)" id="s1-nat-lr">22%</span></div>
             <div class="metric-row"><span class="metric-label">Sub-Agencies</span><span class="metric-val" id="s1-nat-sa">1</span></div>
           </div>
 
@@ -819,9 +847,9 @@
             <div class="big-stat" id="s1-agy-prem">$900k</div>
             <div class="metric-row"><span class="metric-label">Quotes</span><span class="metric-val" id="s1-agy-q">6,600 (9%)</span></div>
             <div class="metric-row"><span class="metric-label">Bound Policies</span><span class="metric-val" id="s1-agy-b">475</span></div>
-            <div class="metric-row"><span class="metric-label">Bind Rate</span><span class="metric-val" id="s1-agy-br">7.2%</span></div>
-            <div class="metric-row"><span class="metric-label">Cancel Rate</span><span class="metric-val" style="color:var(--rose)" id="s1-agy-cr">15%</span></div>
-            <div class="metric-row"><span class="metric-label">YTD Loss Ratio</span><span class="metric-val" style="color:var(--rose)" id="s1-agy-lr">65%</span></div>
+            <div class="metric-row spoken-hl-rose"><span class="metric-label">Bind Rate</span><span class="metric-val" id="s1-agy-br">7.2%</span></div>
+            <div class="metric-row spoken-hl-rose"><span class="metric-label">Cancel Rate</span><span class="metric-val" style="color:var(--rose)" id="s1-agy-cr">15%</span></div>
+            <div class="metric-row spoken-hl-rose"><span class="metric-label">YTD Loss Ratio</span><span class="metric-val" style="color:var(--rose)" id="s1-agy-lr">65%</span></div>
             <div class="metric-row"><span class="metric-label">Sub-Agencies</span><span class="metric-val" id="s1-agy-sa">350</span></div>
           </div>
         </div>
