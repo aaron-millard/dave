@@ -687,31 +687,30 @@
       padding: 0 5px;
       font-size: 0.72rem;
       font-weight: 700;
+      color: var(--text);
+    }
+
     .ex-btn {
-      font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 999px;
+      font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px;
       border: 1px solid var(--hippo-forest); background: #fff; color: var(--hippo-forest);
-      cursor: pointer; transition: all 0.15s ease;
+      cursor: pointer; transition: all 0.15s ease; margin-left: 4px; vertical-align: middle;
     }
     .ex-btn:hover, .ex-btn.active { background: var(--hippo-forest); color: #fff; }
-    .ex-panel {
-      display: none; margin-top: 10px; padding: 10px 12px; border-radius: 8px;
-      background: #fff; border: 1px solid var(--border); font-size: 12px; line-height: 1.5;
-    }
-    .ex-panel.open { display: block; }
     .next-data-strip {
-      margin-top: 12px; padding: 12px 16px; border-radius: 10px;
-      background: var(--surface-alt); border: 1px solid var(--border);
+      margin-top: 18px; padding: 14px 18px; border-radius: 14px;
+      background: #fff; border: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
     }
     .next-data-head {
       display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 8px; font-size: 12px; font-weight: 700; color: var(--text);
+      margin-bottom: 10px; font-size: 13px; font-weight: 700; color: var(--text);
     }
     .next-data-grid {
-      display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px;
+      display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px;
     }
     .next-data-item {
-      background: #fff; border: 1px solid var(--border); border-radius: 8px;
-      padding: 8px 10px; font-size: 11.5px; line-height: 1.4; color: var(--muted);
+      background: var(--surface-alt); border: 1px solid var(--border); border-radius: 10px;
+      padding: 10px 12px; font-size: 11.5px; line-height: 1.45; color: var(--muted);
     }
     .next-data-item strong { display: block; color: var(--text); margin-bottom: 2px; font-size: 12px; }
     .md-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
@@ -791,13 +790,13 @@
         <button class="slide-tab" onclick="goSlide(4)">5. Sub-Agencies</button>
         <button class="slide-tab" onclick="goSlide(5)">6. Actions</button>
         <button class="slide-tab" onclick="goSlide(6)">7. Ideal Partner</button>
-        <button class="slide-tab" onclick="goSlide(7)">8. More Data</button>
+        <button class="slide-tab" id="btn-more-data" onclick="toggleMoreData()" style="margin-left:6px;border-left:1px solid rgba(255,255,255,0.28);padding-left:14px;">More Data</button>
       </div>
 
       <div class="nav-controls">
         <button class="ctrl-btn" id="btn-focus" onclick="nextBeat()" title="Spotlight next talking point (Space or Down Arrow)">Focus: All</button>
         <button class="ctrl-btn" id="btn-prev" onclick="prevSlide()">Prev</button>
-        <span class="slide-counter" id="slide-counter">1 / 8</span>
+        <span class="slide-counter" id="slide-counter">1 / 7</span>
         <button class="ctrl-btn primary" id="btn-next" onclick="nextSlide()">Next</button>
         <button class="ctrl-btn" onclick="lockApp()" title="Lock screen">Lock</button>
       </div>
@@ -1299,23 +1298,12 @@
           </div>
 
           <div class="card" data-beat="3" style="background:var(--surface-alt); border-color:var(--hippo-forest);">
-            <div class="card-title">
-              <span>Target Partner Fit</span>
-              <span>
-                <button type="button" class="ex-btn" id="btn-partner-ex" onclick="togglePartnerExamples()">Examples</button>
-                <span class="pill green" style="margin-left:6px;">Who to Sign</span>
-              </span>
-            </div>
+            <div class="card-title"><span>Target Partner Fit</span><span class="pill green">Who to Sign</span></div>
             <ul class="clean-list">
-              <li><strong>Mortgage Lenders &amp; Digital Closing Platforms</strong> (built into loan lock/escrow).</li>
-              <li><strong>Midwest / Mid-Atlantic Homebuilders</strong> (lower-catastrophe new construction).</li>
-              <li><strong>Curated Digital Agencies</strong> with upfront Insurance Score &amp; home-age filters.</li>
+              <li><strong>Mortgage Lenders &amp; Digital Closing Platforms</strong> (built into loan lock/escrow). <button type="button" class="ex-btn" onclick="togglePartnerTip(this, 'lenders', event)">Examples</button></li>
+              <li><strong>Midwest / Mid-Atlantic Homebuilders</strong> (lower-catastrophe new construction). <button type="button" class="ex-btn" onclick="togglePartnerTip(this, 'builders', event)">Examples</button></li>
+              <li><strong>Curated Digital Agencies</strong> with upfront Insurance Score &amp; home-age filters. <button type="button" class="ex-btn" onclick="togglePartnerTip(this, 'agencies', event)">Examples</button></li>
             </ul>
-            <div class="ex-panel" id="partner-ex-panel">
-              <div><strong>Mortgage &amp; Closing:</strong> Rocket Mortgage, Better.com, loanDepot, Pennymac, Guild Mortgage, Blend, Encompass, Qualia, Snapdocs</div>
-              <div style="margin-top:4px;"><strong>Midwest / Mid-Atlantic Builders:</strong> NVR (Ryan Homes), Toll Brothers, M/I Homes, Fischer Homes, Drees Homes, PulteGroup</div>
-              <div style="margin-top:4px;"><strong>Curated Digital Agencies:</strong> Matic, Covered Insurance, Goosehead Insurance, Policygenius, Young Alfred</div>
-            </div>
           </div>
         </div>
 
@@ -1349,8 +1337,8 @@
         </div>
       </section>
 
-      <!-- ==================== SLIDE 8: MORE DATA (Q&A EXPLORER) ==================== -->
-      <section class="slide" data-slide="7">
+      <!-- ==================== MORE DATA (SEPARATE Q&A EXPLORER) ==================== -->
+      <section class="slide" id="more-data-view">
         <div class="slide-header">
           <div>
             <div class="kicker">Q&amp;A Reference Explorer</div>
@@ -1557,7 +1545,7 @@
 
       <div class="footer-nav">
         <div class="footer-status">
-          <span class="footer-slide-badge" id="footer-slide-badge">Slide 1 of 8</span>
+          <span class="footer-slide-badge" id="footer-slide-badge">Slide 1 of 7</span>
           <span class="footer-dot"></span>
           <span><span class="kbd-chip">&larr;</span> <span class="kbd-chip">&rarr;</span> Slides</span>
           <span class="footer-dot"></span>
@@ -1574,8 +1562,9 @@
     const VALID_USER = "aaronmillard";
     const VALID_PASS = "hippo2026";
     let currentSlide = 0;
-    const totalSlides = 8;
+    const totalSlides = 7;
     let currentBeat = 0;
+    let moreDataOpen = false;
 
     function getSlideBeats(slideIdx) {
       const slide = document.querySelector(`.slide[data-slide="${slideIdx}"]`);
@@ -1676,10 +1665,15 @@
 
     function goSlide(idx) {
       if (idx < 0 || idx >= totalSlides) return;
+      moreDataOpen = false;
       currentSlide = idx;
       hideTooltip();
-      document.querySelectorAll(".slide").forEach((s, i) => s.classList.toggle("active", i === idx));
-      document.querySelectorAll(".slide-tab").forEach((t, i) => t.classList.toggle("active", i === idx));
+      const mdView = document.getElementById("more-data-view");
+      const mdBtn = document.getElementById("btn-more-data");
+      if (mdView) mdView.classList.remove("active");
+      if (mdBtn) mdBtn.classList.remove("active");
+      document.querySelectorAll(".slide[data-slide]").forEach((s, i) => s.classList.toggle("active", i === idx));
+      document.querySelectorAll(".slide-tab:not(#btn-more-data)").forEach((t, i) => t.classList.toggle("active", i === idx));
       document.getElementById("slide-counter").textContent = (idx + 1) + " / " + totalSlides;
       document.getElementById("footer-slide-badge").textContent = "Slide " + (idx + 1) + " of " + totalSlides;
       document.getElementById("btn-prev").disabled = idx === 0;
@@ -1687,8 +1681,36 @@
       applyBeat(0);
     }
 
-    function nextSlide() { goSlide(currentSlide + 1); }
-    function prevSlide() { goSlide(currentSlide - 1); }
+    function toggleMoreData() {
+      if (moreDataOpen) {
+        goSlide(currentSlide);
+        return;
+      }
+      moreDataOpen = true;
+      hideTooltip();
+      document.querySelectorAll(".slide[data-slide]").forEach((s) => s.classList.remove("active"));
+      document.querySelectorAll(".slide-tab:not(#btn-more-data)").forEach((t) => t.classList.remove("active"));
+      const mdView = document.getElementById("more-data-view");
+      const mdBtn = document.getElementById("btn-more-data");
+      if (mdView) mdView.classList.add("active");
+      if (mdBtn) mdBtn.classList.add("active");
+      document.getElementById("slide-counter").textContent = "Q&A Data";
+      document.getElementById("footer-slide-badge").textContent = "More Data (Separate Q&A View)";
+      document.getElementById("btn-prev").disabled = false;
+      document.getElementById("btn-next").disabled = true;
+    }
+
+    function nextSlide() {
+      if (moreDataOpen) return;
+      goSlide(currentSlide + 1);
+    }
+    function prevSlide() {
+      if (moreDataOpen) {
+        goSlide(currentSlide);
+        return;
+      }
+      goSlide(currentSlide - 1);
+    }
 
     document.addEventListener("keydown", (e) => {
       if (sessionStorage.getItem("hippo_auth") !== "ok") return;
@@ -2051,15 +2073,48 @@
       document.getElementById("s5-qa-body").innerHTML = `<table><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table>`;
     }
 
-    /* ==================== SLIDE 7 EXAMPLES & SLIDE 8 MORE DATA ==================== */
-    function togglePartnerExamples() {
-      const panel = document.getElementById("partner-ex-panel");
-      const btn = document.getElementById("btn-partner-ex");
-      if (!panel || !btn) return;
-      const isOpen = panel.classList.toggle("open");
-      btn.classList.toggle("active", isOpen);
-      btn.textContent = isOpen ? "Hide Examples" : "Examples";
+    /* ==================== SLIDE 7 EXAMPLES & MORE DATA ==================== */
+    const PARTNER_EXAMPLES = {
+      lenders: {
+        title: "Mortgage Lenders & Digital Closing Platforms",
+        items: ["Rocket Mortgage", "Better.com", "loanDepot", "Pennymac", "Guild Mortgage", "Blend", "Encompass (ICE)", "Qualia", "Snapdocs"]
+      },
+      builders: {
+        title: "Midwest / Mid-Atlantic Homebuilders",
+        items: ["NVR (Ryan Homes / NVHomes)", "Toll Brothers", "M/I Homes", "Fischer Homes", "Drees Homes", "Stanley Martin Homes", "PulteGroup"]
+      },
+      agencies: {
+        title: "Curated Digital Agencies",
+        items: ["Matic", "Covered Insurance", "Goosehead Insurance", "Policygenius", "Young Alfred"]
+      }
+    };
+
+    let activePartnerTipBtn = null;
+    function togglePartnerTip(btn, key, evt) {
+      evt.stopPropagation();
+      const wasActive = activePartnerTipBtn === btn;
+      document.querySelectorAll(".ex-btn").forEach((b) => b.classList.remove("active"));
+      if (wasActive) {
+        activePartnerTipBtn = null;
+        hideTooltip();
+        return;
+      }
+      const data = PARTNER_EXAMPLES[key];
+      if (!data) return;
+      activePartnerTipBtn = btn;
+      btn.classList.add("active");
+      const rect = btn.getBoundingClientRect();
+      const fakeEvt = { clientX: rect.left + rect.width / 2, clientY: rect.top - 8 };
+      showTooltip(fakeEvt, `<div class="tt-title">${data.title}</div><div>${data.items.join(" &bull; ")}</div>`);
     }
+
+    document.addEventListener("click", (e) => {
+      if (activePartnerTipBtn && !e.target.closest(".ex-btn")) {
+        activePartnerTipBtn.classList.remove("active");
+        activePartnerTipBtn = null;
+        hideTooltip();
+      }
+    });
 
     function switchMdTab(idx) {
       document.querySelectorAll("#md-tabs .md-tab").forEach((t, i) => t.classList.toggle("active", i === idx));
