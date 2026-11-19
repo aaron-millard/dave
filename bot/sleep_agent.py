@@ -283,7 +283,25 @@ def parse_and_record_dose(text: str, gemini_key: str, token: str) -> Optional[st
     traz_mg = None
     quet_mg = None
 
-    if "repeat" in text_lower or "same" in text_lower:
+    t_m = re.search(r"(\d+(?:\.\d+)?)\s*(?:mg)?\s*(?:traz|trazodone|t\b)", text_lower)
+    if t_m:
+        traz_mg = int(float(t_m.group(1)))
+
+    q_m = re.search(r"(\d+(?:\.\d+)?)\s*(?:mg)?\s*(?:quet|quetiapine|seroquel|q\b)", text_lower)
+    if q_m:
+        quet_mg = int(float(q_m.group(1)))
+
+    if traz_mg is None and quet_mg is None:
+        split_m = re.search(r"\b(\d{2,3})\s*/\s*(\d{2,3})\b", text_lower)
+        if split_m:
+            traz_mg = int(split_m.group(1))
+            quet_mg = int(split_m.group(2))
+
+    took_meds_m = (
+        not text_clean.endswith("?")
+        and bool(re.search(r"\b(?:just\s+)?(?:took|taken|taking)\s+(?:my\s+)?meds?\b", text_lower))
+    )
+    if traz_mg is None and quet_mg is None and ("repeat" in text_lower or "same" in text_lower or took_meds_m):
         state = sync_state_from_cloud(token)
         vault = load_vault(gemini_key)
         files = vault.get("files", {})
@@ -294,29 +312,16 @@ def parse_and_record_dose(text: str, gemini_key: str, token: str) -> Optional[st
         except Exception:
             pass
         all_logs.extend(state.get("medication_logs", []))
-        if all_logs:
-            last = all_logs[-1]
-            traz_mg = last.get("trazodone_mg", 100)
-            quet_mg = last.get("quetiapine_mg", 100)
+        last_with_dose = next(
+            (item for item in reversed(all_logs) if item.get("trazodone_mg") or item.get("quetiapine_mg")),
+            None,
+        )
+        if last_with_dose:
+            traz_mg = last_with_dose.get("trazodone_mg", 100)
+            quet_mg = last_with_dose.get("quetiapine_mg", 100)
         else:
             traz_mg = 100
             quet_mg = 100
-
-    if traz_mg is None:
-        t_m = re.search(r"(\d+(?:\.\d+)?)\s*(?:mg)?\s*(?:traz|trazodone|t\b)", text_lower)
-        if t_m:
-            traz_mg = int(float(t_m.group(1)))
-
-    if quet_mg is None:
-        q_m = re.search(r"(\d+(?:\.\d+)?)\s*(?:mg)?\s*(?:quet|quetiapine|seroquel|q\b)", text_lower)
-        if q_m:
-            quet_mg = int(float(q_m.group(1)))
-
-    if traz_mg is None and quet_mg is None:
-        split_m = re.search(r"\b(\d{2,3})\s*/\s*(\d{2,3})\b", text_lower)
-        if split_m:
-            traz_mg = int(split_m.group(1))
-            quet_mg = int(split_m.group(2))
 
     if traz_mg is None and quet_mg is None:
         return None
@@ -1213,9 +1218,6 @@ def _handle_sleep_batch(gemini_key: str, token: str, chat_id: int):
 
     if action_lines:
         save_state_to_cloud(token, state)
-        if not unmatched_lines:
-            send_message(token, chat_id, "Roger Roger.\n\n" + "\n".join(f"- {a}" for a in action_lines))
-            return
 
     remaining_text = "\n".join(unmatched_lines) if unmatched_lines else text
     dose_reply = parse_and_record_dose(remaining_text, gemini_key, token)
