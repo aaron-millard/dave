@@ -876,7 +876,7 @@
               <button class="legend-filter-btn active" id="rf-all" onclick="setRampFocus('all')">All 3 Channels</button>
               <button class="legend-filter-btn" id="rf-bld" onclick="setRampFocus('bld')"><span class="legend-swatch dot" style="background:#006838;"></span>Builder (54% Apr)</button>
               <button class="legend-filter-btn" id="rf-agy" onclick="setRampFocus('agy')"><span class="legend-swatch dot" style="background:#DC2626;"></span>AgencyLink (8.1% Apr)</button>
-              <button class="legend-filter-btn" id="rf-nat" onclick="setRampFocus('nat')"><span class="legend-swatch dot" style="background:#0284C7;"></span>National (5.0% Apr)</button>
+              <button class="legend-filter-btn" id="rf-nat" onclick="setRampFocus('nat')"><span class="legend-swatch dot" style="background:#0284C7;"></span>National (5% Apr)</button>
             </div>
             <svg id="ramp-svg" viewBox="0 0 565 232" width="100%" height="232" aria-label="Monthly Bind Rate Ramp"></svg>
             <p style="font-size:0.78rem; color:var(--muted); margin-top:4px;">*May 2026 excluded from ramp line because snapshot is partial (May 1-15).</p>
@@ -899,7 +899,7 @@
                 <div class="bar-track">
                   <div class="bar-fill" style="width:52.5%; background:var(--hippo-deep)" title="Builder: $5.25M (52%)"></div>
                   <div class="bar-fill" style="width:38.5%; background:var(--sky)" title="National: $3.85M (39%)"></div>
-                  <div class="bar-fill" style="width:9.0%; background:var(--rose)" title="AgencyLink: $900k (9.0%)"></div>
+                  <div class="bar-fill" style="width:9%; background:var(--rose)" title="AgencyLink: $900k (9%)"></div>
                 </div>
               </div>
             </div>
@@ -1144,7 +1144,7 @@
             </div>
 
             <div style="padding:10px 12px; background:var(--surface-alt); border-radius:10px; font-size:0.82rem; line-height:1.45;">
-              <strong>Bright Spots Inside AgencyLink:</strong> 166 binding sub-agencies have <strong>$0 claims</strong> ($720k clean book); homes 0-15 yrs run <strong>8.0% LR</strong>, and Insurance Score 680+ runs <strong>19% LR</strong>.
+              <strong>Bright Spots Inside AgencyLink:</strong> 166 binding sub-agencies have <strong>$0 claims</strong> ($720k clean book); homes 0-15 yrs run <strong>8% LR</strong>, and Insurance Score 680+ runs <strong>19% LR</strong>.
             </div>
           </div>
 
@@ -1198,7 +1198,7 @@
             <div class="card-title"><span>2. National</span><span class="pill blue">Lift Conversion</span></div>
             <ul class="clean-list">
               <li>Test targeted pricing adjustments on unbound shoppers (currently +12% pricier across nearly 58k quotes).</li>
-              <li>Lifting bind rate from 4.1% to 6.0% adds ~$1.8M bound premium with zero new traffic.</li>
+              <li>Lifting bind rate from 4.1% to 6% adds ~$1.8M bound premium with zero new traffic.</li>
               <li>Preserve 80% Low/Moderate catastrophe mix and low 22% loss ratio.</li>
             </ul>
           </div>
@@ -1418,12 +1418,14 @@
       all: {
         bld: ["$6.13M", "18,865 (22%)", "5,467", "29%", "6.8%", "34%", "13"],
         nat: ["$3.85M", "57,800 (68%)", "2,350", "4.1%", "6.6%", "22%", "1"],
-        agy: ["$931k", "8,152 (10%)", "488", "6.0%", "15%", "63%", "350"]
+        agy: ["$931k", "8,152 (10%)", "488", "6%", "15%", "63%", "350"]
       }
     };
 
     function fmtPct(v) {
-      return v >= 10 ? Math.round(v) + "%" : v.toFixed(1) + "%";
+      if (v >= 10) return Math.round(v) + "%";
+      const r1 = Number(v.toFixed(1));
+      return Number.isInteger(r1) ? r1 + "%" : r1.toFixed(1) + "%";
     }
 
     function setScope(mode) {
@@ -1554,7 +1556,7 @@
         out.push(`<text x="${janX - 6}" y="${yFor(RAMP_DATA[3].nat.pct) + 15}" text-anchor="middle" font-size="10.5" font-weight="800" fill="#0284C7">2.1%</text>`);
         out.push(`<text x="${lastX - 6}" y="${yFor(last.bld.pct) - 10}" text-anchor="middle" font-size="11" font-weight="800" fill="#006838">54%</text>`);
         out.push(`<text x="${lastX - 6}" y="${yFor(last.agy.pct) - 9}" text-anchor="middle" font-size="11" font-weight="800" fill="#DC2626">8.1%</text>`);
-        out.push(`<text x="${lastX - 6}" y="${yFor(last.nat.pct) + 16}" text-anchor="middle" font-size="11" font-weight="800" fill="#0284C7">5.0%</text>`);
+        out.push(`<text x="${lastX - 6}" y="${yFor(last.nat.pct) + 16}" text-anchor="middle" font-size="11" font-weight="800" fill="#0284C7">5%</text>`);
       }
 
       // Dots + solo month labels + hover columns
@@ -1695,8 +1697,8 @@
         subtitle: "(Top 5 Builder Sub-Agencies = 75% of $6.13M Bound)",
         headers: ["Partner Code", "Sub-Agency Name", "Quotes", "Bounds", "Bind %", "Bound $", "Share %", "Cancel %", "YTD LR", "Quick Insight"],
         rows: [
-          ["BLD001", "Crestline Builder Services", "4,033", "1,186", "29%", "$1.33M", "22%", "6.0%", "31%", "Largest volume, steady LR"],
-          ["BLD002", "Summit Home Insurance", "3,490", "1,016", "29%", "$1.14M", "19%", "6.0%", "42%", "#2 partner, solid retention"],
+          ["BLD001", "Crestline Builder Services", "4,033", "1,186", "29%", "$1.33M", "22%", "6%", "31%", "Largest volume, steady LR"],
+          ["BLD002", "Summit Home Insurance", "3,490", "1,016", "29%", "$1.14M", "19%", "6%", "42%", "#2 partner, solid retention"],
           ["BLD003", "Horizon Builder Agency", "2,981", "917", "31%", "$1.03M", "17%", "6.4%", "20%", "Strong bind + low 20% LR"],
           ["BLD004", "Pinegate Homes Assurance", "1,825", "535", "29%", "$611k", "10%", "7.5%", "52%", "Elevated loss ratio (watch)"],
           ["BLD005", "Meridian New Home Agency", "1,559", "445", "29%", "$494k", "8.1%", "8.3%", "6.9%", "Ultra-clean 6.9% loss ratio"]
@@ -1720,7 +1722,7 @@
           ["Builder", "TX", "9,119", "3,016", "33%", "$3.48M", "6.8%", "34%", "57% of Builder $ (Core market)"],
           ["Builder", "FL", "3,447", "933", "27%", "$1.30M", "7.8%", "36%", "21% of Builder $ (Coastal CAT)"],
           ["National", "TX", "24,696", "1,458", "5.9%", "$2.45M", "6.1%", "19%", "64% of National $ (19% LR)"],
-          ["National", "GA", "10,257", "255", "2.5%", "$502k", "9.0%", "10%", "13% of National $ (Low 10% LR)"],
+          ["National", "GA", "10,257", "255", "2.5%", "$502k", "9%", "10%", "13% of National $ (Low 10% LR)"],
           ["AgencyLink", "TX", "3,965", "209", "5.3%", "$436k", "13%", "58%", "47% of AgencyLink $ (58% LR)"]
         ]
       }
