@@ -1571,66 +1571,66 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
           <div class="card">
             <h2>Q1: "Walk us through your start-to-finish process."</h2>
             <div class="quote-box">
-              I started by opening the spreadsheet to see what columns we had and jotted down a few early hypotheses - like different launch dates, pricing gaps, and sub-agency sprawl. From there I used Python to clean it up, normalize everything to 2026 so it was a fair comparison, and double-check all the numbers before putting together a simple web deck we could walk through today.
+              I started by opening the spreadsheet to see what data we had and jotted down a few quick questions to check - like different start dates, pricing differences, and whether a few bad offices were dragging down AgencyLink. Then I used Python to clean up the data and line everyone up on the same 2026 calendar before building a simple web deck we could walk through together today.
             </div>
           </div>
 
           <div class="card">
             <h2>Q2: "What tools did you use? What is Antigravity?"</h2>
             <div class="quote-box">
-              I used Python to analyze the 85k rows and check for any data quirks. Then I used Google Antigravity - an AI coding assistant - to help me quickly put the interactive dashboard together while I directed the story and verified every single number myself.
+              I used Python to crunch the 85k rows and check for any weird data bugs. Then I used Google Antigravity - an AI coding assistant - to help me put the web dashboard together quickly while I directed the story and double-checked every single number myself.
             </div>
           </div>
 
           <div class="card">
             <h2>Q3: "Why was the Q4 build-up period so slow in Oct-Nov?"</h2>
             <div class="quote-box">
-              Two big clues show up in the data. First, all 235 unbound Hawaii quotes with a Quote ID of zero came in during October through December before stopping completely on January 1st - which looks like early state testing pulling initial bind rates down to 1 or 2%. Second, normal ramp timing: Builder binds track home closings (just 15 binds in October before jumping to 702 in December), while AgencyLink spent November and December onboarding over 200 sub-agencies during the slower holiday season.
+              Two simple reasons show up in the data. First, all 235 Hawaii quotes with a zero Quote ID happened only in Oct-Dec and never bound - looking like system testing in Hawaii that dragged early conversion down toward 1-2%. Second, Builder sells insurance on brand-new homes where buyers get quoted while the house is still being built, so policies only activate 30 to 60 days later on closing day (just 15 binds in October before catching up to 702 in December), while AgencyLink was onboarding over 200 small offices during the Q4 holidays.
             </div>
           </div>
         </div>
 
-        <div class="section-heading">2. Panelist Pushback Q&amp;A (Casual &amp; Direct)</div>
+        <div class="section-heading">2. Panelist Pushback Q&amp;A (Plain English)</div>
         <div class="grid-2">
           <div class="card">
             <h2>Q4 (Michal): "Why not put 100% of our growth budget into Builder if it binds at 48%?"</h2>
             <div class="quote-box">
-              Because putting all our budget into Builder concentrates way too much storm and hurricane risk in one basket. Over 80% of Builder's policies sit in High or Very-High catastrophe areas, and nearly 80% of its dollars are packed into just Texas and Florida. One bad hurricane or hail season could wipe out a full year of underwriting profit with $30k+ average claims - twice National's average. We want a diversified portfolio, so the smart move is keeping Builder healthy while steering new growth outside TX and FL.
+              Because putting all our budget into Builder puts too many eggs in one stormy basket. Over 80% of Builder's homes sit in High or Very-High catastrophe areas, and almost 80% of its business is packed into just Texas and Florida. One bad hurricane or hail season could wipe out a full year of profit with $30k+ average claims - twice National's average. We want a balanced mix, keeping Builder strong while expanding into safer states.
             </div>
           </div>
 
           <div class="card">
             <h2>Q5 (Michal): "How does your Ideal Producer fit our existing JV economics?"</h2>
             <div class="quote-box">
-              Our healthiest economics pair Builder's closing-flow conversion (48% bind, 700 Insurance Score) with National's 80% Low-to-Moderate catastrophe balance. Mortgage lenders and digital closing platforms capture buyers right at loan lock just like a builder JV, except spread across the country instead of concentrated in coastal subdivisions.
+              Our best numbers come from combining Builder's high closing conversion (48% bind, 700 Insurance Score) with National's calmer 80% Low-to-Moderate storm mix. Mortgage lenders and digital closing platforms reach homebuyers right at closing just like a homebuilder partnership, except spread across the whole country instead of just coastal states.
             </div>
           </div>
 
           <div class="card">
             <h2>Q6 (Michael Dodge): "Why fix &amp; prune AgencyLink instead of shutting it off today?"</h2>
             <div class="quote-box">
-              Shutting it off overnight walks away from $720k in completely claim-free premium across 166 binding sub-agencies, plus strong pockets like newer homes under 15 years (8% LR) and 680+ Insurance Scores (19% LR). The bleed comes from 350 sprawling sub-agencies quoting older 33-year homes and lower scores. Turn off the ~276 inactive zero- or 1-bound tail offices, tighten rules going forward, and give the active ~35-50 a 90-day performance review.
+              Shutting it off overnight throws away $720k in completely claim-free business across 166 agencies, plus healthy pockets like newer homes under 15 years (8% loss ratio) and 680+ Insurance Scores (19% loss ratio). The real problem is that AgencyLink has 350 offices, and nearly 80% of them only bound zero or one policy while quoting older 33-year homes. Turning off the ~276 inactive offices, tightening our rules going forward, and putting the top 35-50 on a 90-day performance review lets us keep the good business and cut the losses.
             </div>
           </div>
 
           <div class="card">
             <h2>Q7 (Michael Dodge): "How do we actually reduce AgencyLink's 18-day cancel drag?"</h2>
             <div class="quote-box">
-              45% of AgencyLink cancels happen because inspection and underwriting conditions sit unresolved for 18 days median compared to 7 or 8 days elsewhere. Requiring upfront roof and property info before bind and auto-expiring stalled applications at day 10 stops ops from chasing dead deals for three weeks.
+              Almost half of AgencyLink's cancels (45%) happen because home inspections and underwriting checks never get finished, leaving policies stuck open for 18 days before canceling instead of 7 or 8 days like the other channels. Requiring roof and property info upfront before binding - and automatically canceling applications that stall past day 10 - stops the team from chasing dead deals for three weeks.
             </div>
           </div>
 
           <div class="card">
             <h2>Q8 (Ken Jelinek): "Why YTD 2026 default, and what data bugs did you catch?"</h2>
             <div class="quote-box">
-              National didn't launch until January 1st, so all-time totals mix in Q4 ramp months that pull Builder's 48% 2026 bind rate down to 29% - though I left an All-Time toggle right on Slide 1. On data checks, I caught 235 unbound Hawaii quotes coming through with Quote ID = 0 in late 2025, one AgencyLink sub-agency under two slightly different spellings, and almost 9% missing insurance scores on AgencyLink policies.
+              National didn't start until January 1st, so looking at all-time numbers mixes in late 2025 when Builder was still ramping up (which pulls Builder's 48% bind rate down to 29% - though I kept an All-Time toggle right on Slide 1). On data cleanup, I caught 235 unbound Hawaii quotes with a zero Quote ID in late 2025, one AgencyLink office spelled two different ways, and almost 9% of AgencyLink policies missing an Insurance Score.
             </div>
           </div>
 
           <div class="card">
             <h2>Q9 (Jakub Sienkiel): "Isn't National's 22% LR just newer policies? Why is Builder 31% with a 700 score?"</h2>
             <div class="quote-box">
-              Testing January through April bind cohorts month-by-month proves both National (17-33%) and Builder (16-43%) outdo AgencyLink (46-145%) in every single month, and National beats Builder Jan through March too (with December 2025 Builder at 56% showing how loss ratios climb as policies age). Builder's 31% loss ratio comes down to claim size, not frequency: its homeowners rarely file claims (1.2%), but TX and FL storm claims average ~$30k vs ~$13k at National - plus one Builder partner (Keystone) is an outlier at 72% LR.
+              When we compare policies that bound in the exact same month (Jan vs Jan, Feb vs Feb, etc.) so every policy is the same age, both National and Builder beat AgencyLink every single month - and National leads almost across the board. And Builder's 31% loss ratio comes down to claim size, not how often people file: Builder homeowners rarely file claims (1.2%), but Texas and Florida storm claims average ~$30k vs ~$13k at National (plus one Builder partner, Keystone, sits at a 72% loss ratio).
             </div>
           </div>
         </div>
