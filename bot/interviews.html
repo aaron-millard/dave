@@ -1450,11 +1450,11 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
       <!-- Sub-Tab Switcher + Live 14-Min Presenter Timer -->
       <div class="hp2-toolbar">
         <div class="hp2-tabs">
-          <button class="hp2-tab active" data-hp2="speaker" onclick="switchHp2Tab('speaker')">1. Speaker Guide (14m)</button>
+          <button class="hp2-tab" data-hp2="speaker" onclick="switchHp2Tab('speaker')">1. Speaker Guide (14m)</button>
           <button class="hp2-tab" data-hp2="qa" onclick="switchHp2Tab('qa')">2. Q&amp;A Bank &amp; STAR</button>
           <button class="hp2-tab" data-hp2="panelists" onclick="switchHp2Tab('panelists')">3. Panelists &amp; Core Rules</button>
           <button class="hp2-tab" data-hp2="morning" onclick="switchHp2Tab('morning')">4. 45m Dry-Run &amp; Data Sheet</button>
-          <button class="hp2-tab" data-hp2="script" onclick="switchHp2Tab('script')">5. Full Script</button>
+          <button class="hp2-tab active" data-hp2="script" onclick="switchHp2Tab('script')">5. Full Script</button>
           <button class="hp2-tab" data-hp2="flashcards" onclick="switchHp2Tab('flashcards')">6. Panelist Flashcards</button>
         </div>
 
@@ -1467,7 +1467,7 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
       </div>
 
       <!-- TAB 1: SPEAKER GUIDE -->
-      <div id="hp2-pane-speaker" class="hp2-pane active">
+      <div id="hp2-pane-speaker" class="hp2-pane">
         <div class="callout" style="margin-bottom:16px;">
           <div class="callout-title">Live Delivery Guardrails &amp; Controls</div>
           Keep it casual, calm, and plain English. Say <strong>Underwriting</strong>, <strong>Catastrophe</strong>, <strong>Insurance Score</strong>, <strong>Average Home Age</strong>, and <strong>Sub-Agency</strong>. Pause 2 seconds after headlines. Controls: <strong>Left/Right</strong> = Slides | <strong>Down/Up</strong> = Highlight Card | Slide 2 Ramp: Click <strong>National</strong> at top to zoom in.
@@ -1808,7 +1808,7 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
       </div>
 
       <!-- TAB 5: FULL WORD-FOR-WORD SCRIPT -->
-      <div id="hp2-pane-script" class="hp2-pane">
+      <div id="hp2-pane-script" class="hp2-pane active">
         <div class="callout" style="margin-bottom:16px;">
           <div class="callout-title">Word-for-Word Practice Script (~13-14 Min | Casual Spoken Flow)</div>
           Read this through once or twice to lock in the natural rhythm and spotlight beats (<code>Right Arrow</code> = Next Slide, <code>Down Arrow</code> = Highlight Next Card | Slide 2: click <strong>National</strong> pill at top to solo its line). On the real Zoom call, switch back to <strong>Tab 1: Speaker Guide</strong> cue cards so you sound natural instead of reading off a screen.
@@ -2904,11 +2904,11 @@ ORDER BY visit_num;</pre>
     // Allow deep-linking via ?company=hippo or #hippo
     (function initFromUrl() {
       const params = new URLSearchParams(window.location.search || "");
-      const c = (params.get("company") || window.location.hash.replace("#", "") || "hippo").toLowerCase();
+      const c = (params.get("company") || window.location.hash.replace("#", "") || "hippo2").toLowerCase();
       if (c === "hippo" || c === "hippo2" || c === "knownwell" || c === "anduril" || c === "deepgram" || c === "hammer") {
         switchCompany(c);
       } else {
-        switchCompany("hippo");
+        switchCompany("hippo2");
       }
     })();
 

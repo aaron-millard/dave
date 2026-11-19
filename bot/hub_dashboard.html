@@ -321,9 +321,9 @@
 
     const URLS = getBaseUrls();
     const loadedTabs = { health: false, lifting: false, architecture: false, interviews: false, flashcards: false };
-    let activeTab = "health";
+    let activeTab = "interviews";
     let activeHealthSubtab = "oura";
-    let activeInterviewCompany = "hippo";
+    let activeInterviewCompany = "hippo2";
 
     function updateEnvBadge() {
       const txt = document.getElementById("envStatusText");
@@ -460,10 +460,11 @@
       if (qTab === "architecture" || injected === "architecture" || hash === "architecture" || path.includes("architecture")) {
         return "architecture";
       }
-      return "health";
+      return "interviews";
     }
 
     updateEnvBadge();
+    updateInterviewPills(activeInterviewCompany);
     const initial = resolveInitialTab();
     switchTab(initial);
   </script>
