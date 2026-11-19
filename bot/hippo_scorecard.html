@@ -791,6 +791,7 @@
         <button class="slide-tab" onclick="goSlide(5)">6. Actions</button>
         <button class="slide-tab" onclick="goSlide(6)">7. Ideal Partner</button>
         <button class="slide-tab" id="btn-more-data" onclick="toggleMoreData()" style="margin-left:6px;border-left:1px solid rgba(255,255,255,0.28);padding-left:14px;">More Data</button>
+        <button class="slide-tab" id="btn-framework" onclick="toggleFramework()">Framework</button>
       </div>
 
       <div class="nav-controls">
@@ -1564,6 +1565,61 @@
         </div>
       </section>
 
+      <!-- ==================== FRAMEWORK ARCHITECTURE VIEW ==================== -->
+      <section class="slide" id="framework-view">
+        <div class="slide-header">
+          <div>
+            <div class="kicker">End-to-End Build Architecture</div>
+            <h1>How This Case Study Was Built</h1>
+          </div>
+          <button class="ctrl-btn" onclick="goSlide(currentSlide)">&larr; Back to Slides</button>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr auto 1fr auto 1fr auto 1fr; gap:12px; align-items:stretch; margin-top:20px;">
+          <div class="card" data-beat="1" style="border-top:3px solid var(--blue); display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <div style="font-size:0.72rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:var(--blue); margin-bottom:6px;">Step 01</div>
+              <h2 style="margin-bottom:8px;">Python Data Audit</h2>
+              <p style="font-size:0.9rem; line-height:1.5; color:var(--text-muted);">Audited ~85k raw rows, caught data bugs (Quote ID = 0 Hawaii test quotes, missing scores), and aligned all 3 channels to a shared 2026 YTD calendar.</p>
+            </div>
+            <div style="margin-top:14px; font-size:0.75rem; font-weight:700; color:var(--blue);">Output: Verified 2026 Baseline</div>
+          </div>
+
+          <div style="display:flex; align-items:center; justify-content:center; font-size:1.5rem; font-weight:800; color:var(--text-muted);">&rarr;</div>
+
+          <div class="card" data-beat="2" style="border-top:3px solid var(--purple); display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <div style="font-size:0.72rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:var(--purple); margin-bottom:6px;">Step 02</div>
+              <h2 style="margin-bottom:8px;">Loaded STAR Framework</h2>
+              <p style="font-size:0.9rem; line-height:1.5; color:var(--text-muted);">Loaded my STAR framework directly into the project workspace so the analysis, slide flow, and recommendations followed a clean executive structure.</p>
+            </div>
+            <div style="margin-top:14px; font-size:0.75rem; font-weight:700; color:var(--purple);">Output: Structured Narrative Rules</div>
+          </div>
+
+          <div style="display:flex; align-items:center; justify-content:center; font-size:1.5rem; font-weight:800; color:var(--text-muted);">&rarr;</div>
+
+          <div class="card" data-beat="3" style="border-top:3px solid var(--amber); display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <div style="font-size:0.72rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:var(--amber); margin-bottom:6px;">Step 03</div>
+              <h2 style="margin-bottom:8px;">Google Antigravity</h2>
+              <p style="font-size:0.9rem; line-height:1.5; color:var(--text-muted);">Used Antigravity as my AI coding assistant to build the interactive web deck while I directed the story and double-checked every single metric against raw data.</p>
+            </div>
+            <div style="margin-top:14px; font-size:0.75rem; font-weight:700; color:var(--amber);">Output: Interactive 7-Slide Deck</div>
+          </div>
+
+          <div style="display:flex; align-items:center; justify-content:center; font-size:1.5rem; font-weight:800; color:var(--text-muted);">&rarr;</div>
+
+          <div class="card" data-beat="4" style="border-top:3px solid var(--green); display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <div style="font-size:0.72rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:var(--green); margin-bottom:6px;">Step 04</div>
+              <h2 style="margin-bottom:8px;">Render Live Deploy</h2>
+              <p style="font-size:0.9rem; line-height:1.5; color:var(--text-muted);">Deployed the finished app live on Render with password protection, interactive toggles, and keyboard focus controls for today's panel walkthrough.</p>
+            </div>
+            <div style="margin-top:14px; font-size:0.75rem; font-weight:700; color:var(--green);">Output: Live Panel Walkthrough</div>
+          </div>
+        </div>
+      </section>
+
       <div class="footer-nav">
         <div class="footer-status">
           <span class="footer-slide-badge" id="footer-slide-badge">Slide 1 of 7</span>
@@ -1586,9 +1642,15 @@
     const totalSlides = 7;
     let currentBeat = 0;
     let moreDataOpen = false;
+    let frameworkOpen = false;
+
+    function getActiveSlideEl(slideIdx) {
+      if (frameworkOpen) return document.getElementById("framework-view");
+      return document.querySelector(`.slide[data-slide="${slideIdx}"]`);
+    }
 
     function getSlideBeats(slideIdx) {
-      const slide = document.querySelector(`.slide[data-slide="${slideIdx}"]`);
+      const slide = getActiveSlideEl(slideIdx);
       if (!slide) return [];
       return Array.from(slide.querySelectorAll("[data-beat]")).sort(
         (a, b) => Number(a.getAttribute("data-beat")) - Number(b.getAttribute("data-beat"))
@@ -1596,7 +1658,7 @@
     }
 
     function applyBeat(beatNum) {
-      const slide = document.querySelector(`.slide[data-slide="${currentSlide}"]`);
+      const slide = getActiveSlideEl(currentSlide);
       if (!slide) return;
       const beats = getSlideBeats(currentSlide);
       const focusBtn = document.getElementById("btn-focus");
@@ -1687,14 +1749,19 @@
     function goSlide(idx) {
       if (idx < 0 || idx >= totalSlides) return;
       moreDataOpen = false;
+      frameworkOpen = false;
       currentSlide = idx;
       hideTooltip();
       const mdView = document.getElementById("more-data-view");
       const mdBtn = document.getElementById("btn-more-data");
+      const fwView = document.getElementById("framework-view");
+      const fwBtn = document.getElementById("btn-framework");
       if (mdView) mdView.classList.remove("active");
       if (mdBtn) mdBtn.classList.remove("active");
+      if (fwView) { fwView.classList.remove("active"); fwView.classList.remove("has-focus"); }
+      if (fwBtn) fwBtn.classList.remove("active");
       document.querySelectorAll(".slide[data-slide]").forEach((s, i) => s.classList.toggle("active", i === idx));
-      document.querySelectorAll(".slide-tab:not(#btn-more-data)").forEach((t, i) => t.classList.toggle("active", i === idx));
+      document.querySelectorAll(".slide-tab:not(#btn-more-data):not(#btn-framework)").forEach((t, i) => t.classList.toggle("active", i === idx));
       document.getElementById("slide-counter").textContent = (idx + 1) + " / " + totalSlides;
       document.getElementById("footer-slide-badge").textContent = "Slide " + (idx + 1) + " of " + totalSlides;
       document.getElementById("btn-prev").disabled = idx === 0;
@@ -1708,11 +1775,16 @@
         return;
       }
       moreDataOpen = true;
+      frameworkOpen = false;
       hideTooltip();
       document.querySelectorAll(".slide[data-slide]").forEach((s) => s.classList.remove("active"));
-      document.querySelectorAll(".slide-tab:not(#btn-more-data)").forEach((t) => t.classList.remove("active"));
+      document.querySelectorAll(".slide-tab:not(#btn-more-data):not(#btn-framework)").forEach((t) => t.classList.remove("active"));
       const mdView = document.getElementById("more-data-view");
       const mdBtn = document.getElementById("btn-more-data");
+      const fwView = document.getElementById("framework-view");
+      const fwBtn = document.getElementById("btn-framework");
+      if (fwView) fwView.classList.remove("active");
+      if (fwBtn) fwBtn.classList.remove("active");
       if (mdView) mdView.classList.add("active");
       if (mdBtn) mdBtn.classList.add("active");
       document.getElementById("slide-counter").textContent = "Appendix";
@@ -1721,12 +1793,37 @@
       document.getElementById("btn-next").disabled = true;
     }
 
+    function toggleFramework() {
+      if (frameworkOpen) {
+        goSlide(currentSlide);
+        return;
+      }
+      frameworkOpen = true;
+      moreDataOpen = false;
+      hideTooltip();
+      document.querySelectorAll(".slide[data-slide]").forEach((s) => s.classList.remove("active"));
+      document.querySelectorAll(".slide-tab:not(#btn-more-data):not(#btn-framework)").forEach((t) => t.classList.remove("active"));
+      const mdView = document.getElementById("more-data-view");
+      const mdBtn = document.getElementById("btn-more-data");
+      const fwView = document.getElementById("framework-view");
+      const fwBtn = document.getElementById("btn-framework");
+      if (mdView) mdView.classList.remove("active");
+      if (mdBtn) mdBtn.classList.remove("active");
+      if (fwView) fwView.classList.add("active");
+      if (fwBtn) fwBtn.classList.add("active");
+      document.getElementById("slide-counter").textContent = "Framework";
+      document.getElementById("footer-slide-badge").textContent = "Framework (Build Architecture)";
+      document.getElementById("btn-prev").disabled = false;
+      document.getElementById("btn-next").disabled = true;
+      applyBeat(0);
+    }
+
     function nextSlide() {
-      if (moreDataOpen) return;
+      if (moreDataOpen || frameworkOpen) return;
       goSlide(currentSlide + 1);
     }
     function prevSlide() {
-      if (moreDataOpen) {
+      if (moreDataOpen || frameworkOpen) {
         goSlide(currentSlide);
         return;
       }
