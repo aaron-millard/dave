@@ -468,6 +468,36 @@
       margin: 8px 0 12px;
     }
 
+    /* Plain Quick-Scan Q&A List (No Boxes) */
+    .qa-scan-list {
+      margin: 12px 0 24px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .qa-scan-item {
+      margin-bottom: 28px;
+    }
+
+    .qa-scan-q {
+      font-size: 1.15rem;
+      line-height: 1.45;
+      color: #cbd5e1;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    .qa-scan-q strong {
+      color: #ffffff;
+      font-weight: 800;
+    }
+
+    .qa-scan-a {
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: #94a3b8;
+    }
+
     /* SQL Code Blocks */
     .sql-wrap {
       position: relative;
@@ -2147,6 +2177,16 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
           </div>
         </div>
 
+        <div class="card">
+          <h2>Tech Stack &amp; Tooling</h2>
+          <ul class="clean-list">
+            <li>Warehouse &amp; Modeling: Snowflake + dbt (contributing to dbt models alongside Data Engineering and Data Science).</li>
+            <li>BI &amp; Data Apps: Hex, Tableau, and Power BI for self-serve clinical, operational, and executive dashboards.</li>
+            <li>Languages &amp; Testing: Strong SQL (live CoderPad in Round 2) and Python for exploratory and operational analysis.</li>
+            <li>Domain Systems: EHR / telehealth scheduling &amp; clinical visit telemetry joined to marketing acquisition funnels.</li>
+          </ul>
+        </div>
+
         <div class="section-heading">2. Round 2 Live SQL Prep (Thu Nov 19)</div>
         <div class="card">
           <h2>Round 2 Format: 60-Min Technical CoderPad (Thu Nov 19)</h2>
@@ -2261,6 +2301,64 @@ ORDER BY visit_num;</pre>
             <div class="quote-box">
               "Marketing and Sales were pulling different MQL numbers. I traced the funnel from ad click into Salesforce, got both teams on the same page with 3 clear stages, and locked it into SQL views."
             </div>
+          </div>
+        </div>
+
+        <div class="section-heading">5. Round 2 Q&amp;A Bank (Quick Scan)</div>
+        <div class="qa-scan-list">
+          <div class="qa-scan-item">
+            <div class="qa-scan-q">Tell me about a time you partnered with <strong>non-technical stakeholders</strong> to <strong>define a metric</strong> or solve an ambiguous problem.</div>
+            <div class="qa-scan-a">On Pebl, Marketing and Sales were pulling completely different MQL numbers. Marketing counted form fills while Sales only counted enriched Salesforce accounts. I traced the funnel from ad click into Salesforce, got both teams in a room, and locked in three shared stages (Inbound Lead, MQL, SAL) inside our SQL views so everyone trusted the same pipeline number.</div>
+          </div>
+
+          <div class="qa-scan-item">
+            <div class="qa-scan-q">Tell me about your <strong>healthcare or multi-location clinic</strong> analytics experience.</div>
+            <div class="qa-scan-a">For Swish Dental across 15+ clinic locations, each clinic had different chair capacity and doctor schedules. I tied digital ad spend directly to clinic appointment bookings in SQL and built pacing logic using business days and chair capacity. That gave regional managers real-time Cost per New Patient Booked so they could shift budget away from full clinics to clinics that needed volume.</div>
+          </div>
+
+          <div class="qa-scan-item">
+            <div class="qa-scan-q">How do you <strong>validate your data</strong> and <strong>catch discrepancies</strong> before stakeholders see a report?</div>
+            <div class="qa-scan-a">I always verify table grain and row counts first in SQL before joining, then reconcile aggregates against raw source tables. At OneMagnify, I also use MCP to run automated DAX EVALUATE checks directly against our raw SQL warehouse tables so any join fan-out or filter mismatch gets caught before a client ever sees it.</div>
+          </div>
+
+          <div class="qa-scan-item">
+            <div class="qa-scan-q">How do you handle a stakeholder asking for a <strong>quick ad-hoc pull</strong> when they might be asking the <strong>wrong question</strong>?</div>
+            <div class="qa-scan-a">I anchor on the Monday-morning decision instead of just taking the ticket. I'll ask what action they're trying to take, like whether they're trying to fill empty clinic slots or manage provider utilization. Once we align on the decision, I either give them the exact cut they need or show them a cleaner metric that actually answers it.</div>
+          </div>
+
+          <div class="qa-scan-item">
+            <div class="qa-scan-q">Tell me about a <strong>complex SQL problem</strong> or <strong>data model</strong> you built from scratch.</div>
+            <div class="qa-scan-a">For Fairview, I helped build a 38-table model with over 1,200 measures, and for Brooklyn Nets I joined multi-channel ad spend with ticket sales pacing. The trickiest part is usually reconciling mismatched grains—like daily ad spend against individual transaction timestamps—so I isolate pre-aggregations in CTEs first and verify there's zero fan-out before joining.</div>
+          </div>
+
+          <div class="qa-scan-item">
+            <div class="qa-scan-q"><strong>Why Knownwell</strong> and <strong>why this role</strong>?</div>
+            <div class="qa-scan-a">Healthcare is one of the few places where clean analytics directly improves someone's life. Knownwell's hybrid clinic and telehealth model maps directly to the multi-location acquisition-to-booking work I did at Swish Dental, and I want to partner directly with clinical ops and data science to own the full patient journey from first touch through retention.</div>
+          </div>
+
+          <div class="qa-scan-item">
+            <div class="qa-scan-q">How do you use <strong>AI / MCP</strong> in your day-to-day analytics workflow?</div>
+            <div class="qa-scan-a">I use AI and MCP to automate the repetitive QA and formatting work—like running automated checks between BI models and SQL tables—so I have more time for deep SQL exploration, defining metrics, and partnering directly with clinical and business teams.</div>
+          </div>
+
+          <div class="qa-scan-item">
+            <div class="qa-scan-q">CoderPad SQL: <strong>Patient Funnel Conversion</strong> (Lead to Booked to Completed Visit)</div>
+            <div class="qa-scan-a">Aggregate appointments to patient_id in a CTE first using MIN(CASE WHEN status = 'completed' THEN visit_date END), then LEFT JOIN from patients so unconverted leads stay in the denominator. Wrap the denominator in NULLIF(..., 0).</div>
+          </div>
+
+          <div class="qa-scan-item">
+            <div class="qa-scan-q">CoderPad SQL: <strong>Patient Retention / Rebooking</strong> (30/60/90-day repeat visit)</div>
+            <div class="qa-scan-a">Filter to completed visits in a CTE, use ROW_NUMBER() and LAG(visit_date) OVER (PARTITION BY patient_id ORDER BY visit_date) to get the prior visit date, then use DATEDIFF('day', prev_visit_date, visit_date) to bucket 30/60/90-day return rates.</div>
+          </div>
+
+          <div class="qa-scan-item">
+            <div class="qa-scan-q">CoderPad SQL: <strong>First or Latest Visit Deduplication</strong></div>
+            <div class="qa-scan-a">Use ROW_NUMBER() OVER (PARTITION BY patient_id ORDER BY visit_date ASC/DESC) inside a CTE, then filter WHERE rn = 1 in the outer query. Always ask if ties on the same day need a secondary tie-breaker like visit_id.</div>
+          </div>
+
+          <div class="qa-scan-item">
+            <div class="qa-scan-q">CoderPad SQL: <strong>No-Show / Cancellation Rate &amp; NULL Handling</strong></div>
+            <div class="qa-scan-a">Use COUNT(CASE WHEN status = 'no_show' THEN 1 END) * 1.0 / NULLIF(COUNT(*), 0), and use COALESCE(..., 0) on LEFT JOINed counts so clinics or providers with zero no-shows still appear cleanly.</div>
           </div>
         </div>
       </div>
@@ -2563,6 +2661,16 @@ ORDER BY visit_num;</pre>
               <li><strong>Production SQL + Stack:</strong> 9+ years complex SQL (modular Views, Stored Procedures, DML), Azure Data Factory, Power BI / DAX, and MCP automated QA.</li>
             </ul>
           </div>
+
+          <div class="card">
+            <h2>Tech Stack &amp; Tooling</h2>
+            <ul>
+              <li><strong>Warehouse &amp; Modeling:</strong> Cloud SQL warehouse + dbt, semantic layers, and governed metric definitions (partnering with Data Engineering).</li>
+              <li><strong>CRM &amp; Attribution:</strong> Salesforce, HubSpot, and Dreamdata (multi-touch attribution, MQL/PQL/SAL/SQL/Closed-Won, conference/UTM tracking).</li>
+              <li><strong>AI-Native Workflow:</strong> Agentic AI workflows (Claude, MCP) partnered with Decision Intelligence to automate recurring GTM reporting and QA.</li>
+              <li><strong>Languages &amp; BI:</strong> Strong SQL, Python, and reusable executive campaign/sales-play dashboards.</li>
+            </ul>
+          </div>
         </div>
 
         <div>
@@ -2621,6 +2729,16 @@ ORDER BY visit_num;</pre>
               <li><strong>0-to-1 Sole-Analyst Ownership (Rodeo Logistics):</strong> Built the SQL reporting views, GA funnel tracking, and 20+ Tableau dashboards from scratch as the sole data hire for an Austin startup.</li>
               <li><strong>Multi-Channel Attribution &amp; QA (OneMagnify):</strong> Unified 15+ ad and CRM feeds in Azure SQL and Power BI; audited conflicting funnel stage definitions (Pebl) and used MCP/DAX EVALUATE to reconcile warehouse totals.</li>
               <li><strong>Consumer Pricing &amp; Retention (Moment House):</strong> Analyzed repeat-purchase cohorts and Pay-What-You-Want pricing elasticity that drove 80-90% higher average event revenue.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h2>Tech Stack &amp; Tooling</h2>
+            <ul>
+              <li><strong>Product &amp; Event Analytics:</strong> PostHog (explicitly highlighted), GA4, and in-app Dollarwise behavioral event tracking.</li>
+              <li><strong>Warehouse &amp; BI (0-to-1 Ownership):</strong> Auditing existing pipelines and recommending/rolling out the centralized warehouse and BI stack.</li>
+              <li><strong>Languages:</strong> Strong SQL plus Python or R for deeper cohort, retention, and subscription/FinTech analysis.</li>
+              <li><strong>Media + FinTech Ecosystem:</strong> Connecting YouTube/Financial Audit media acquisition to Dollarwise app retention and monetization.</li>
             </ul>
           </div>
         </div>
