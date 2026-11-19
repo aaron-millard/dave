@@ -687,8 +687,63 @@
       padding: 0 5px;
       font-size: 0.72rem;
       font-weight: 700;
-      color: var(--text);
+    .ex-btn {
+      font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 999px;
+      border: 1px solid var(--hippo-forest); background: #fff; color: var(--hippo-forest);
+      cursor: pointer; transition: all 0.15s ease;
     }
+    .ex-btn:hover, .ex-btn.active { background: var(--hippo-forest); color: #fff; }
+    .ex-panel {
+      display: none; margin-top: 10px; padding: 10px 12px; border-radius: 8px;
+      background: #fff; border: 1px solid var(--border); font-size: 12px; line-height: 1.5;
+    }
+    .ex-panel.open { display: block; }
+    .next-data-strip {
+      margin-top: 12px; padding: 12px 16px; border-radius: 10px;
+      background: var(--surface-alt); border: 1px solid var(--border);
+    }
+    .next-data-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 8px; font-size: 12px; font-weight: 700; color: var(--text);
+    }
+    .next-data-grid {
+      display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px;
+    }
+    .next-data-item {
+      background: #fff; border: 1px solid var(--border); border-radius: 8px;
+      padding: 8px 10px; font-size: 11.5px; line-height: 1.4; color: var(--muted);
+    }
+    .next-data-item strong { display: block; color: var(--text); margin-bottom: 2px; font-size: 12px; }
+    .md-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .md-tab {
+      padding: 6px 13px; border-radius: 999px; border: 1px solid var(--border);
+      background: #fff; color: var(--muted); font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: all 0.15s ease;
+    }
+    .md-tab:hover { border-color: var(--hippo-forest); color: var(--hippo-forest); }
+    .md-tab.active { background: var(--hippo-forest); border-color: var(--hippo-forest); color: #fff; }
+    .md-pane { display: none; }
+    .md-pane.active { display: block; }
+    .md-table-wrap {
+      background: #fff; border: 1px solid var(--border); border-radius: 12px;
+      overflow-x: auto; max-height: 495px; overflow-y: auto;
+    }
+    .md-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    .md-table thead th {
+      position: sticky; top: 0; background: var(--surface-alt); z-index: 2;
+      padding: 9px 11px; text-align: left; font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted);
+      border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; white-space: nowrap;
+    }
+    .md-table thead th:hover { color: var(--hippo-forest); }
+    .md-table thead th.num { text-align: right; }
+    .md-table tbody td {
+      padding: 8px 11px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top;
+    }
+    .md-table tbody td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .md-table tbody tr:hover { background: #f8fbf9; }
+    .sort-ind { font-size: 10px; opacity: 0.55; margin-left: 4px; }
+    th.sort-asc .sort-ind, th.sort-desc .sort-ind { opacity: 1; color: var(--hippo-forest); }
   </style>
 </head>
 <body>
@@ -736,12 +791,13 @@
         <button class="slide-tab" onclick="goSlide(4)">5. Sub-Agencies</button>
         <button class="slide-tab" onclick="goSlide(5)">6. Actions</button>
         <button class="slide-tab" onclick="goSlide(6)">7. Ideal Partner</button>
+        <button class="slide-tab" onclick="goSlide(7)">8. More Data</button>
       </div>
 
       <div class="nav-controls">
         <button class="ctrl-btn" id="btn-focus" onclick="nextBeat()" title="Spotlight next talking point (Space or Down Arrow)">Focus: All</button>
         <button class="ctrl-btn" id="btn-prev" onclick="prevSlide()">Prev</button>
-        <span class="slide-counter" id="slide-counter">1 / 7</span>
+        <span class="slide-counter" id="slide-counter">1 / 8</span>
         <button class="ctrl-btn primary" id="btn-next" onclick="nextSlide()">Next</button>
         <button class="ctrl-btn" onclick="lockApp()" title="Lock screen">Lock</button>
       </div>
@@ -1243,23 +1299,265 @@
           </div>
 
           <div class="card" data-beat="3" style="background:var(--surface-alt); border-color:var(--hippo-forest);">
-            <div class="card-title"><span>Target Partner Fit</span><span class="pill green">Who to Sign</span></div>
+            <div class="card-title">
+              <span>Target Partner Fit</span>
+              <span>
+                <button type="button" class="ex-btn" id="btn-partner-ex" onclick="togglePartnerExamples()">Examples</button>
+                <span class="pill green" style="margin-left:6px;">Who to Sign</span>
+              </span>
+            </div>
             <ul class="clean-list">
               <li><strong>Mortgage Lenders &amp; Digital Closing Platforms</strong> (built into loan lock/escrow).</li>
               <li><strong>Midwest / Mid-Atlantic Homebuilders</strong> (lower-catastrophe new construction).</li>
               <li><strong>Curated Digital Agencies</strong> with upfront Insurance Score &amp; home-age filters.</li>
             </ul>
+            <div class="ex-panel" id="partner-ex-panel">
+              <div><strong>Mortgage &amp; Closing:</strong> Rocket Mortgage, Better.com, loanDepot, Pennymac, Guild Mortgage, Blend, Encompass, Qualia, Snapdocs</div>
+              <div style="margin-top:4px;"><strong>Midwest / Mid-Atlantic Builders:</strong> NVR (Ryan Homes), Toll Brothers, M/I Homes, Fischer Homes, Drees Homes, PulteGroup</div>
+              <div style="margin-top:4px;"><strong>Curated Digital Agencies:</strong> Matic, Covered Insurance, Goosehead Insurance, Policygenius, Young Alfred</div>
+            </div>
           </div>
         </div>
 
         <div class="banner" data-beat="4" style="margin-bottom:0;">
           <strong>90-Day Success Benchmark:</strong> Evaluate any new producer on <strong>Bind Rate &gt;20%</strong>, <strong>Cancel Rate &lt;8%</strong>, <strong>High/Very-High Catastrophe &lt;35%</strong>, and <strong>Average Insurance Score &gt;670</strong>.
         </div>
+
+        <div class="next-data-strip" data-beat="5">
+          <div class="next-data-head">
+            <span>More Data That Would Be Nice (To Sharpen Unit Economics)</span>
+            <span class="pill blue">Next Data Pull</span>
+          </div>
+          <div class="next-data-grid">
+            <div class="next-data-item">
+              <strong>Broker &amp; Lead Costs (CAC)</strong>
+              Commission %, lead cost per quote/bind, and JV profit-share splits to measure true net margin beyond Loss Ratio.
+            </div>
+            <div class="next-data-item">
+              <strong>Reinsurance &amp; Cat Load</strong>
+              Net loss ratio after catastrophe treaty recoveries to size Builder's true TX/FL storm exposure.
+            </div>
+            <div class="next-data-item">
+              <strong>Year-2 Renewal &amp; Bundling</strong>
+              Multi-year retention and policy bundling rates to verify long-term Lifetime Value (LTV).
+            </div>
+            <div class="next-data-item">
+              <strong>Ops &amp; Inspection Cost</strong>
+              Underwriting and inspection expense per policy to quantify exact savings from fixing AgencyLink's 18-day drag.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== SLIDE 8: MORE DATA (Q&A EXPLORER) ==================== -->
+      <section class="slide" data-slide="7">
+        <div class="slide-header">
+          <div>
+            <div class="kicker">Q&amp;A Reference Explorer</div>
+            <h2>More Data &amp; Sortable Drill-Down Tables</h2>
+          </div>
+          <span class="pill green">Click Any Column Header to Sort</span>
+        </div>
+
+        <div class="md-tabs" id="md-tabs">
+          <button type="button" class="md-tab active" onclick="switchMdTab(0)">1. Cancellation Reasons (11)</button>
+          <button type="button" class="md-tab" onclick="switchMdTab(1)">2. Master Cheat Sheet</button>
+          <button type="button" class="md-tab" onclick="switchMdTab(2)">3. Top States (YTD '26)</button>
+          <button type="button" class="md-tab" onclick="switchMdTab(3)">4. Sub-Agencies &amp; Outliers</button>
+          <button type="button" class="md-tab" onclick="switchMdTab(4)">5. Monthly Loss Cohorts</button>
+          <button type="button" class="md-tab" onclick="switchMdTab(5)">6. Data Hygiene &amp; Quirks</button>
+        </div>
+
+        <!-- TAB 0: CANCELLATION REASONS -->
+        <div class="md-pane active" id="md-pane-0">
+          <div class="md-table-wrap">
+            <table class="md-table">
+              <thead>
+                <tr>
+                  <th onclick="sortMdTable(this)">Category <span class="sort-ind">&#8597;</span></th>
+                  <th onclick="sortMdTable(this)">Full Cancellation Reason <span class="sort-ind">&#8597;</span></th>
+                  <th class="num" onclick="sortMdTable(this)">Builder (370) <span class="sort-ind">&#8597;</span></th>
+                  <th class="num" onclick="sortMdTable(this)">National (155) <span class="sort-ind">&#8597;</span></th>
+                  <th class="num" onclick="sortMdTable(this)">AgencyLink (73) <span class="sort-ind">&#8597;</span></th>
+                  <th class="num" onclick="sortMdTable(this)">Avg Days to Cancel <span class="sort-ind">&#8597;</span></th>
+                  <th onclick="sortMdTable(this)">Plain Meaning <span class="sort-ind">&#8597;</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Property &amp; Underwriting</strong></td><td>Inspection condition not resolved</td><td class="num" data-sort="67">67 (18%)</td><td class="num" data-sort="10">10 (6%)</td><td class="num" data-sort="19">19 (26%)</td><td class="num" data-sort="40.0">40.0d</td><td>Home inspection failed or was not completed</td></tr>
+                <tr><td><strong>Property &amp; Underwriting</strong></td><td>Underwriting condition not resolved</td><td class="num" data-sort="36">36 (10%)</td><td class="num" data-sort="18">18 (12%)</td><td class="num" data-sort="14">14 (19%)</td><td class="num" data-sort="35.9">35.9d</td><td>Underwriting asked for extra docs or fixes that stalled</td></tr>
+                <tr><td><strong>Property &amp; Underwriting</strong></td><td>Property hazard ineligible</td><td class="num" data-sort="44">44 (12%)</td><td class="num" data-sort="2">2 (1%)</td><td class="num" data-sort="1">1 (1%)</td><td class="num" data-sort="37.1">37.1d</td><td>Home condition (roof, brush, hazard) did not qualify</td></tr>
+                <tr><td><strong>Closing &amp; Escrow</strong></td><td>Escrow payment not received</td><td class="num" data-sort="46">46 (12%)</td><td class="num" data-sort="14">14 (9%)</td><td class="num" data-sort="0">0 (0%)</td><td class="num" data-sort="2.4">2.4d</td><td>Mortgage lender escrow payment did not arrive in time</td></tr>
+                <tr><td><strong>Closing &amp; Escrow</strong></td><td>Home sale fell through</td><td class="num" data-sort="59">59 (16%)</td><td class="num" data-sort="0">0 (0%)</td><td class="num" data-sort="0">0 (0%)</td><td class="num" data-sort="1.8">1.8d</td><td>Homebuyer backed out and closing cancelled</td></tr>
+                <tr><td><strong>Closing &amp; Escrow</strong></td><td>Mortgagee or escrow change</td><td class="num" data-sort="5">5 (1%)</td><td class="num" data-sort="40">40 (26%)</td><td class="num" data-sort="0">0 (0%)</td><td class="num" data-sort="23.0">23.0d</td><td>Lender details changed mid-closing and policy was re-written</td></tr>
+                <tr><td><strong>Customer / Price / Terms</strong></td><td>Insured chose other carrier</td><td class="num" data-sort="38">38 (10%)</td><td class="num" data-sort="28">28 (18%)</td><td class="num" data-sort="5">5 (7%)</td><td class="num" data-sort="2.1">2.1d</td><td>Shopper found a better price or policy elsewhere</td></tr>
+                <tr><td><strong>Customer / Price / Terms</strong></td><td>Insured request flat cancel</td><td class="num" data-sort="37">37 (10%)</td><td class="num" data-sort="14">14 (9%)</td><td class="num" data-sort="12">12 (16%)</td><td class="num" data-sort="40.8">40.8d</td><td>Customer cancelled immediately before coverage began</td></tr>
+                <tr><td><strong>Customer / Price / Terms</strong></td><td>Terms not accepted</td><td class="num" data-sort="35">35 (9%)</td><td class="num" data-sort="19">19 (12%)</td><td class="num" data-sort="9">9 (12%)</td><td class="num" data-sort="1.7">1.7d</td><td>Customer disagreed with final policy terms or price</td></tr>
+                <tr><td><strong>Payment &amp; Agency Ops</strong></td><td>Nonpayment of first installment</td><td class="num" data-sort="3">3 (1%)</td><td class="num" data-sort="10">10 (6%)</td><td class="num" data-sort="7">7 (10%)</td><td class="num" data-sort="32.9">32.9d</td><td>Initial customer payment never cleared</td></tr>
+                <tr><td><strong>Payment &amp; Agency Ops</strong></td><td>Agency submission correction</td><td class="num" data-sort="0">0 (0%)</td><td class="num" data-sort="0">0 (0%)</td><td class="num" data-sort="6">6 (8%)</td><td class="num" data-sort="2.7">2.7d</td><td>Independent agent submitted an error and re-filed</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 1: VERIFIED MASTER CHEAT SHEET -->
+        <div class="md-pane" id="md-pane-1">
+          <div class="md-table-wrap">
+            <table class="md-table">
+              <thead>
+                <tr>
+                  <th onclick="sortMdTable(this)">Metric <span class="sort-ind">&#8597;</span></th>
+                  <th onclick="sortMdTable(this)">Builder (YTD '26 / All-Time) <span class="sort-ind">&#8597;</span></th>
+                  <th onclick="sortMdTable(this)">National (YTD '26) <span class="sort-ind">&#8597;</span></th>
+                  <th onclick="sortMdTable(this)">AgencyLink (YTD '26 / All-Time) <span class="sort-ind">&#8597;</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Launch Date</strong></td><td>Oct 2025</td><td>Jan 1, 2026</td><td>Nov 2025</td></tr>
+                <tr><td><strong>Quotes (2026 Share)</strong></td><td>9,850 (13%) / 18,865</td><td>57,800 (78%)</td><td>6,600 (9%) / 8,152</td></tr>
+                <tr><td><strong>Bound Policies (Bind %)</strong></td><td>4,700 (48%) / 5,467 (29%)</td><td>2,350 (4.1%)</td><td>475 (7.2%) / 488 (6%)</td></tr>
+                <tr><td><strong>Bound Premium</strong></td><td>$5.25M / $6.13M</td><td>$3.85M</td><td>$900k / $931k</td></tr>
+                <tr><td><strong>Cancel Rate / Median Days</strong></td><td>6.8% (93% kept) / 7 days</td><td>6.6% (93% kept) / 8 days</td><td>15% (85% kept) / 18 days</td></tr>
+                <tr><td><strong>Loss Ratio (YTD / All-Time)</strong></td><td>31% / 34%</td><td>22%</td><td>65% / 63%</td></tr>
+                <tr><td><strong>Average Home Age / Insurance Score</strong></td><td>0.1y / 700</td><td>10.2y / 674</td><td>33.0y / 600 (8.8% missing)</td></tr>
+                <tr><td><strong>Catastrophe Risk Mix</strong></td><td>83% High / Very-High</td><td>80% Low / Moderate</td><td>78% Low / Moderate</td></tr>
+                <tr><td><strong>Sub-Agencies</strong></td><td>12 YTD / 13 All (Top 5 = 75%)</td><td>1 Direct Partner</td><td>350 Sub-Agencies (79% bound 0-1)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 2: TOP STATES -->
+        <div class="md-pane" id="md-pane-2">
+          <div class="md-table-wrap">
+            <table class="md-table">
+              <thead>
+                <tr>
+                  <th onclick="sortMdTable(this)">Producer <span class="sort-ind">&#8597;</span></th>
+                  <th onclick="sortMdTable(this)">State <span class="sort-ind">&#8597;</span></th>
+                  <th class="num" onclick="sortMdTable(this)">Binds (YTD '26) <span class="sort-ind">&#8597;</span></th>
+                  <th class="num" onclick="sortMdTable(this)">Bound Premium <span class="sort-ind">&#8597;</span></th>
+                  <th class="num" onclick="sortMdTable(this)">Claims <span class="sort-ind">&#8597;</span></th>
+                  <th class="num" onclick="sortMdTable(this)">Incurred <span class="sort-ind">&#8597;</span></th>
+                  <th class="num" onclick="sortMdTable(this)">Loss Ratio <span class="sort-ind">&#8597;</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Builder</strong></td><td>TX</td><td class="num" data-sort="2655">2,655</td><td class="num" data-sort="3050682">$3,050,682</td><td class="num" data-sort="30">30</td><td class="num" data-sort="932263">$932,263</td><td class="num" data-sort="30.6">30.6%</td></tr>
+                <tr><td><strong>National</strong></td><td>TX</td><td class="num" data-sort="1458">1,458</td><td class="num" data-sort="2452404">$2,452,404</td><td class="num" data-sort="37">37</td><td class="num" data-sort="463731">$463,731</td><td class="num" data-sort="18.9">18.9%</td></tr>
+                <tr><td><strong>Builder</strong></td><td>FL</td><td class="num" data-sort="789">789</td><td class="num" data-sort="1095083">$1,095,083</td><td class="num" data-sort="13">13</td><td class="num" data-sort="360125">$360,125</td><td class="num" data-sort="32.9">32.9%</td></tr>
+                <tr><td><strong>National</strong></td><td>GA</td><td class="num" data-sort="255">255</td><td class="num" data-sort="501724">$501,724</td><td class="num" data-sort="5">5</td><td class="num" data-sort="50732">$50,732</td><td class="num" data-sort="10.1">10.1%</td></tr>
+                <tr><td><strong>National</strong></td><td>CO</td><td class="num" data-sort="234">234</td><td class="num" data-sort="444697">$444,697</td><td class="num" data-sort="10">10</td><td class="num" data-sort="123749">$123,749</td><td class="num" data-sort="27.8">27.8%</td></tr>
+                <tr><td><strong>AgencyLink</strong></td><td>TX</td><td class="num" data-sort="205">205</td><td class="num" data-sort="422831">$422,831</td><td class="num" data-sort="14">14</td><td class="num" data-sort="254460">$254,460</td><td class="num" data-sort="60.2">60.2%</td></tr>
+                <tr><td><strong>Builder</strong></td><td>CO</td><td class="num" data-sort="265">265</td><td class="num" data-sort="271709">$271,709</td><td class="num" data-sort="2">2</td><td class="num" data-sort="94334">$94,334</td><td class="num" data-sort="34.7">34.7%</td></tr>
+                <tr><td><strong>AgencyLink</strong></td><td>CO</td><td class="num" data-sort="112">112</td><td class="num" data-sort="259621">$259,621</td><td class="num" data-sort="7">7</td><td class="num" data-sort="137224">$137,224</td><td class="num" data-sort="52.9">52.9%</td></tr>
+                <tr><td><strong>Builder</strong></td><td>SC</td><td class="num" data-sort="205">205</td><td class="num" data-sort="220302">$220,302</td><td class="num" data-sort="3">3</td><td class="num" data-sort="61070">$61,070</td><td class="num" data-sort="27.7">27.7%</td></tr>
+                <tr><td><strong>Builder</strong></td><td>AZ</td><td class="num" data-sort="273">273</td><td class="num" data-sort="169372">$169,372</td><td class="num" data-sort="0">0</td><td class="num" data-sort="0">$0</td><td class="num" data-sort="0">0%</td></tr>
+                <tr><td><strong>National</strong></td><td>TN</td><td class="num" data-sort="131">131</td><td class="num" data-sort="164917">$164,917</td><td class="num" data-sort="5">5</td><td class="num" data-sort="139477">$139,477</td><td class="num" data-sort="84.6">84.6%</td></tr>
+                <tr><td><strong>Builder</strong></td><td>CA</td><td class="num" data-sort="148">148</td><td class="num" data-sort="137938">$137,938</td><td class="num" data-sort="0">0</td><td class="num" data-sort="0">$0</td><td class="num" data-sort="0">0%</td></tr>
+                <tr><td><strong>Builder</strong></td><td>GA</td><td class="num" data-sort="135">135</td><td class="num" data-sort="133203">$133,203</td><td class="num" data-sort="2">2</td><td class="num" data-sort="97836">$97,836</td><td class="num" data-sort="73.4">73.4%</td></tr>
+                <tr><td><strong>National</strong></td><td>IL</td><td class="num" data-sort="112">112</td><td class="num" data-sort="127721">$127,721</td><td class="num" data-sort="3">3</td><td class="num" data-sort="6477">$6,477</td><td class="num" data-sort="5.1">5.1%</td></tr>
+                <tr><td><strong>Builder</strong></td><td>TN</td><td class="num" data-sort="95">95</td><td class="num" data-sort="74460">$74,460</td><td class="num" data-sort="2">2</td><td class="num" data-sort="75557">$75,557</td><td class="num" data-sort="101.5">101.5%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 3: SUB-AGENCIES & OUTLIERS -->
+        <div class="md-pane" id="md-pane-3">
+          <div class="md-table-wrap">
+            <table class="md-table">
+              <thead>
+                <tr>
+                  <th onclick="sortMdTable(this)">Channel / Sub-Agency <span class="sort-ind">&#8597;</span></th>
+                  <th class="num" onclick="sortMdTable(this)">Bound Policies <span class="sort-ind">&#8597;</span></th>
+                  <th class="num" onclick="sortMdTable(this)">Bound Premium <span class="sort-ind">&#8597;</span></th>
+                  <th class="num" onclick="sortMdTable(this)">Claims <span class="sort-ind">&#8597;</span></th>
+                  <th class="num" onclick="sortMdTable(this)">Incurred <span class="sort-ind">&#8597;</span></th>
+                  <th class="num" onclick="sortMdTable(this)">Loss Ratio <span class="sort-ind">&#8597;</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Builder:</strong> Crestline Builder Services</td><td class="num" data-sort="1186">1,186</td><td class="num" data-sort="1331054">$1,331,054</td><td class="num" data-sort="16">16</td><td class="num" data-sort="408650">$408,650</td><td class="num" data-sort="30.7">30.7%</td></tr>
+                <tr><td><strong>Builder:</strong> Summit Home Insurance</td><td class="num" data-sort="1016">1,016</td><td class="num" data-sort="1135739">$1,135,739</td><td class="num" data-sort="18">18</td><td class="num" data-sort="476706">$476,706</td><td class="num" data-sort="42.0">42.0%</td></tr>
+                <tr><td><strong>Builder:</strong> Horizon Builder Agency</td><td class="num" data-sort="917">917</td><td class="num" data-sort="1034492">$1,034,492</td><td class="num" data-sort="6">6</td><td class="num" data-sort="211776">$211,776</td><td class="num" data-sort="20.5">20.5%</td></tr>
+                <tr><td><strong>Builder:</strong> Pinegate Homes Assurance</td><td class="num" data-sort="535">535</td><td class="num" data-sort="611127">$611,127</td><td class="num" data-sort="8">8</td><td class="num" data-sort="319668">$319,668</td><td class="num" data-sort="52.3">52.3%</td></tr>
+                <tr><td><strong>Builder:</strong> Meridian New Home Agency</td><td class="num" data-sort="445">445</td><td class="num" data-sort="494221">$494,221</td><td class="num" data-sort="2">2</td><td class="num" data-sort="34257">$34,257</td><td class="num" data-sort="6.9">6.9%</td></tr>
+                <tr><td><strong>Builder:</strong> Riverbend Communities Agency</td><td class="num" data-sort="354">354</td><td class="num" data-sort="404860">$404,860</td><td class="num" data-sort="6">6</td><td class="num" data-sort="203613">$203,613</td><td class="num" data-sort="50.3">50.3%</td></tr>
+                <tr><td><strong>Builder (Outlier):</strong> Keystone Builder Insurance</td><td class="num" data-sort="362">362</td><td class="num" data-sort="398189">$398,189</td><td class="num" data-sort="7">7</td><td class="num" data-sort="287696">$287,696</td><td class="num" data-sort="72.3">72.3%</td></tr>
+                <tr><td><strong>Builder:</strong> Harborview Home Agency</td><td class="num" data-sort="196">196</td><td class="num" data-sort="219714">$219,714</td><td class="num" data-sort="3">3</td><td class="num" data-sort="102255">$102,255</td><td class="num" data-sort="46.5">46.5%</td></tr>
+                <tr><td><strong>Builder:</strong> Northstar Builder Services</td><td class="num" data-sort="140">140</td><td class="num" data-sort="157700">$157,700</td><td class="num" data-sort="1">1</td><td class="num" data-sort="12569">$12,569</td><td class="num" data-sort="8.0">8.0%</td></tr>
+                <tr><td><strong>Builder:</strong> Stonebridge Insurance Desk</td><td class="num" data-sort="136">136</td><td class="num" data-sort="148995">$148,995</td><td class="num" data-sort="0">0</td><td class="num" data-sort="0">$0</td><td class="num" data-sort="0">0%</td></tr>
+                <tr><td><strong>Builder:</strong> Oak Trail Communities</td><td class="num" data-sort="113">113</td><td class="num" data-sort="123805">$123,805</td><td class="num" data-sort="1">1</td><td class="num" data-sort="12748">$12,748</td><td class="num" data-sort="10.3">10.3%</td></tr>
+                <tr><td><strong>Builder:</strong> Willow Ridge Homes</td><td class="num" data-sort="67">67</td><td class="num" data-sort="70205">$70,205</td><td class="num" data-sort="0">0</td><td class="num" data-sort="0">$0</td><td class="num" data-sort="0">0%</td></tr>
+                <tr><td><strong>AgencyLink Clean Core:</strong> 166 Claim-Free Offices</td><td class="num" data-sort="375">~375</td><td class="num" data-sort="720000">$720,000</td><td class="num" data-sort="0">0</td><td class="num" data-sort="0">$0</td><td class="num" data-sort="0">0%</td></tr>
+                <tr><td><strong>AgencyLink Tail:</strong> ~276 Inactive Offices (0-1 Bind)</td><td class="num" data-sort="90">~90</td><td class="num" data-sort="180000">~$180k</td><td class="num" data-sort="10">Tail</td><td class="num" data-sort="580000">High Loss</td><td class="num" data-sort="100">&gt;100%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 4: MONTHLY LOSS COHORTS -->
+        <div class="md-pane" id="md-pane-4">
+          <div class="md-table-wrap">
+            <table class="md-table">
+              <thead>
+                <tr>
+                  <th onclick="sortMdTable(this)">Bind Month <span class="sort-ind">&#8597;</span></th>
+                  <th onclick="sortMdTable(this)">Producer <span class="sort-ind">&#8597;</span></th>
+                  <th class="num" onclick="sortMdTable(this)">Bound Policies <span class="sort-ind">&#8597;</span></th>
+                  <th class="num" onclick="sortMdTable(this)">Bound Premium <span class="sort-ind">&#8597;</span></th>
+                  <th class="num" onclick="sortMdTable(this)">Incurred Claims <span class="sort-ind">&#8597;</span></th>
+                  <th class="num" onclick="sortMdTable(this)">Loss Ratio <span class="sort-ind">&#8597;</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>2025-12</strong></td><td>Builder</td><td class="num" data-sort="702">702</td><td class="num" data-sort="806915">$806,915</td><td class="num" data-sort="448753">$448,753</td><td class="num" data-sort="55.6">55.6%</td></tr>
+                <tr><td><strong>2025-12</strong></td><td>AgencyLink</td><td class="num" data-sort="10">10</td><td class="num" data-sort="26362">$26,362</td><td class="num" data-sort="0">$0</td><td class="num" data-sort="0">0%</td></tr>
+                <tr><td><strong>2026-01</strong></td><td>National</td><td class="num" data-sort="147">147</td><td class="num" data-sort="254046">$254,046</td><td class="num" data-sort="57107">$57,107</td><td class="num" data-sort="22.5">22.5%</td></tr>
+                <tr><td><strong>2026-01</strong></td><td>Builder</td><td class="num" data-sort="834">834</td><td class="num" data-sort="953002">$953,002</td><td class="num" data-sort="407130">$407,130</td><td class="num" data-sort="42.7">42.7%</td></tr>
+                <tr><td><strong>2026-01</strong></td><td>AgencyLink</td><td class="num" data-sort="69">69</td><td class="num" data-sort="133671">$133,671</td><td class="num" data-sort="120757">$120,757</td><td class="num" data-sort="90.3">90.3%</td></tr>
+                <tr><td><strong>2026-02</strong></td><td>National</td><td class="num" data-sort="353">353</td><td class="num" data-sort="584528">$584,528</td><td class="num" data-sort="102060">$102,060</td><td class="num" data-sort="17.5">17.5%</td></tr>
+                <tr><td><strong>2026-02</strong></td><td>Builder</td><td class="num" data-sort="980">980</td><td class="num" data-sort="1084524">$1,084,524</td><td class="num" data-sort="238507">$238,507</td><td class="num" data-sort="22.0">22.0%</td></tr>
+                <tr><td><strong>2026-02</strong></td><td>AgencyLink</td><td class="num" data-sort="88">88</td><td class="num" data-sort="165272">$165,272</td><td class="num" data-sort="239541">$239,541</td><td class="num" data-sort="144.9">144.9%</td></tr>
+                <tr><td><strong>2026-03</strong></td><td>National</td><td class="num" data-sort="540">540</td><td class="num" data-sort="873412">$873,412</td><td class="num" data-sort="291211">$291,211</td><td class="num" data-sort="33.3">33.3%</td></tr>
+                <tr><td><strong>2026-03</strong></td><td>Builder</td><td class="num" data-sort="1203">1,203</td><td class="num" data-sort="1350456">$1,350,456</td><td class="num" data-sort="525883">$525,883</td><td class="num" data-sort="38.9">38.9%</td></tr>
+                <tr><td><strong>2026-03</strong></td><td>AgencyLink</td><td class="num" data-sort="120">120</td><td class="num" data-sort="220230">$220,230</td><td class="num" data-sort="108342">$108,342</td><td class="num" data-sort="49.2">49.2%</td></tr>
+                <tr><td><strong>2026-04</strong></td><td>National</td><td class="num" data-sort="735">735</td><td class="num" data-sort="1193128">$1,193,128</td><td class="num" data-sort="201870">$201,870</td><td class="num" data-sort="16.9">16.9%</td></tr>
+                <tr><td><strong>2026-04</strong></td><td>Builder</td><td class="num" data-sort="1391">1,391</td><td class="num" data-sort="1529410">$1,529,410</td><td class="num" data-sort="244092">$244,092</td><td class="num" data-sort="16.0">16.0%</td></tr>
+                <tr><td><strong>2026-04</strong></td><td>AgencyLink</td><td class="num" data-sort="130">130</td><td class="num" data-sort="253839">$253,839</td><td class="num" data-sort="116514">$116,514</td><td class="num" data-sort="45.9">45.9%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 5: DATA HYGIENE & QUIRKS -->
+        <div class="md-pane" id="md-pane-5">
+          <div class="md-table-wrap">
+            <table class="md-table">
+              <thead>
+                <tr>
+                  <th onclick="sortMdTable(this)">Audit Check <span class="sort-ind">&#8597;</span></th>
+                  <th onclick="sortMdTable(this)">Channel <span class="sort-ind">&#8597;</span></th>
+                  <th class="num" onclick="sortMdTable(this)">Count / Impact <span class="sort-ind">&#8597;</span></th>
+                  <th onclick="sortMdTable(this)">Finding &amp; How Handled <span class="sort-ind">&#8597;</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Hawaii Zero Quote IDs</strong></td><td>Builder</td><td class="num" data-sort="235">235 quotes</td><td>All 235 HI quotes in Oct-Dec 2025 had Quote ID = 0 and 0 binds; stopped Jan 1 (system testing).</td></tr>
+                <tr><td><strong>Missing Insurance Scores</strong></td><td>AgencyLink</td><td class="num" data-sort="8.8">8.8% missing</td><td>Nearly 9% of AgencyLink policies are missing an Insurance Score (vs near 0% elsewhere).</td></tr>
+                <tr><td><strong>Duplicate Agency Spelling</strong></td><td>AgencyLink</td><td class="num" data-sort="1">1 office</td><td>One AgencyLink sub-agency appeared under two slightly different spellings; normalized by ID.</td></tr>
+                <tr><td><strong>Cross-Channel Address Overlap</strong></td><td>All 3</td><td class="num" data-sort="0">0 overlap</td><td>All 84,817 quotes represent unique addresses with zero duplicate quoting across channels.</td></tr>
+                <tr><td><strong>Staggered Launch Dates</strong></td><td>All 3</td><td class="num" data-sort="3">3 dates</td><td>Builder (Oct '25), AgencyLink (Nov '25), National (Jan 1 '26); normalized default to YTD 2026.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </section>
 
       <div class="footer-nav">
         <div class="footer-status">
-          <span class="footer-slide-badge" id="footer-slide-badge">Slide 1 of 7</span>
+          <span class="footer-slide-badge" id="footer-slide-badge">Slide 1 of 8</span>
           <span class="footer-dot"></span>
           <span><span class="kbd-chip">&larr;</span> <span class="kbd-chip">&rarr;</span> Slides</span>
           <span class="footer-dot"></span>
@@ -1276,7 +1574,7 @@
     const VALID_USER = "aaronmillard";
     const VALID_PASS = "hippo2026";
     let currentSlide = 0;
-    const totalSlides = 7;
+    const totalSlides = 8;
     let currentBeat = 0;
 
     function getSlideBeats(slideIdx) {
@@ -1751,6 +2049,53 @@
         return `<tr>${tds}</tr>`;
       }).join("");
       document.getElementById("s5-qa-body").innerHTML = `<table><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table>`;
+    }
+
+    /* ==================== SLIDE 7 EXAMPLES & SLIDE 8 MORE DATA ==================== */
+    function togglePartnerExamples() {
+      const panel = document.getElementById("partner-ex-panel");
+      const btn = document.getElementById("btn-partner-ex");
+      if (!panel || !btn) return;
+      const isOpen = panel.classList.toggle("open");
+      btn.classList.toggle("active", isOpen);
+      btn.textContent = isOpen ? "Hide Examples" : "Examples";
+    }
+
+    function switchMdTab(idx) {
+      document.querySelectorAll("#md-tabs .md-tab").forEach((t, i) => t.classList.toggle("active", i === idx));
+      document.querySelectorAll(".md-pane").forEach((p, i) => p.classList.toggle("active", i === idx));
+    }
+
+    function sortMdTable(th) {
+      const table = th.closest("table");
+      const tbody = table.querySelector("tbody");
+      const headers = Array.from(th.parentElement.children);
+      const colIdx = headers.indexOf(th);
+      const isAsc = !th.classList.contains("sort-asc");
+
+      headers.forEach((h) => {
+        h.classList.remove("sort-asc", "sort-desc");
+        const ind = h.querySelector(".sort-ind");
+        if (ind) ind.innerHTML = "&#8597;";
+      });
+      th.classList.add(isAsc ? "sort-asc" : "sort-desc");
+      const activeInd = th.querySelector(".sort-ind");
+      if (activeInd) activeInd.innerHTML = isAsc ? "&#9650;" : "&#9660;";
+
+      const rows = Array.from(tbody.querySelectorAll("tr"));
+      rows.sort((a, b) => {
+        const ca = a.children[colIdx];
+        const cb = b.children[colIdx];
+        const va = ca.hasAttribute("data-sort") ? ca.getAttribute("data-sort") : ca.textContent.trim();
+        const vb = cb.hasAttribute("data-sort") ? cb.getAttribute("data-sort") : cb.textContent.trim();
+        const na = parseFloat(va.replace(/[$,%]/g, ""));
+        const nb = parseFloat(vb.replace(/[$,%]/g, ""));
+        if (!isNaN(na) && !isNaN(nb) && (ca.hasAttribute("data-sort") || cb.hasAttribute("data-sort"))) {
+          return isAsc ? na - nb : nb - na;
+        }
+        return isAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+      });
+      rows.forEach((r) => tbody.appendChild(r));
     }
 
     /* ==================== INIT ==================== */
