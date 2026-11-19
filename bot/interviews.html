@@ -1482,10 +1482,11 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
         <div class="hp2-tabs">
           <button class="hp2-tab" data-hp2="speaker" onclick="switchHp2Tab('speaker')">1. Speaker Guide (14m)</button>
           <button class="hp2-tab" data-hp2="qa" onclick="switchHp2Tab('qa')">2. Q&amp;A Bank &amp; STAR</button>
-          <button class="hp2-tab" data-hp2="panelists" onclick="switchHp2Tab('panelists')">3. Panelists &amp; Core Rules</button>
-          <button class="hp2-tab" data-hp2="morning" onclick="switchHp2Tab('morning')">4. 45m Dry-Run &amp; Data Sheet</button>
-          <button class="hp2-tab active" data-hp2="script" onclick="switchHp2Tab('script')">5. Full Script</button>
-          <button class="hp2-tab" data-hp2="flashcards" onclick="switchHp2Tab('flashcards')">6. Panelist Flashcards</button>
+          <button class="hp2-tab" data-hp2="qasimple" onclick="switchHp2Tab('qasimple')">3. Q&amp;A Bank (Simple)</button>
+          <button class="hp2-tab" data-hp2="panelists" onclick="switchHp2Tab('panelists')">4. Panelists &amp; Core Rules</button>
+          <button class="hp2-tab" data-hp2="morning" onclick="switchHp2Tab('morning')">5. 45m Dry-Run &amp; Data Sheet</button>
+          <button class="hp2-tab active" data-hp2="script" onclick="switchHp2Tab('script')">6. Full Script</button>
+          <button class="hp2-tab" data-hp2="flashcards" onclick="switchHp2Tab('flashcards')">7. Panelist Flashcards</button>
         </div>
 
         <div class="timer-wrap">
@@ -1694,7 +1695,102 @@ ORDER BY ms.cohort_month DESC, ms.total_spend DESC;</pre>
         </div>
       </div>
 
-      <!-- TAB 3: PANELISTS & CORE RULES -->
+      <!-- TAB 3: Q&A BANK (SIMPLE) -->
+      <div id="hp2-pane-qasimple" class="hp2-pane">
+        <div class="section-heading">1. Process, Tools &amp; Ramp Ideas (No Memorized Numbers)</div>
+        <div class="qa-scan-list">
+          <div class="qa-scan-item">
+            <div class="qa-scan-q">Q1: "Walk us through your <strong>start-to-finish process</strong>."</div>
+            <div class="qa-scan-a">I audited the raw file in Python first to catch data bugs and line everyone up on the same 2026 calendar. Then I used Google Antigravity to build the interactive web deck while I directed the narrative and verified every calculation myself, and deployed it live on Render so we could walk through it together cleanly.</div>
+          </div>
+
+          <div class="qa-scan-item">
+            <div class="qa-scan-q">Q2: "What <strong>tools</strong> did you use? What is <strong>Antigravity</strong>?"</div>
+            <div class="qa-scan-a">Python for the heavy data cleaning and validation, and Google Antigravity as my AI coding assistant to spin up the web deck fast while I controlled the story and checked every single metric.</div>
+          </div>
+
+          <div class="qa-scan-item">
+            <div class="qa-scan-q">Q3: "Why was the <strong>Q4 build-up period so slow</strong> in Oct-Nov?"</div>
+            <div class="qa-scan-a">Two simple reasons: Hawaii test quotes with bad IDs sat in Q4 and dragged early conversion down, and Builder policies only bind when the home actually closes weeks later—plus AgencyLink was still onboarding a huge wave of new offices during the holidays.</div>
+          </div>
+        </div>
+
+        <div class="section-heading">2. Panelist Pushback Ideas (Off the Top of Your Head)</div>
+        <div class="qa-scan-list">
+          <div class="qa-scan-item">
+            <div class="qa-scan-q">Q4 (Michal): "Why not put <strong>100% of our growth budget into Builder</strong> if it binds so high?"</div>
+            <div class="qa-scan-a">Too many eggs in one stormy basket. Almost all of Builder's business sits in Texas and Florida storm zones with much larger claims, so one bad hurricane season could wipe out a year of profit. We want Builder's closing-flow conversion paired with calmer states.</div>
+          </div>
+
+          <div class="qa-scan-item">
+            <div class="qa-scan-q">Q5 (Michal): "How does your <strong>Ideal Producer fit our existing JV economics</strong>?"</div>
+            <div class="qa-scan-a">Take Builder's built-in closing-table timing and combine it with National's calmer storm mix. Mortgage lenders and digital closing platforms reach buyers at the exact same moment as a homebuilder, just spread nationwide instead of coastal states.</div>
+          </div>
+
+          <div class="qa-scan-item">
+            <div class="qa-scan-q">Q6 (Michael Dodge): "Why <strong>fix &amp; prune AgencyLink</strong> instead of shutting it off today?"</div>
+            <div class="qa-scan-a">Because there is a healthy core underneath—newer homes and stronger credit scores perform really well there. The channel is just weighed down by a huge tail of inactive offices quoting old homes. Turning off the dead weight and putting the active core on a short performance review keeps the good business without the bleed.</div>
+          </div>
+
+          <div class="qa-scan-item">
+            <div class="qa-scan-q">Q7 (Michael Dodge): "How do we actually <strong>reduce AgencyLink's cancel drag</strong>?"</div>
+            <div class="qa-scan-a">Most of those cancels are unfinished inspections and underwriting checks that sit open for weeks. Requiring roof and property details upfront before binding—and auto-closing stalled apps early—stops the team from chasing dead deals.</div>
+          </div>
+
+          <div class="qa-scan-item">
+            <div class="qa-scan-q">Q8 (Ken Jelinek): "Why <strong>YTD 2026 default</strong>, and what <strong>data bugs</strong> did you catch?"</div>
+            <div class="qa-scan-a">National didn't launch until January, so mixing in late 2025 skews the comparison—though I left an All-Time toggle on Slide 1 if anyone wants to see it. For cleanup, I caught those zero-ID Hawaii test quotes, duplicate agency spellings, and missing Insurance Scores in AgencyLink.</div>
+          </div>
+
+          <div class="qa-scan-item">
+            <div class="qa-scan-q">Q9 (Jakub Sienkiel): "Isn't <strong>National's low loss ratio just newer policies</strong>? Why is <strong>Builder higher</strong>?"</div>
+            <div class="qa-scan-a">Even when you compare policies bound in the exact same month so policy age is identical, National still leads. Builder's higher loss ratio isn't about claim frequency—homeowners rarely file—it's about claim severity from Texas and Florida storms, plus one outlier sub-agency dragging the average up.</div>
+          </div>
+        </div>
+
+        <div class="section-heading">3. 4 STAR Stories (Simple Recall Hooks)</div>
+        <div class="qa-scan-list">
+          <div class="qa-scan-item">
+            <div class="qa-scan-q"><strong>Act Like an Owner</strong> - Catching a <strong>Rounding Bug</strong> Before Launch</div>
+            <div class="qa-scan-a">Instead of trusting charts on a big ad-spend model, I ran automated checks against raw SQL and caught a tiny math-order bug before the client saw it—making independent reconciliation our team standard.</div>
+          </div>
+
+          <div class="qa-scan-item">
+            <div class="qa-scan-q"><strong>Innovate for Impact</strong> - Clean Model for <strong>Texas Dental Clinics</strong></div>
+            <div class="qa-scan-a">A multi-clinic dental group needed cost-per-new-patient pacing without a shared campaign ID. I built one shared clinic calendar and clean metric switch so managers could shift budget mid-month whenever a clinic's costs spiked.</div>
+          </div>
+
+          <div class="qa-scan-item">
+            <div class="qa-scan-q"><strong>In It Together</strong> - Solving the <strong>Marketing vs. Sales Funnel Dispute</strong></div>
+            <div class="qa-scan-a">Marketing and Sales Ops argued weekly over lead date vs opportunity date. Instead of building two competing reports, I put both views behind a live toggle in one model with an audit tab for unmapped leads—ending the debate.</div>
+          </div>
+
+          <div class="qa-scan-item">
+            <div class="qa-scan-q"><strong>Embrace Diverse Ideas</strong> - Uncovering a <strong>Key Mismatch</strong> Respectfully</div>
+            <div class="qa-scan-a">Account managers blamed messy client naming for huge unmapped seasonal spend. I tested their theory first, traced the join, and found a simple fiscal-year code mismatch ("2526" vs "FY26")—cutting unmapped spend dramatically and building instant trust.</div>
+          </div>
+        </div>
+
+        <div class="section-heading">4. Smart Questions to Ask the Panel</div>
+        <div class="qa-scan-list">
+          <div class="qa-scan-item">
+            <div class="qa-scan-q"><strong>Michal / Michael</strong> - <strong>First 60 days onboarding</strong> surprise</div>
+            <div class="qa-scan-a">"When you onboard a new producer today, what usually surprises you most in the first 60 days—quoting volume, cancellation friction, or underwriting mix?"</div>
+          </div>
+
+          <div class="qa-scan-item">
+            <div class="qa-scan-q"><strong>Ken / Jakub</strong> - <strong>Hawaii test quotes</strong> &amp; partner feed validation</div>
+            <div class="qa-scan-a">"We saw unbound Hawaii quotes with Quote ID zero in Q4—are those typical routing or test artifacts, and how tightly are partner feeds validated before hitting analytics?"</div>
+          </div>
+
+          <div class="qa-scan-item">
+            <div class="qa-scan-q"><strong>All</strong> - <strong>6-month win</strong> for this hire</div>
+            <div class="qa-scan-a">"Looking 6 months out, what single producer or channel decision would prove this Senior Analyst hire was a big win?"</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: PANELISTS & CORE RULES -->
       <div id="hp2-pane-panelists" class="hp2-pane">
         <div class="grid-2">
           <div class="card">
