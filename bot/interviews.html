@@ -863,6 +863,10 @@
           <span>Deepgram</span>
           <span class="tab-stage-tag" style="background: rgba(56, 189, 248, 0.22); color: var(--blue);">Thu 11am - Phone</span>
         </button>
+        <button class="company-tab" data-company="hammer" onclick="switchCompany('hammer')">
+          <span>Hammer Media</span>
+          <span class="tab-stage-tag" style="background: rgba(56, 189, 248, 0.22); color: var(--blue);">Interviewing</span>
+        </button>
       </div>
     </div>
 
@@ -2574,6 +2578,65 @@ ORDER BY visit_num;</pre>
       </div>
     </section>
 
+    <!-- ==================== HAMMER MEDIA PANEL ==================== -->
+    <section id="panel-hammer" class="company-panel">
+      <div class="company-header">
+        <div class="company-title-wrap">
+          <h1>Hammer Media - Senior Data Product Analyst</h1>
+          <div class="company-sub">Caleb Hammer Media &amp; Dollarwise FinTech Platform &bull; Hybrid (East Austin, TX)</div>
+        </div>
+        <div class="stage-badges">
+          <span class="stage-badge stage-next">Interviewing &bull; Recruiter: Valeria Konytcheva</span>
+        </div>
+      </div>
+
+      <div class="grid-two">
+        <div>
+          <div class="card">
+            <h2>Company &amp; Role Focus</h2>
+            <p class="muted" style="font-size:0.86rem;line-height:1.55;">
+              First <strong>Senior Data Product Analyst</strong> hire for Hammer Media (4M+ subscriber Financial Audit media ecosystem + <strong>Dollarwise</strong> personal finance app).
+            </p>
+            <ul>
+              <li><strong>Phase 1 (Foundation):</strong> Audit existing pipelines, find missing event tracking, resolve tool discrepancies, and recommend warehousing/BI stack.</li>
+              <li><strong>Core Metrics:</strong> Build centralized metrics framework and dashboards for product, engineering, marketing, and leadership.</li>
+              <li><strong>Phase 2 (Product Strategy):</strong> Own consumer-facing data strategy inside Dollarwise (retention cohorts, funnels, subscription/FinTech metrics).</li>
+              <li><strong>Stack Fit:</strong> Advanced SQL, event tracking (PostHog / GA4), Python, BI dashboards, and 0-to-1 sole-builder ownership.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h2>Transferable Proof Points (Grounded)</h2>
+            <ul>
+              <li><strong>0-to-1 Sole-Analyst Ownership (Rodeo Logistics):</strong> Built the SQL reporting views, GA funnel tracking, and 20+ Tableau dashboards from scratch as the sole data hire for an Austin startup.</li>
+              <li><strong>Multi-Channel Attribution &amp; QA (OneMagnify):</strong> Unified 15+ ad and CRM feeds in Azure SQL and Power BI; audited conflicting funnel stage definitions (Pebl) and used MCP/DAX EVALUATE to reconcile warehouse totals.</li>
+              <li><strong>Consumer Pricing &amp; Retention (Moment House):</strong> Analyzed repeat-purchase cohorts and Pay-What-You-Want pricing elasticity that drove 80-90% higher average event revenue.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div>
+          <div class="card">
+            <h2>Likely Recruiter &amp; Hiring Manager Screens</h2>
+            <ul>
+              <li><strong>"How would you approach our Phase 1 data audit from scratch?"</strong> &rarr; Start by mapping core business decisions (acquisition, activation, retention, subscription revenue), auditing event tracking and source-of-truth discrepancies, and shipping a clean SQL metrics layer before picking extra tools.</li>
+              <li><strong>"Tell me about building an analytics stack as the first or sole data hire."</strong> &rarr; Use Rodeo Logistics (built SQL views, GA tracking, and 20+ Tableau dashboards end-to-end with zero senior hand-holding).</li>
+              <li><strong>"Why Hammer Media?"</strong> &rarr; Local to Austin, excited to be the 0-to-1 data builder connecting massive media top-of-funnel to Dollarwise product retention and FinTech outcomes.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h2>Smart Questions to Ask</h2>
+            <ul>
+              <li>Where are the biggest data blind spots today between content/marketing attribution and in-app Dollarwise behavior?</li>
+              <li>What event tracking and warehouse stack are currently in place (PostHog, GA4, Postgres/Snowflake/BigQuery), and how much is open to recommendation?</li>
+              <li>What does success look like in the first 90 days for Phase 1 vs. transitioning into Phase 2 product strategy?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </div>
 
   <script>
@@ -2792,7 +2855,7 @@ ORDER BY visit_num;</pre>
 
     function switchCompany(company) {
       stopExplain();
-      const normalized = (company === "hippo2" || company === "knownwell" || company === "anduril" || company === "deepgram") ? company : "hippo";
+      const normalized = (company === "hippo2" || company === "knownwell" || company === "anduril" || company === "deepgram" || company === "hammer") ? company : "hippo";
       document.querySelectorAll(".company-tab").forEach((btn) => {
         btn.classList.toggle("active", btn.getAttribute("data-company") === normalized);
       });
@@ -2832,7 +2895,7 @@ ORDER BY visit_num;</pre>
     (function initFromUrl() {
       const params = new URLSearchParams(window.location.search || "");
       const c = (params.get("company") || window.location.hash.replace("#", "") || "hippo").toLowerCase();
-      if (c === "hippo" || c === "hippo2" || c === "knownwell" || c === "anduril" || c === "deepgram") {
+      if (c === "hippo" || c === "hippo2" || c === "knownwell" || c === "anduril" || c === "deepgram" || c === "hammer") {
         switchCompany(c);
       } else {
         switchCompany("hippo");

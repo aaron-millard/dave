@@ -271,6 +271,7 @@
           <button class="sub-pill" id="pillKnownwell" onclick="switchInterviewCompany('knownwell')">Knownwell</button>
           <button class="sub-pill" id="pillAnduril" onclick="switchInterviewCompany('anduril')">Anduril</button>
           <button class="sub-pill" id="pillDeepgram" onclick="switchInterviewCompany('deepgram')">Deepgram</button>
+          <button class="sub-pill" id="pillHammer" onclick="switchInterviewCompany('hammer')">Hammer</button>
         </div>
       </div>
 
@@ -354,17 +355,18 @@
     }
 
     function updateInterviewPills(company) {
-      activeInterviewCompany = (company === "hippo2" || company === "knownwell" || company === "anduril" || company === "deepgram") ? company : "hippo";
+      activeInterviewCompany = (company === "hippo2" || company === "knownwell" || company === "anduril" || company === "deepgram" || company === "hammer") ? company : "hippo";
       if (document.getElementById("pillHippo")) document.getElementById("pillHippo").classList.toggle("active", activeInterviewCompany === "hippo");
       if (document.getElementById("pillHippo2")) document.getElementById("pillHippo2").classList.toggle("active", activeInterviewCompany === "hippo2");
       if (document.getElementById("pillKnownwell")) document.getElementById("pillKnownwell").classList.toggle("active", activeInterviewCompany === "knownwell");
       if (document.getElementById("pillAnduril")) document.getElementById("pillAnduril").classList.toggle("active", activeInterviewCompany === "anduril");
       if (document.getElementById("pillDeepgram")) document.getElementById("pillDeepgram").classList.toggle("active", activeInterviewCompany === "deepgram");
+      if (document.getElementById("pillHammer")) document.getElementById("pillHammer").classList.toggle("active", activeInterviewCompany === "hammer");
     }
 
     function buildInterviewsUrl(company) {
       const base = URLS.interviews;
-      const target = (company === "hippo2" || company === "knownwell" || company === "anduril" || company === "deepgram") ? company : "hippo";
+      const target = (company === "hippo2" || company === "knownwell" || company === "anduril" || company === "deepgram" || company === "hammer") ? company : "hippo";
       return base + (base.includes("?") ? "&" : "?") + "company=" + target;
     }
 
@@ -411,7 +413,7 @@
     }
 
     function switchInterviewCompany(company) {
-      const normalized = (company === "hippo2" || company === "knownwell" || company === "anduril" || company === "deepgram") ? company : "hippo";
+      const normalized = (company === "hippo2" || company === "knownwell" || company === "anduril" || company === "deepgram" || company === "hammer") ? company : "hippo";
       updateInterviewPills(normalized);
       switchTab("interviews");
 
