@@ -2255,11 +2255,11 @@ ORDER BY visit_num;</pre>
             <h2>Core Story Positioning</h2>
             <h3>Swish Dental (Multi-Location Clinic Ops)</h3>
             <div class="quote-box">
-              "For Swish Dental across 15+ clinics, I connected digital ad spend directly to clinic appointment bookings and chair capacity, creating business-day pacing logic so regional managers could track Cost per New Patient Booked and reallocate spend to under-booked clinics."
+              "For Swish Dental across 15+ clinics, I tied ad spend straight to clinic bookings and chair capacity. That way managers could see Cost per New Patient by location and move budget to clinics that still had open spots."
             </div>
             <h3>Pebl (Conflicting Metric Governance)</h3>
             <div class="quote-box">
-              "Marketing and Sales were reporting conflicting MQL numbers. I audited the funnel from ad click to Salesforce, aligned both teams on 3 clear stages (Inbound, MQL, SAL), and locked the logic into SQL views."
+              "Marketing and Sales were pulling different MQL numbers. I traced the funnel from ad click into Salesforce, got both teams on the same page with 3 clear stages, and locked it into SQL views."
             </div>
           </div>
         </div>
@@ -2277,7 +2277,7 @@ ORDER BY visit_num;</pre>
 
         <div class="callout">
           <div class="callout-title">Role Guardrail: Analyst First, Never Data Engineer</div>
-          Do NOT say "dashboarding is dying" or "I want to move into data engineering." Say: "I love partnering with clinicians and ops leaders, using SQL + AI/MCP to automate repetitive QA so I can spend more time uncovering patient-funnel and clinic-capacity insights."
+          Do NOT say "dashboarding is dying" or "I want to move into data engineering." Say: "I like working directly with ops and clinic teams, and I use SQL + AI/MCP to speed up the boring QA stuff so I have more time to dig into patient funnels and clinic capacity."
         </div>
 
         <div class="grid-2">
@@ -2296,11 +2296,11 @@ ORDER BY visit_num;</pre>
             <h2>30-Second Story Anchors (Derek & Morgan)</h2>
             <h3>Swish Dental (15+ Clinics - Closest 1:1 Match)</h3>
             <div class="quote-box">
-              "Connected ad spend to clinic bookings & chair capacity across 15+ locations, built business-day pacing in SQL, and helped managers shift budget to under-booked clinics."
+              "Tied ad spend to clinic bookings and chair capacity across 15+ clinics in SQL, so managers could move budget to under-booked locations."
             </div>
             <h3>Pebl (Metric Governance w/ Non-Tech Teams)</h3>
             <div class="quote-box">
-              "Marketing and Sales had conflicting MQL counts. Audited ad-to-Salesforce funnel, aligned 3 stages (Inbound, MQL, SAL), and locked definitions into SQL views."
+              "Marketing and Sales had different MQL numbers. Traced the funnel into Salesforce, got everyone on 3 shared stages, and locked it into SQL views."
             </div>
           </div>
         </div>
@@ -2487,42 +2487,42 @@ ORDER BY visit_num;</pre>
           <div class="card">
             <h2>Q1: "Why Anduril, and why this Analytics Engineer role in Hardware Test?"</h2>
             <div class="quote-box">
-              Building autonomous defense systems requires the highest standard of data reliability. In hardware test, an analytics bug or misaligned telemetry isn't just an ad-tracking discrepancy; it directly impacts flight test velocity, hardware reliability, and field readiness. Over my 10 years in data and three years at OneMagnify, I have owned complete data workflows from raw ingestion to production dashboards. I thrive on small teams where scope is fluid and you own the full problem: ingesting telemetry, establishing clean data models, enforcing data contracts, and delivering dashboards that engineers and leadership trust.
+              Honestly, after 3 years at an agency juggling 8-10 client ad accounts at once, I'm ready to work on one product where the data actually matters in the real world. Hardware test is cool because if your data is off, it slows down real flight tests and hardware teams. I like owning the whole pipeline from raw data to clean tables and dashboards on a small team where you just figure things out and ship.
             </div>
           </div>
 
           <div class="card">
             <h2>Q2: "Walk me through your experience building end-to-end data pipelines and models."</h2>
             <div class="quote-box">
-              At OneMagnify, I own end-to-end data delivery across multiple enterprise accounts. I extract raw logs, API payloads, and event streams through automated ingestion jobs into Azure SQL, build modular SQL views and star schemas that normalize heterogeneous sources into clean dimension and fact tables, and deliver production dashboards with strict validation checks. In addition, on Dave's Analytics, I engineered an automated ingestion pipeline that parsed and normalized over 100,000 simulation test records and event logs into structured SQL tables for continuous statistical tracking.
+              At OneMagnify, I own the full pipeline for about 8 to 10 accounts. I pull raw API and event data into Azure SQL using Azure Data Factory, clean it up with modular SQL views and star schemas, and build the final dashboards with automated QA checks. Before that, on Dave's Analytics, I built an automated pipeline that parsed and stored over 100,000 simulation run logs in SQL so I could track stats continuously.
             </div>
           </div>
 
           <div class="card">
             <h2>Q3: "How do you handle hardware telemetry, event logs, or messy semi-structured data?"</h2>
             <div class="quote-box">
-              I treat event data with a strict pipeline architecture: first, an immutable staging layer so raw signals are never lost; second, using Python and SQL to unpack nested payloads, handle timestamp drifts, and standardize schemas; third, establishing strict data contracts with automated validation checks to flag schema drift or null spikes; and fourth, mapping raw test executions into clear operational entities (test runs, test articles, subsystems, passes/fails) so test engineers query intuitive tables rather than parsing raw logs.
+              First thing is I never overwrite raw data—I keep a raw staging layer so nothing gets lost. From there I use Python and SQL to unpack nested fields, line up timestamps, and catch bad rows or schema changes early. Then I model it around things engineers actually care about—like test runs, hardware units, and pass/fail results—so they aren't digging through raw logs.
             </div>
           </div>
 
           <div class="card">
             <h2>Q4: "What is your technical proficiency in SQL, Python, and modern data stack tools?"</h2>
             <div class="quote-box">
-              SQL is the core foundation of my career—I write complex multi-table joins, modular views, stored procedures, and performance-optimized queries daily in production. In Python, I write practical data transformation routines using Pandas and API libraries for data wrangling and webhook ingestion. While my production stack has centered around Azure Data Factory and SQL warehouses, modern transformation engines like Foundry or dbt are fundamentally modular SQL, schema modeling, and dependency management. Having 9+ years of complex SQL and Git version control, ramping up on Foundry transforms and ontology modeling will be very fast.
+              SQL is my bread and butter—I've been writing complex joins, modular views, stored procedures, and performance tuning for 9+ years. In Python I mostly use Pandas and API scripts for data cleanup and ingestion. My production stack has been Azure Data Factory and SQL warehouses, but tools like dbt or Foundry are still modular SQL and dependency management at the core, so picking them up is straightforward.
             </div>
           </div>
 
           <div class="card">
             <h2>Q5: "Tell me about a time you worked on a small team with ambiguous requirements and high autonomy."</h2>
             <div class="quote-box">
-              Throughout my 3+ years at OneMagnify, I have operated as the sole analytics engineer and BI lead across 8 to 10 distinct client accounts simultaneously. On our Pebl account, marketing and sales had completely conflicting definitions of pipeline metrics, resulting in distrusted reporting. Rather than waiting for a spec doc, I initiated an audit of the entire funnel, documented the logic divergence, and proposed a three-stage lifecycle model (Inbound Lead, MQL, SAL). I aligned stakeholders across teams and built the unified SQL views and dashboards. Owning the problem end-to-end and driving clarity in fluid environments is where I perform best.
+              At OneMagnify I'm basically the sole analytics engineer for 8 to 10 accounts at a time. When we onboarded Pebl, Marketing and Sales had totally different numbers for their pipeline and nobody trusted the reporting. Nobody handed me a spec—I just audited the funnel from ad click to Salesforce, got both teams to agree on three clear stages, and built the SQL views and dashboards around it.
             </div>
           </div>
 
           <div class="card">
             <h2>Q6: "How do you partner with non-analyst engineers (flight test, hardware engineers, SWE)?"</h2>
             <div class="quote-box">
-              I align on operational outcomes rather than technical jargon. When meeting with test engineers or hardware leads, I don't start by debating schema structure. I ask: 'What test decision do you need to make the moment a flight test or bench test concludes? What failure modes or telemetry thresholds need immediate alerting?' Once I understand their operational needs, I define the data contract upfront, write clear RFCs/design docs, and build automated QA so they never have to doubt the reliability of test reports.
+              I skip the data jargon and just ask what they need to decide right after a test finishes—like what failure modes or thresholds they need to see immediately. Once I know what they're actually trying to do, I lock down the table structure and set up automated checks so they can trust the numbers without having to double-check my work.
             </div>
           </div>
         </div>
@@ -2629,9 +2629,9 @@ ORDER BY visit_num;</pre>
           <div class="card">
             <h2>Likely Recruiter &amp; Hiring Manager Screens</h2>
             <ul>
-              <li><strong>"How would you approach our Phase 1 data audit from scratch?"</strong> &rarr; Start by mapping core business decisions (acquisition, activation, retention, subscription revenue), auditing event tracking and source-of-truth discrepancies, and shipping a clean SQL metrics layer before picking extra tools.</li>
-              <li><strong>"Tell me about building an analytics stack as the first or sole data hire."</strong> &rarr; Use Rodeo Logistics (built SQL views, GA tracking, and 20+ Tableau dashboards end-to-end with zero senior hand-holding).</li>
-              <li><strong>"Why Hammer Media?"</strong> &rarr; Local to Austin, excited to be the 0-to-1 data builder connecting massive media top-of-funnel to Dollarwise product retention and FinTech outcomes.</li>
+              <li><strong>"How would you approach our Phase 1 data audit from scratch?"</strong> &rarr; First I'd sit down with the team to see what decisions they're trying to make—signups, retention, subscription revenue—then trace where the tracking is broken or mismatched and build one clean SQL metrics layer before worrying about new tools.</li>
+              <li><strong>"Tell me about building an analytics stack as the first or sole data hire."</strong> &rarr; At Rodeo Logistics I was the only data person, so I built the SQL reporting views, GA tracking, and 20+ Tableau dashboards from scratch on my own.</li>
+              <li><strong>"Why Hammer Media?"</strong> &rarr; I'm already here in Austin, and being the first data hire connecting Caleb's massive media audience to Dollarwise product retention is a super fun 0-to-1 build.</li>
             </ul>
           </div>
 
