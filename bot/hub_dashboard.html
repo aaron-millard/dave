@@ -250,6 +250,7 @@
         <div class="sub-pill-wrap">
           <button class="sub-pill active" id="pillOura" onclick="switchHealthSubtab('oura')">Oura</button>
           <button class="sub-pill" id="pillGarmin" onclick="switchHealthSubtab('garmin')">Garmin</button>
+          <button class="sub-pill" id="pillNutrition" onclick="switchHealthSubtab('nutrition')">Nutrition</button>
           <button class="sub-pill" id="pillMerged" onclick="switchHealthSubtab('merged')">Merged</button>
           <button class="sub-pill" id="pillInsights" onclick="switchHealthSubtab('insights')">Insights</button>
         </div>
@@ -339,16 +340,17 @@
     }
 
     function updateHealthSubtabPills(subtab) {
-      activeHealthSubtab = (subtab === "garmin" || subtab === "merged" || subtab === "insights") ? subtab : "oura";
+      activeHealthSubtab = (subtab === "garmin" || subtab === "nutrition" || subtab === "merged" || subtab === "insights") ? subtab : "oura";
       document.getElementById("pillOura").classList.toggle("active", activeHealthSubtab === "oura");
       document.getElementById("pillGarmin").classList.toggle("active", activeHealthSubtab === "garmin");
+      if (document.getElementById("pillNutrition")) document.getElementById("pillNutrition").classList.toggle("active", activeHealthSubtab === "nutrition");
       document.getElementById("pillMerged").classList.toggle("active", activeHealthSubtab === "merged");
       document.getElementById("pillInsights").classList.toggle("active", activeHealthSubtab === "insights");
     }
 
     function buildHealthUrl(subtab) {
       const base = URLS.health;
-      if (subtab === "garmin" || subtab === "merged" || subtab === "insights") {
+      if (subtab === "garmin" || subtab === "nutrition" || subtab === "merged" || subtab === "insights") {
         return base + (base.includes("?") ? "&" : "?") + "subtab=" + subtab;
       }
       return base;
@@ -401,7 +403,7 @@
     }
 
     function switchHealthSubtab(subtab) {
-      const normalized = (subtab === "garmin" || subtab === "merged" || subtab === "insights") ? subtab : "oura";
+      const normalized = (subtab === "garmin" || subtab === "nutrition" || subtab === "merged" || subtab === "insights") ? subtab : "oura";
       updateHealthSubtabPills(normalized);
       switchTab("health");
 
@@ -442,6 +444,10 @@
       }
       if (qSub === "merged" || injected === "merged" || qTab === "merged" || hash === "merged") {
         updateHealthSubtabPills("merged");
+        return "health";
+      }
+      if (qSub === "nutrition" || injected === "nutrition" || qTab === "nutrition" || hash === "nutrition") {
+        updateHealthSubtabPills("nutrition");
         return "health";
       }
       if (qSub === "garmin" || injected === "garmin" || qTab === "garmin" || hash === "garmin") {
