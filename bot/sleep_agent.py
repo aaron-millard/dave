@@ -269,6 +269,19 @@ def extract_time_taken(text: str, fallback_dt: datetime) -> str:
         if res:
             return res
 
+    # 4. Relative time: "30m ago", "30 minutes ago", "1 hr ago", "1.5 hours ago"
+    rel_m = re.search(
+        r"\b(\d+(?:\.\d+)?)\s*(h|hr|hrs|hour|hours|m|min|mins|minute|minutes)\s+ago\b",
+        text,
+        re.IGNORECASE,
+    )
+    if rel_m:
+        qty = float(rel_m.group(1))
+        unit = rel_m.group(2).lower()
+        delta = timedelta(hours=qty) if unit.startswith("h") else timedelta(minutes=qty)
+        adj_dt = fallback_dt - delta
+        return adj_dt.strftime("%I:%M %p").lstrip("0")
+
     # Fallback to actual message timestamp instead of hardcoded 9:00 PM
     return fallback_dt.strftime("%I:%M %p").lstrip("0")
 
@@ -323,12 +336,6 @@ def parse_and_record_dose(text: str, gemini_key: str, token: str) -> Optional[st
             traz_mg = 100
             quet_mg = 100
 
-    if traz_mg is None and quet_mg is None:
-        return None
-
-    traz_val = f"{traz_mg}mg" if traz_mg is not None else "0mg"
-    quet_val = f"{quet_mg}mg" if quet_mg is not None else "0mg"
-
     # Dose logged at night (or past midnight before noon) belongs to that sleep night
     if now.hour >= 12:
         night_of_str = now.strftime("%Y-%m-%d")
@@ -343,6 +350,25 @@ def parse_and_record_dose(text: str, gemini_key: str, token: str) -> Optional[st
         (m for m in med_logs if m.get("night_of") == night_of_str or m.get("date") == date_str),
         None,
     )
+
+    if traz_mg is None and quet_mg is None:
+        has_explicit_time = bool(
+            re.search(r"\b\d{1,2}:\d{2}\s*(?:am|pm)?\b|\b\d{1,4}\s*(?:am|pm)\b|\b\d+(?:\.\d+)?\s*(?:h|hr|hrs|hour|hours|m|min|mins|minute|minutes)\s+ago\b", text_lower)
+        )
+        is_time_correction = (
+            has_explicit_time
+            and not text_clean.endswith("?")
+            and len(text_clean.split()) <= 12
+            and existing_entry is not None
+            and (existing_entry.get("trazodone_mg") or existing_entry.get("quetiapine_mg"))
+        )
+        if not is_time_correction:
+            return None
+        traz_mg = existing_entry.get("trazodone_mg", 0)
+        quet_mg = existing_entry.get("quetiapine_mg", 0)
+
+    traz_val = f"{traz_mg}mg" if traz_mg is not None else "0mg"
+    quet_val = f"{quet_mg}mg" if quet_mg is not None else "0mg"
     alc_val = (state.get("alcohol_logs") or {}).get(night_of_str) or (existing_entry or {}).get("alcohol") or "No"
     if "alcohol" in text_lower:
         alc_val = "No" if re.search(r"\b(?:no|none|0|false)\b", text_lower) else "Yes"
@@ -595,16 +621,16 @@ def build_context(gemini_key: str, token: str) -> str:
 
 
 def call_gemini(gemini_key: str, prompt: str, system_inst: str) -> str:
-    models = ["gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-2.5-flash"]
+    models = ["gemini-3.5-flash", "gemini-3-flash-preview", "gemini-3.5-flash-lite"]
     payload = {
         "system_instruction": {"parts": [{"text": system_inst}]},
         "contents": [{"role": "user", "parts": [{"text": prompt}]}],
         "generationConfig": {
             "temperature": 0.2,
             "maxOutputTokens": 2048,
-            "thinkingConfig": {"thinkingBudget": 0}
         }
     }
+    last_err = ""
     for model in models:
         try:
             url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={gemini_key}"
@@ -619,9 +645,10 @@ def call_gemini(gemini_key: str, prompt: str, system_inst: str) -> str:
             text = "".join(p.get("text", "") for p in parts if "text" in p)
             if text:
                 return strip_markdown_asterisks(text)
-        except Exception:
+        except Exception as e:
+            last_err = str(e)
             continue
-    return "Roger Roger. Processed your message."
+    return f"Error reaching Gemini API ({last_err or 'all models failed'}). Try again."
 
 
 def _parse_ampm_minutes(t_str: str) -> Optional[int]:
