@@ -25,6 +25,10 @@ try:
     from bot import sleep_agent
 except Exception:
     import sleep_agent
+try:
+    from bot import random_agent
+except Exception:
+    import random_agent
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -1387,6 +1391,13 @@ class BotHTTPHandler(BaseHTTPRequestHandler):
                 daemon=True,
             ).start()
             return
+        if self.path.startswith("/random-webhook") or self.path.startswith("/random-fun-webhook"):
+            threading.Thread(
+                target=random_agent.process_random_webhook,
+                args=(get_gemini_key(), body),
+                daemon=True,
+            ).start()
+            return
         try:
             upd = json.loads(body.decode("utf-8"))
             uid = upd.get("update_id")
@@ -1452,6 +1463,10 @@ def run_bot():
             sleep_agent.register_sleep_webhook(get_gemini_key(), external_url)
         except Exception as e:
             print(f"Sleep webhook setup failed ({e})")
+        try:
+            random_agent.register_random_webhook(get_gemini_key(), external_url)
+        except Exception as e:
+            print(f"Random-fun webhook setup failed ({e})")
 
     if external_url:
         threading.Thread(target=keep_alive_loop, args=(external_url,), daemon=True).start()
