@@ -19,7 +19,7 @@ Before performing any task, writing any code, or returning any answer, I **must*
   - **Staging:** Concrete pending changes that are planned, designed, and ready to implement, but strictly paused waiting for Aaron's "go", "execute", or "3".
 
 - **1e. Numbered Action Command System:**
-  - Typing the number (0-6) or trigger phrase triggers the action immediately:
+  - Typing the number (0-8) or trigger phrase triggers the action immediately:
     - [0] list actions (or 0 / actions): Displays this numbered menu anytime.
     - [1] pull backlog (or 1): Displays current exploratory ideas and Telegram dumps.
     - [2] pull staging (or 2): Displays concrete pending changes paused for approval.
@@ -27,11 +27,18 @@ Before performing any task, writing any code, or returning any answer, I **must*
     - [4] sync all (or 4): Multi-level full sync across local, GitHub, Telegram cloud, and Render. Replies strictly with "Sync Complete."
     - [5] pull error log (or 5): Displays top recurring mistakes and guardrails.
     - [6] status (or 6): Quick 3-bullet summary of project health, active files, and last sync.
+    - [7] pull action log (or 7): Displays recent logged actions and their required Reasons from `memory/ActionLog.md`.
+    - [8] pull change log (or 8): Displays recent program, code, bot, config, and rule changes from `memory/ChangeLog.md`.
+
+- **1f. Continuous Logging Protocol (Error, Action & Change Logs):**
+  - **Error Log (`memory/ErrorLog.md`):** Whenever Aaron corrects the agent or flags a mistake, automatically record it before replying.
+  - **Action Log (`memory/ActionLog.md`):** Whenever a file edit, config change, script run, or external sync is executed, automatically record a row (`| Timestamp | Action | Target / Files | Reason |`).
+  - **Change Log (`memory/ChangeLog.md`):** Whenever any change is made to programs, code, scripts, bots, configs, or rules, automatically record a row (`| Timestamp | Project | Change | Files / Target | Impact / Reason |`).
 
 - **1a.** Before performing any task, writing any code, or returning any answer, I must read **[MasterRules.md](MasterRules.md)** and **fully review [FoodInventory.md](../inventory/FoodInventory.md)** (along with **[InventoryData.json](../inventory/InventoryData.json)**) from top to bottom every single time.
 - **1b. Categorized Project Folders:**
   - `rules/` — **[MasterRules.md](MasterRules.md)** (all project rules, macro targets, and liked/disliked foods)
-  - `memory/` — **[ProjectMemory.md](../memory/ProjectMemory.md)** (governance, Backlog, Staging) and **[ErrorLog.md](../memory/ErrorLog.md)** (error log & sprawl inventory)
+  - `memory/` — **[ProjectMemory.md](../memory/ProjectMemory.md)** (governance, Backlog, Staging), **[ErrorLog.md](../memory/ErrorLog.md)** (error log & sprawl inventory), **[ActionLog.md](../memory/ActionLog.md)** (continuous action log), and **[ChangeLog.md](../memory/ChangeLog.md)** (continuous program/config change log)
   - `inventory/` — **[FoodInventory.md](../inventory/FoodInventory.md)** (human-readable kitchen inventory) and **[InventoryData.json](../inventory/InventoryData.json)** (verified USDA/brand macro database)
   - `bot/` — **[telegram_agent.py](../bot/telegram_agent.py)**, **[render.yaml](../bot/render.yaml)**, and local gitignored key files (`.telegram_token`, `.gemini_key`)
   - `archive/` — Superseded documents (`How it Works.md`) and dead configs (`bot_requirements.txt`)

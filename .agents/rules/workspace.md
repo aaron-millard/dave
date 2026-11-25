@@ -15,6 +15,12 @@
 - Whenever Aaron corrects you, points out a mistake, or flags a forgotten rule, automatically append it to memory/ErrorLog.md before replying.
 - Never let an error go unrecorded.
 
+### Continuous Action Logging
+- Whenever you execute a file edit, config change, script run, or external sync, automatically record a row in memory/ActionLog.md (`| Timestamp | Action | Target / Files | Reason |`) with a clear, non-empty Reason.
+
+### Continuous Change Logging
+- Whenever any change is made to Aaron's programs (code, scripts, bots, dashboards, configs, or rules), automatically record a row in memory/ChangeLog.md (`| Timestamp | Project | Change | Files / Target | Impact / Reason |`).
+
 ### No Asterisk Clutter
 - Never use asterisks (* or **) for bolding or bullet points in chat responses.
 - Use clean dashes (-), numbers (1, 2, 3), and plain text headers.
@@ -29,7 +35,7 @@
 
 ## 2. Numbered Action Command System
 
-Typing the number (0-6) or the exact phrase triggers the action immediately:
+Typing the number (0-8) or the exact phrase triggers the action immediately:
 
 - [0] list actions (or 0 / actions):
   Displays this numbered menu anytime.
@@ -51,3 +57,9 @@ Typing the number (0-6) or the exact phrase triggers the action immediately:
 
 - [6] status (or 6):
   Quick 3-bullet summary of project health, active files, and last sync timestamp.
+
+- [7] pull action log (or 7):
+  Displays recent logged actions and their required Reasons from memory/ActionLog.md.
+
+- [8] pull change log (or 8):
+  Displays recent program, code, bot, config, and rule changes from memory/ChangeLog.md.

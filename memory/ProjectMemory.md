@@ -17,6 +17,12 @@ This document tracks all long-term project context, governance rules, action com
 ### Continuous Error Logging
 - Whenever Aaron corrects the agent or flags an issue, append it immediately to memory/ErrorLog.md before replying.
 
+### Continuous Action Logging
+- Whenever the agent executes a file edit, config change, script run, or external sync, record it in memory/ActionLog.md with a non-empty Reason.
+
+### Continuous Change Logging
+- Whenever any change is made to programs, code, scripts, bots, configs, or rules, record it in memory/ChangeLog.md with Project, Change, Files / Target, and Impact / Reason.
+
 ### No Asterisk Clutter
 - Avoid all asterisk markdown (* or **) in chat responses. Use clean dashes (-), numbers, and plain headers.
 
@@ -24,7 +30,7 @@ This document tracks all long-term project context, governance rules, action com
 
 ## 2. Numbered Action Command System
 
-Typing the number (0-6) or trigger phrase runs the action:
+Typing the number (0-8) or trigger phrase runs the action:
 
 - [0] list actions (or 0 / actions):
   Displays this numbered menu anytime.
@@ -46,6 +52,12 @@ Typing the number (0-6) or trigger phrase runs the action:
 
 - [6] status (or 6):
   Quick 3-bullet summary of project health, active files, and last sync timestamp.
+
+- [7] pull action log (or 7):
+  Displays recent logged actions and their required Reasons from memory/ActionLog.md.
+
+- [8] pull change log (or 8):
+  Displays recent program, code, bot, config, and rule changes from memory/ChangeLog.md.
 
 ---
 
@@ -77,6 +89,12 @@ Definitive project file map for external AI review:
 
 - memory/ErrorLog.md:
   Permanent historical mistake registry and redundancy inventory.
+
+- memory/ActionLog.md:
+  Continuous audit log of all executed file edits, script runs, and external syncs.
+
+- memory/ChangeLog.md:
+  Continuous log of all changes made to programs, code, scripts, bots, configs, and rules.
 
 - inventory/FoodInventory.md:
   Human-readable kitchen inventory categorized by meal and protein type.

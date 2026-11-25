@@ -18,6 +18,8 @@ The following standard trigger commands are codified for this workspace:
 - **`pull backlog`** $\rightarrow$ Reads and displays current exploratory ideas, brainstorms, and unprocessed Telegram mobile idea dumps from `memory/ProjectMemory.md`.
 - **`pull staging`** $\rightarrow$ Reads and displays concrete pending changes that are planned, designed, and strictly paused waiting for Aaron's `"go"` or `"execute"` from `memory/ProjectMemory.md`.
 - **`pull error log`** $\rightarrow$ Reads and displays the top recurring mistakes, recent errors, and preventive guardrails from this file (`memory/ErrorLog.md`).
+- **`pull action log`** $\rightarrow$ Reads and displays recent logged actions and their required Reasons from `memory/ActionLog.md`.
+- **`pull change log`** $\rightarrow$ Reads and displays recent program, code, bot, config, and rule changes from `memory/ChangeLog.md`.
 
 ---
 

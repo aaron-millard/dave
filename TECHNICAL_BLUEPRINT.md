@@ -31,6 +31,8 @@ project-root/
 ├── memory/
 │   ├── ProjectMemory.md           # Governance, Action Commands, Backlog, and Staging lists
 │   ├── ErrorLog.md                # Permanent error log, mistake registry, and sprawl inventory
+│   ├── ActionLog.md               # Continuous log of file edits, script runs, and external syncs
+│   ├── ChangeLog.md               # Continuous log of program, code, bot, config, and rule changes
 │   └── persistent_overrides.json  # Runtime additions, removals, and Telegram notes synced to cloud
 ├── inventory/
 │   ├── FoodInventory.md           # Human-readable categorized inventory
@@ -57,7 +59,7 @@ project-root/
 - Only execute when Aaron explicitly replies "go", "execute", or "3".
 
 ### B. Numbered Action Command System
-Typing the number (0-6) or trigger phrase runs the action immediately:
+Typing the number (0-8) or trigger phrase runs the action immediately:
 - [0] list actions (or 0 / actions): Displays this numbered menu anytime.
 - [1] pull backlog (or 1): Displays current exploratory ideas and Telegram dumps from memory/ProjectMemory.md.
 - [2] pull staging (or 2): Displays concrete pending changes that are planned, designed, and strictly paused waiting for approval.
@@ -65,9 +67,13 @@ Typing the number (0-6) or trigger phrase runs the action immediately:
 - [4] sync all (or 4): Multi-level full sync across local files, GitHub, Telegram cloud, and Render. Replies strictly with "Sync Complete."
 - [5] pull error log (or 5): Displays the top recurring mistakes and guardrails from memory/ErrorLog.md.
 - [6] status (or 6): Quick 3-bullet summary of project health, active files, and last sync timestamp.
+- [7] pull action log (or 7): Displays recent logged actions and their required Reasons from memory/ActionLog.md.
+- [8] pull change log (or 8): Displays recent program, code, bot, config, and rule changes from memory/ChangeLog.md.
 
-### C. Continuous Error Logging
-- Whenever Aaron corrects the agent or flags an issue, append it immediately to `memory/ErrorLog.md` before replying.
+### C. Continuous Logging (Error, Action & Change Logs)
+- Error Log (`memory/ErrorLog.md`): Whenever Aaron corrects the agent or flags an issue, append it immediately before replying.
+- Action Log (`memory/ActionLog.md`): Whenever the agent executes a file edit, config change, script run, or external sync, record a row with a non-empty Reason.
+- Change Log (`memory/ChangeLog.md`): Whenever any change is made to programs, code, scripts, bots, configs, or rules, record a row (`| Timestamp | Project | Change | Files / Target | Impact / Reason |`).
 
 ### D. No Asterisk Clutter & Readability
 - Never use asterisks (* or **) in chat responses. Use clean dashes (-), numbers (1-7), and plain headers.
