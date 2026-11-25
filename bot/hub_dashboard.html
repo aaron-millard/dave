@@ -253,6 +253,7 @@
           <button class="sub-pill" id="pillNutrition" onclick="switchHealthSubtab('nutrition')">Nutrition</button>
           <button class="sub-pill" id="pillMerged" onclick="switchHealthSubtab('merged')">Merged</button>
           <button class="sub-pill" id="pillInsights" onclick="switchHealthSubtab('insights')">Insights</button>
+          <button class="sub-pill" id="pillDates" onclick="switchHealthSubtab('dates')">Important Dates</button>
         </div>
       </div>
 
@@ -268,10 +269,7 @@
         <button class="tab-btn" data-tab="interviews" onclick="switchTab('interviews')">4. Active Interviews</button>
         <div class="sub-pill-wrap">
           <button class="sub-pill active" id="pillHippo" onclick="switchInterviewCompany('hippo')">Hippo</button>
-          <button class="sub-pill" id="pillHippo2" onclick="switchInterviewCompany('hippo2')">Hippo 2</button>
-          <button class="sub-pill" id="pillKnownwell" onclick="switchInterviewCompany('knownwell')">Knownwell</button>
-          <button class="sub-pill" id="pillAnduril" onclick="switchInterviewCompany('anduril')">Anduril</button>
-          <button class="sub-pill" id="pillDeepgram" onclick="switchInterviewCompany('deepgram')">Deepgram</button>
+          <button class="sub-pill" id="pillHippoFinal" onclick="switchInterviewCompany('hippo_final')">Hippo Final</button>
           <button class="sub-pill" id="pillHammer" onclick="switchInterviewCompany('hammer')">Hammer</button>
         </div>
       </div>
@@ -324,7 +322,7 @@
     const loadedTabs = { health: false, lifting: false, architecture: false, interviews: false, flashcards: false };
     let activeTab = "health";
     let activeHealthSubtab = "oura";
-    let activeInterviewCompany = "hippo2";
+    let activeInterviewCompany = "hippo";
 
     function updateEnvBadge() {
       const txt = document.getElementById("envStatusText");
@@ -340,35 +338,33 @@
     }
 
     function updateHealthSubtabPills(subtab) {
-      activeHealthSubtab = (subtab === "garmin" || subtab === "nutrition" || subtab === "merged" || subtab === "insights") ? subtab : "oura";
+      activeHealthSubtab = (subtab === "garmin" || subtab === "nutrition" || subtab === "merged" || subtab === "insights" || subtab === "dates") ? subtab : "oura";
       document.getElementById("pillOura").classList.toggle("active", activeHealthSubtab === "oura");
       document.getElementById("pillGarmin").classList.toggle("active", activeHealthSubtab === "garmin");
       if (document.getElementById("pillNutrition")) document.getElementById("pillNutrition").classList.toggle("active", activeHealthSubtab === "nutrition");
       document.getElementById("pillMerged").classList.toggle("active", activeHealthSubtab === "merged");
       document.getElementById("pillInsights").classList.toggle("active", activeHealthSubtab === "insights");
+      if (document.getElementById("pillDates")) document.getElementById("pillDates").classList.toggle("active", activeHealthSubtab === "dates");
     }
 
     function buildHealthUrl(subtab) {
       const base = URLS.health;
-      if (subtab === "garmin" || subtab === "nutrition" || subtab === "merged" || subtab === "insights") {
+      if (subtab === "garmin" || subtab === "nutrition" || subtab === "merged" || subtab === "insights" || subtab === "dates") {
         return base + (base.includes("?") ? "&" : "?") + "subtab=" + subtab;
       }
       return base;
     }
 
     function updateInterviewPills(company) {
-      activeInterviewCompany = (company === "hippo2" || company === "knownwell" || company === "anduril" || company === "deepgram" || company === "hammer") ? company : "hippo";
+      activeInterviewCompany = (company === "hippo_final" || company === "hammer") ? company : "hippo";
       if (document.getElementById("pillHippo")) document.getElementById("pillHippo").classList.toggle("active", activeInterviewCompany === "hippo");
-      if (document.getElementById("pillHippo2")) document.getElementById("pillHippo2").classList.toggle("active", activeInterviewCompany === "hippo2");
-      if (document.getElementById("pillKnownwell")) document.getElementById("pillKnownwell").classList.toggle("active", activeInterviewCompany === "knownwell");
-      if (document.getElementById("pillAnduril")) document.getElementById("pillAnduril").classList.toggle("active", activeInterviewCompany === "anduril");
-      if (document.getElementById("pillDeepgram")) document.getElementById("pillDeepgram").classList.toggle("active", activeInterviewCompany === "deepgram");
+      if (document.getElementById("pillHippoFinal")) document.getElementById("pillHippoFinal").classList.toggle("active", activeInterviewCompany === "hippo_final");
       if (document.getElementById("pillHammer")) document.getElementById("pillHammer").classList.toggle("active", activeInterviewCompany === "hammer");
     }
 
     function buildInterviewsUrl(company) {
       const base = URLS.interviews;
-      const target = (company === "hippo2" || company === "knownwell" || company === "anduril" || company === "deepgram" || company === "hammer") ? company : "hippo";
+      const target = (company === "hippo_final" || company === "hammer") ? company : "hippo";
       return base + (base.includes("?") ? "&" : "?") + "company=" + target;
     }
 
@@ -403,7 +399,7 @@
     }
 
     function switchHealthSubtab(subtab) {
-      const normalized = (subtab === "garmin" || subtab === "nutrition" || subtab === "merged" || subtab === "insights") ? subtab : "oura";
+      const normalized = (subtab === "garmin" || subtab === "nutrition" || subtab === "merged" || subtab === "insights" || subtab === "dates") ? subtab : "oura";
       updateHealthSubtabPills(normalized);
       switchTab("health");
 
@@ -415,7 +411,7 @@
     }
 
     function switchInterviewCompany(company) {
-      const normalized = (company === "hippo2" || company === "knownwell" || company === "anduril" || company === "deepgram" || company === "hammer") ? company : "hippo";
+      const normalized = (company === "hippo_final" || company === "hammer") ? company : "hippo";
       updateInterviewPills(normalized);
       switchTab("interviews");
 
@@ -438,6 +434,10 @@
       const path = (window.location.pathname || "").toLowerCase();
       const injected = (window.__INITIAL_TAB__ || "").toLowerCase();
 
+      if (qSub === "dates" || injected === "dates" || qTab === "dates" || hash === "dates") {
+        updateHealthSubtabPills("dates");
+        return "health";
+      }
       if (qSub === "insights" || injected === "insights" || qTab === "insights" || hash === "insights") {
         updateHealthSubtabPills("insights");
         return "health";

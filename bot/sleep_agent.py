@@ -300,7 +300,7 @@ def parse_and_record_dose(text: str, gemini_key: str, token: str) -> Optional[st
     if t_m:
         traz_mg = int(float(t_m.group(1)))
 
-    q_m = re.search(r"(\d+(?:\.\d+)?)\s*(?:mg)?\s*(?:quet|quetiapine|seroquel|q\b)", text_lower)
+    q_m = re.search(r"(\d+(?:\.\d+)?)\s*(?:mg)?\s*(?:quet|quetiapine|seroquel|seroquil|s\b|q\b)", text_lower)
     if q_m:
         quet_mg = int(float(q_m.group(1)))
 
@@ -374,6 +374,11 @@ def parse_and_record_dose(text: str, gemini_key: str, token: str) -> Optional[st
         alc_val = "No" if re.search(r"\b(?:no|none|0|false)\b", text_lower) else "Yes"
     state.setdefault("alcohol_logs", {})[night_of_str] = alc_val
 
+    nic_val = (state.get("nicotine_logs") or {}).get(night_of_str) or (existing_entry or {}).get("nicotine") or "Yes"
+    if "nicotine" in text_lower:
+        nic_val = "No" if re.search(r"\b(?:no|none|0|false)\b", text_lower) else "Yes"
+    state.setdefault("nicotine_logs", {})[night_of_str] = nic_val
+
     new_entry = {
         "date": date_str,
         "night_of": night_of_str,
@@ -381,11 +386,12 @@ def parse_and_record_dose(text: str, gemini_key: str, token: str) -> Optional[st
         "quetiapine_mg": quet_mg or 0,
         "time_taken": time_taken_str,
         "alcohol": alc_val,
+        "nicotine": nic_val,
         "notes": f"Logged via cloud webhook: {text_clean}"
     }
     if existing_entry:
         for k in ("hunger_level", "nicotine"):
-            if existing_entry.get(k):
+            if existing_entry.get(k) and k not in new_entry:
                 new_entry[k] = existing_entry[k]
     replaced = False
     for i, existing in enumerate(med_logs):
@@ -400,7 +406,7 @@ def parse_and_record_dose(text: str, gemini_key: str, token: str) -> Optional[st
     return (
         f"Roger Roger\n"
         f"Trazadone Dosage: {traz_val}\n"
-        f"Quetiapine Dosage: {quet_val}\n"
+        f"Seroquel Dosage: {quet_val}\n"
         f"Date: {night_of_str}\n"
         f"Time taken: {time_taken_str}"
     )
@@ -576,13 +582,31 @@ def sync_oura_cloud(gemini_key: str, token: str) -> str:
         OURA_SYNC_RUNNING = False
 
 
+def _has_hunger_logged_for_night(night_str: str, gemini_key: str, token: str) -> bool:
+    state = sync_state_from_cloud(token)
+    if (state.get("hunger_logs") or {}).get(night_str):
+        return True
+    for m in state.get("medication_logs", []):
+        if isinstance(m, dict) and m.get("night_of") == night_str and m.get("hunger_level"):
+            return True
+    vault = load_vault(gemini_key)
+    raw_meds = (vault.get("files") or {}).get("data/medication_logs.json", "{}")
+    try:
+        for m in json.loads(raw_meds).get("logs", []):
+            if isinstance(m, dict) and m.get("night_of") == night_str and m.get("hunger_level"):
+                return True
+    except Exception:
+        pass
+    return False
+
+
 def _auto_sync_loop(gemini_key: str, token: str):
-    """Background loop: automatically syncs fresh Oura records during morning hours."""
+    """Background loop: automatically syncs fresh Oura records during morning hours & sends 12pm CST Night Hunger alert if missing."""
     time.sleep(30)
     while True:
         try:
             now = now_cst()
-            # If morning (5:30 AM to 10:30 AM CST), check if today's record exists in cache
+            # 1. If morning (5:30 AM to 10:30 AM CST), check if today's record exists in cache
             if 5 <= now.hour <= 10:
                 state = sync_state_from_cloud(token)
                 today_str = now.strftime("%Y-%m-%d")
@@ -590,9 +614,26 @@ def _auto_sync_loop(gemini_key: str, token: str):
                 if today_str not in cache or not cache[today_str].get("total_sleep_seconds"):
                     print(f"[sleep-cron] Auto-syncing Oura for morning {today_str}...", flush=True)
                     sync_oura_cloud(gemini_key, token)
+
+            # 2. At 12:00 PM CST daily, check if yesterday's Night Hunger was submitted; if not, send a Telegram prompt once
+            if now.hour == 12:
+                yesterday_night = (now - timedelta(days=1)).strftime("%Y-%m-%d")
+                state = sync_state_from_cloud(token)
+                defaults_map = state.setdefault("defaults", {})
+                last_alert_night = defaults_map.get("last_hunger_alert_night")
+                if last_alert_night != yesterday_night:
+                    if not _has_hunger_logged_for_night(yesterday_night, gemini_key, token):
+                        alert_msg = f"12:00 PM Reminder: You haven't logged Night Hunger for last night ({yesterday_night}) yet. What was your night hunger level (None / Low / Medium / High)?"
+                        send_message(token, 8299631714, alert_msg)
+                        defaults_map["last_hunger_alert_night"] = yesterday_night
+                        save_state_to_cloud(token, state)
+                        print(f"[sleep-cron] Sent 12pm CST Night Hunger reminder for {yesterday_night}", flush=True)
+                    else:
+                        defaults_map["last_hunger_alert_night"] = yesterday_night
+                        save_state_to_cloud(token, state)
         except Exception as e:
             print(f"[sleep-cron] Auto sync error: {e}", flush=True)
-        time.sleep(1800)  # Check every 30 minutes
+        time.sleep(300)  # Check every 5 minutes
 
 
 def build_context(gemini_key: str, token: str) -> str:
@@ -945,7 +986,7 @@ def format_sleep_status_reply(text: str, gemini_key: str, token: str) -> Optiona
     med = med_by_night.get(target_night_of, {})
     hunger = (state.get("hunger_logs") or {}).get(target_night_of) or med.get("hunger_level") or "—"
     alcohol = (state.get("alcohol_logs") or {}).get(target_night_of) or med.get("alcohol") or "No"
-    nicotine = (state.get("nicotine_logs") or {}).get(target_night_of) or med.get("nicotine") or "—"
+    nicotine = (state.get("nicotine_logs") or {}).get(target_night_of) or med.get("nicotine") or "Yes"
 
     if not oura and not med:
         return f"Roger Roger.\n\nNo sleep or medication data found for night of {target_night_of}."
@@ -966,7 +1007,7 @@ def format_sleep_status_reply(text: str, gemini_key: str, token: str) -> Optiona
         return (
             f"Roger Roger.\n\n"
             f"Health Tracker Status — Night of {target_night_of} (Oura Pending)\n"
-            f"- Meds: Traz {traz} / Quet {quet} @ {med_time}\n"
+            f"- Meds: Traz {traz} / Seroquel {quet} @ {med_time}\n"
             f"- Hunger: {hunger} | Alcohol: {alcohol} | Nicotine: {nicotine}\n"
             f"- Oura data for {wakeup_date} is not synced yet."
         )
@@ -1022,7 +1063,7 @@ def format_sleep_status_reply(text: str, gemini_key: str, token: str) -> Optiona
         friendly_night = target_night_of
 
     med_date_str = f"Taken {friendly_night} at {med_time}" if med_time != "—" else f"Night of {friendly_night}"
-    med_dose_str = f"{traz} Trazodone + {quet} Quetiapine ({med_date_str})" if (traz != "—" or quet != "—") else "No medication logged"
+    med_dose_str = f"{traz} Trazodone + {quet} Seroquel ({med_date_str})" if (traz != "—" or quet != "—") else "No medication logged"
 
     # Check dashboard.html for pre-calculated OURA_CACHE with time_awake_day
     dash_cache = {}
@@ -1114,7 +1155,7 @@ def format_sleep_status_reply(text: str, gemini_key: str, token: str) -> Optiona
         f"Night of {friendly_night} ({target_night_of})\n\n"
         f"- Night Of: {target_night_of}\n"
         f"- Trazodone: {traz_col}\n"
-        f"- Quetiapine: {quet_col}\n"
+        f"- Seroquel: {quet_col}\n"
         f"- Sleep Score: {sleep_score}\n"
         f"- Continuity: {continuity}\n"
         f"- Restoration: {restoration}\n"
@@ -1271,7 +1312,7 @@ def _handle_sleep_batch(gemini_key: str, token: str, chat_id: int):
         "1. Be as short, direct, and scannable as humanly possible.\n"
         "2. Use brief bullet points with dashes (-). Zero fluff.\n"
         "3. NEVER use markdown asterisks (* or **). No bolding asterisks.\n"
-        "4. Focus exclusively on health & sleep tracking, Trazodone & Quetiapine dosages, awakenings, and Oura / biometric data.\n"
+        "4. Focus exclusively on health & sleep tracking, Trazodone & Seroquel dosages, awakenings, and Oura / biometric data.\n"
         "5. Affirmations are always 'Roger Roger.'\n"
         "6. MANDATORY INTERNAL 'WHY' VERIFICATION (SILENT IN CHAT): Before finalizing any sleep/health insight, dosage correlation, or metric interpretation, internally verify WHY that conclusion is supported by exact records in medication_logs and oura_cache. Reject unverified guesses and keep internal 'Why' reasoning silent in chat unless Aaron asks for it.\n"
         "7. FULL SLEEP STATS STANDARD: Whenever Aaron asks how he slept, how last night was, or asks for sleep stats/scores, ALWAYS provide the complete breakdown across all 9 metrics:\n"
@@ -1284,7 +1325,7 @@ def _handle_sleep_batch(gemini_key: str, token: str, chat_id: int):
         "- Average HRV\n"
         "- Last Medication Dosage (with time taken and night of)\n"
         "Never truncate or provide an incomplete subset of metrics.\n"
-        "8. Alcohol automatically defaults to 'No' every night unless Aaron explicitly says otherwise.\n"
+        "8. Alcohol automatically defaults to 'No' every night and Nicotine automatically defaults to 'Yes' every night unless Aaron explicitly says otherwise.\n"
         "9. Custom Sleep Scores use two tiers: 3 Total Sleep Score formulations (Weighted, Bottleneck, Personal Baseline alongside Oura Sleep Score) plus specific sub-scores (Continuity, Restoration, Restfulness).\n\n"
         + build_context(gemini_key, token)
     )
@@ -1400,8 +1441,11 @@ def get_live_sleep_json(gemini_key: str) -> str:
             else:
                 existing.update({k: v for k, v in dose.items() if v is not None})
         for m in meds:
-            if isinstance(m, dict) and not m.get("alcohol"):
-                m["alcohol"] = "No"
+            if isinstance(m, dict):
+                if not m.get("alcohol"):
+                    m["alcohol"] = "No"
+                if not m.get("nicotine"):
+                    m["nicotine"] = "Yes"
         oura = state.get("oura_cache") or json.loads(raw_oura)
         return json.dumps(
             {
