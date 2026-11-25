@@ -322,7 +322,7 @@
 
     const URLS = getBaseUrls();
     const loadedTabs = { health: false, lifting: false, architecture: false, interviews: false, flashcards: false };
-    let activeTab = "interviews";
+    let activeTab = "health";
     let activeHealthSubtab = "oura";
     let activeInterviewCompany = "hippo2";
 
@@ -466,7 +466,8 @@
       if (qTab === "architecture" || injected === "architecture" || hash === "architecture" || path.includes("architecture")) {
         return "architecture";
       }
-      return "interviews";
+      updateHealthSubtabPills("oura");
+      return "health";
     }
 
     updateEnvBadge();
