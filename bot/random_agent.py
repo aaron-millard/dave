@@ -265,7 +265,7 @@ def process_random_webhook(gemini_key: str, body: bytes):
             lines = files.get("memory/ActionLog.md", "").splitlines()
             reply = "\n".join(lines[-15:]) if lines else "(empty)"
         elif t_low in ("8", "change log", "changelog", "pull change log"):
-            lines = files.get("memory/ChangeLog.md", "").splitlines()
+            lines = [ln for ln in files.get("memory/ActionLog.md", "").splitlines() if "| Change |" in ln]
             reply = "\n".join(lines[-15:]) if lines else "(empty)"
         elif re.match(r"^(?:backlog|idea\s*dump|idea)\s*[:\-]?\s+", t_low):
             note = re.sub(r"^(?:backlog|idea\s*dump|idea)\s*[:\-]?\s*", "", text, flags=re.I).strip()
