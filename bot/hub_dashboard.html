@@ -251,7 +251,6 @@
           <button class="sub-pill active" id="pillOura" onclick="switchHealthSubtab('oura')">Oura</button>
           <button class="sub-pill" id="pillGarminWorkouts" onclick="switchHealthSubtab('garmin_workouts')">Garmin - Workouts</button>
           <button class="sub-pill" id="pillGarminDaily" onclick="switchHealthSubtab('garmin_daily')">Garmin - Daily</button>
-          <button class="sub-pill" id="pillMerged" onclick="switchHealthSubtab('merged')">Merged</button>
           <button class="sub-pill" id="pillNutrition" onclick="switchHealthSubtab('nutrition')">Nutrition</button>
           <button class="sub-pill" id="pillLabs" onclick="switchHealthSubtab('labs')">Labs</button>
           <button class="sub-pill" id="pillDates" onclick="switchHealthSubtab('dates')">Important Dates</button>
@@ -345,7 +344,6 @@
       if (document.getElementById("pillGarminDaily")) document.getElementById("pillGarminDaily").classList.toggle("active", activeHealthSubtab === "garmin_daily");
       if (document.getElementById("pillNutrition")) document.getElementById("pillNutrition").classList.toggle("active", activeHealthSubtab === "nutrition");
       if (document.getElementById("pillLabs")) document.getElementById("pillLabs").classList.toggle("active", activeHealthSubtab === "labs");
-      document.getElementById("pillMerged").classList.toggle("active", activeHealthSubtab === "merged");
       if (document.getElementById("pillDates")) document.getElementById("pillDates").classList.toggle("active", activeHealthSubtab === "dates");
     }
 
