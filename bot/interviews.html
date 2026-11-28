@@ -1132,12 +1132,12 @@
       </div>
     </section>
 
-    <!-- ==================== GENERIC Q/A PANEL (3 SECTIONS) ==================== -->
+    <!-- ==================== GENERIC Q/A PANEL (2 SECTIONS) ==================== -->
     <section id="panel-generic" class="company-panel">
       <div class="company-header">
         <div class="company-title-wrap">
           <h1>Generic Interview Q/A Bank</h1>
-          <div class="company-sub">Casual &amp; Direct Voice &bull; Split into Practiced, Practicing, and Not Yet Practiced</div>
+          <div class="company-sub">Casual &amp; Direct Voice &bull; Split into Practiced and Unpracticed</div>
         </div>
         <div class="status-badge" style="background: rgba(192, 132, 252, 0.18); color: var(--purple); border: 1px solid rgba(192, 132, 252, 0.45);">
           15 Core Questions
@@ -1150,67 +1150,69 @@
         <div class="card" style="border-left: 4px solid var(--green);">
           <h2>1. Tell me about your background / Walk me through your resume.</h2>
           <div class="quote-box">
-            "I've spent the last 9+ years in data analytics, starting out in college sports analytics with UT Austin and Athlyte, where I built ETL workflows across five sports and designed self-service query tools for athletic directors.<br><br>
-            From there, I was the sole data analyst at Rodeo Logistics building out their automated Tableau reporting suite from scratch, and then worked with Moment House where I built SQL and Python ticket price elasticity and buyer retention models.<br><br>
-            For the past three years at OneMagnify here in Austin, I've managed end-to-end analytics pipelines across 8 to 10 dedicated enterprise accounts - handling everything from Azure Data Factory ingestion and SQL warehouse modeling all the way to executive Power BI dashboards and modern AI/MCP workflows."
+            "I've spent the last 10 years in data analytics, starting out in sports analytics doing some work with UT Austin and then Athlyte. At Athlyte I built ETL workflows standardizing play-by-play game data across 5 different sports, designed self-service analytic tools, and served as the main technical lead and face of the company. This meant I was traveling around the country meeting with athletic directors and SID heads to both better tailor our product to their needs and drive product adoption.<br><br>
+            From there, I was the sole data analyst at Rodeo Logistics building out their automated Tableau reporting suite, and then worked with Moment House where I built price elasticity and buyer retention models.<br><br>
+            That brings me to where I am now at OneMagnify here in Austin. I've acted as an end-to-end analytics engineer across 10 to 20 dedicated client accounts. This included handling everything from data engineering and ingestion, SQL warehouse modeling, developing executive Power BI dashboards, and standardizing ETL and MCP workflows."
           </div>
         </div>
 
         <div class="card" style="border-left: 4px solid var(--green);">
           <h2>2. What does your current role look like day-to-day at OneMagnify?</h2>
           <div class="quote-box">
-            "At OneMagnify, I own end-to-end analytics across 8 to 10 dedicated client accounts. My day breaks down into three main areas:<br><br>
-            First, data engineering and ingestion - pulling marketing and funnel data from ad platforms through Funnel.io and Azure Data Factory into our SQL warehouse.<br><br>
-            Second, SQL data modeling - writing conformed views that join multi-channel spend with CRM systems like Salesforce and HubSpot so teams can track full-funnel conversion and revenue pacing.<br><br>
-            Third, dashboarding and QA - building production Power BI semantic models and using Model Context Protocol (MCP) with Claude to automate DAX calculations and reconcile every headline number back to source SQL."
+            "At OneMagnify I own end-to-end analytics across 10 to 20 dedicated client accounts. My day-to-day breaks down into three main areas:<br><br>
+            First, data engineering and ingestion. I pull marketing and CRM data from 15 to 20 different sources into our SQL warehouse.<br><br>
+            Second, data modeling. I write modular SQL views and Power BI semantic models to join that marketing and CRM data so our teams can track full-funnel conversion and revenue pacing.<br><br>
+            Third, dashboarding. I build executive-level Power BI dashboards from scratch. As of late this has been through modern MCP workflows, using Claude to automate DAX calculations, semantic modeling, visual creation, and end-to-end data testing."
           </div>
         </div>
 
         <div class="card" style="border-left: 4px solid var(--green);">
           <h2>3. Why are you looking to leave OneMagnify?</h2>
           <div class="quote-box">
-            "I've been at OneMagnify for over three years, and while I've mastered our agency pipeline, agency work always splits your attention across 8 to 10 different client accounts. On top of that, our Austin analytics team is lean - four analysts reporting directly to our Director - so there's very little room for upward growth.<br><br>
-            I'm ready to move in-house and bring my full pipeline ownership to one company, one data warehouse, and go deep on one product and customer funnel."
+            "I've been at OneMagnify for over three years and I've mastered our agency pipeline, tech stack, and workflows. Agency life means my time and energy is consistently split between 10 to 20 different clients at any given time. On top of that, there isn't much room for professional upward growth on my team and company.<br><br>
+            At this point in my career I'm ready to move in-house where I can work with one company, one data warehouse, and one customer funnel.<br><br>
+            It doesn't hurt that I live 3 blocks away either!"
           </div>
         </div>
 
         <div class="card" style="border-left: 4px solid var(--green);">
           <h2>4. Walk me through a complex dashboard you built and its business impact.</h2>
           <div class="quote-box">
-            "A standout project is the Brooklyn Nets paid media and ticket sales dashboard I built at OneMagnify.<br><br>
-            Their marketing team was spending millions across Google, Meta, and programmatic channels, but ad performance lived completely separate from Ticketmaster and Fevo ticket sales. They had no unified view of true ROAS or fiscal-year budget pacing.<br><br>
-            I built a conformed SQL view normalizing campaign taxonomy across channels and joined it with ticket sales in a Power BI semantic model with same-day prior-year pacing and week-over-week toggles. When the data showed we were overspending on low-tier weekday games where ticket demand was flat, we reallocated budget toward high-margin weekend matchups where fan demand actually converted."
+            "One project that comes to mind is the Brooklyn Nets and NY Liberty client account that I manage. When we brought them on, they were spending heavily across many ad channels, but their issue was their ad performance lived completely separate from their Ticketmaster ticket sales. So their marketing team had no real way to connect their advertising dollars directly to ticket revenue.<br><br>
+            So I pulled their ad spend and ticketing data together, and built them a Power BI dashboard that included pacing models that tracked daily sales against upcoming games and ticket tiers.<br><br>
+            This then allowed the Nets executive team to dynamically shift budget where it actually moved ticket inventory."
           </div>
         </div>
 
         <div class="card" style="border-left: 4px solid var(--green);">
-          <h2>5. What is your experience with dbt and modern transformation workflows?</h2>
+          <h2>5. Tell me about a time you handled conflicting metric definitions.</h2>
           <div class="quote-box">
-            "To be direct, dbt isn't in our daily agency stack at OneMagnify because we manage our transformation layers through modular SQL views and Azure Data Factory pipelines.<br><br>
-            That said, the core engineering principles behind dbt are what I do every day: building modular SQL transformation layers, managing upstream dependencies, and running data quality checks before reporting goes live. Seeing how standard dbt is across modern data teams, I also started taking the official dbt Labs certification course to lock in the syntax and workflow."
+            "On our Pebl account, a global B2B employment platform, Marketing and Sales were reporting completely different qualified lead counts to leadership.<br><br>
+            Marketing counted every web form fill as an MQL, while Sales only counted leads in Salesforce that met company-size enrichment criteria. The executive dashboard showed huge lead growth that never turned into pipeline.<br><br>
+            I audited the lineage from raw ad clicks to Salesforce opportunity stages, put a side-by-side variance table in front of both department leads, and got them to agree on distinct funnel stages - Raw Lead, MQL, and Sales Accepted Lead. Then I locked that logic directly into our master SQL view so neither team could pull conflicting numbers again."
+          </div>
+        </div>
+
+        <div class="card" style="border-left: 4px solid var(--green);">
+          <h2>6. Offer / Compensation Pivot (Moving from initial $120k screen to $150k target).</h2>
+          <div class="quote-box">
+            "First off, thank you. After meeting Jakub, Michal, Ken, and Pushan, I really want to work here. Living three blocks away, Hippo is 100% my top choice.<br><br>
+            I do want to be transparent on salary so it doesn't feel like I'm pulling the rug out from under you. I know I mentioned $120k on our first call, but as I've gone through other interviews and seen what my skill set is pulling in the market right now - plus seeing the full scope of this role - I'm actually targeting closer to $150k.<br><br>
+            At the end of the day, this is the team I want to be on and I want to make it work - is there flexibility to bring the base closer to $150k?"
           </div>
         </div>
       </div>
 
-      <!-- SECTION 2: PRACTICING / PARTIALLY PRACTICED -->
-      <div class="section-heading" style="color: var(--amber); border-color: rgba(251, 191, 36, 0.35);">2. PRACTICING (Reviewed &amp; Refining)</div>
-      <div class="grid-2" style="margin-bottom: 24px;">
+      <!-- SECTION 2: UNPRACTICED -->
+      <div class="section-heading" style="color: var(--amber); border-color: rgba(251, 191, 36, 0.35);">2. UNPRACTICED</div>
+      <div class="grid-2">
         <div class="card" style="border-left: 4px solid var(--amber);">
-          <h2>6. How would you investigate a sudden drop in conversion or performance data?</h2>
+          <h2>7. How would you investigate a sudden drop in conversion or performance data?</h2>
           <div class="quote-box">
             "Whenever I see a sudden drop in a metric, I follow a three-step process before sounding any alarms:<br><br>
             First, I check our ingestion pipelines and raw warehouse tables to verify whether an API feed stalled, a schema changed, or someone altered a CRM status definition. I want to prove the drop is real data and not a broken pipeline.<br><br>
             Second, if the data is clean, I slice the drop across dimensions - channel, campaign, device, or geography - to see if it's a broad drop or isolated to one specific segment.<br><br>
             Third, I sync with our tracking and media/product teams to check if a site tag broke or a campaign/pricing change just rolled out, so we bring leadership both the root cause and the fix."
-          </div>
-        </div>
-
-        <div class="card" style="border-left: 4px solid var(--amber);">
-          <h2>7. Tell me about a time you handled conflicting metric definitions.</h2>
-          <div class="quote-box">
-            "On our Pebl account, a global B2B employment platform, Marketing and Sales were reporting completely different qualified lead counts to leadership.<br><br>
-            Marketing counted every web form fill as an MQL, while Sales only counted leads in Salesforce that met company-size enrichment criteria. The executive dashboard showed huge lead growth that never turned into pipeline.<br><br>
-            I audited the lineage from raw ad clicks to Salesforce opportunity stages, put a side-by-side variance table in front of both department leads, and got them to agree on distinct funnel stages - Raw Lead, MQL, and Sales Accepted Lead. Then I locked that logic directly into our master SQL view so neither team could pull conflicting numbers again."
           </div>
         </div>
 
@@ -1250,12 +1252,8 @@
             Third, if two senior leaders still need deep work at the exact same time, I lay out the tradeoff transparently with my manager so we align on the top business priority."
           </div>
         </div>
-      </div>
 
-      <!-- SECTION 3: NOT YET PRACTICED -->
-      <div class="section-heading" style="color: var(--blue); border-color: rgba(56, 189, 248, 0.35);">3. NOT YET PRACTICED (Ranked by Priority to Drill Next)</div>
-      <div class="grid-2">
-        <div class="card" style="border-left: 4px solid var(--blue);">
+        <div class="card" style="border-left: 4px solid var(--amber);">
           <h2>12. Do you prefer doing transformations in SQL or in the BI tool, and how do you prevent metric drift?</h2>
           <div class="quote-box">
             "I always push data transformations and business logic upstream into the SQL warehouse layer rather than burying them inside Power BI or Tableau formulas.<br><br>
@@ -1263,7 +1261,7 @@
           </div>
         </div>
 
-        <div class="card" style="border-left: 4px solid var(--blue);">
+        <div class="card" style="border-left: 4px solid var(--amber);">
           <h2>13. How do you work with non-technical stakeholders to turn vague asks into useful work?</h2>
           <div class="quote-box">
             "I always start with the business decision rather than the chart request. I ask: 'When you open this on Monday morning, what decision are you trying to make, and what number would make you change course?'<br><br>
@@ -1271,7 +1269,7 @@
           </div>
         </div>
 
-        <div class="card" style="border-left: 4px solid var(--blue);">
+        <div class="card" style="border-left: 4px solid var(--amber);">
           <h2>14. Tell me about a time you had to be scrappy or build something with zero roadmap.</h2>
           <div class="quote-box">
             "During the 2020 COVID shutdown when live sports were paused, sportsbooks started taking wagers on computer-vs-computer Madden and NBA2K simulations streamed on Twitch.<br><br>
@@ -1280,10 +1278,11 @@
           </div>
         </div>
 
-        <div class="card" style="border-left: 4px solid var(--blue);">
-          <h2>15. What are your compensation expectations and timeline to start?</h2>
+        <div class="card" style="border-left: 4px solid var(--amber);">
+          <h2>15. What is your experience with dbt and modern transformation workflows?</h2>
           <div class="quote-box">
-            "Based on the scope of the role and my experience owning end-to-end SQL pipelines, data modeling, and executive BI, I'm targeting around $140,000 to $150,000 base depending on the total compensation package. For timeline, I'm ready to start right after giving a standard two-week notice to transition my client accounts cleanly."
+            "To be direct, dbt isn't in my daily agency stack at OneMagnify because we manage our transformation layers through modular SQL views and Azure Data Factory pipelines.<br><br>
+            That said, the core engineering principles behind dbt are what I do every day: building modular SQL transformation layers, managing upstream dependencies, and running data quality checks before reporting goes live. Seeing how standard dbt is across modern data teams, I also started taking the official dbt Labs certification course to lock in the syntax and workflow."
           </div>
         </div>
       </div>
