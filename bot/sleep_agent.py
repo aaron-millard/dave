@@ -1051,7 +1051,7 @@ def format_sleep_status_reply(text: str, gemini_key: str, token: str) -> Optiona
     awake_mins_val = oura.get("awake_mins")
     awake_fmt = f"{awake_mins_val}m" if awake_mins_val is not None else (oura.get("awake_formatted") or "—")
     wakeups = oura.get("wakeups", "—")
-    avg_hr = oura.get("average_heart_rate") or oura.get("resting_heart_rate", "—")
+    avg_hr = oura.get("average_heart_rate", "—")
     rhr = oura.get("resting_heart_rate", "—")
     low_hr = oura.get("lowest_heart_rate", "—")
     hrv = oura.get("average_hrv", "—")
@@ -1092,59 +1092,12 @@ def format_sleep_status_reply(text: str, gemini_key: str, token: str) -> Optiona
                 except Exception:
                     pass
 
-    # Calculate exact custom scores matching dashboard
-    hunger_p_cont, hunger_p_bal = 0, 0
-    if hunger and hunger != "—":
-        hl = str(hunger).lower()
-        if hl == "high":
-            hunger_p_cont, hunger_p_bal = 15, 10
-        elif hl in ("medium", "med"):
-            hunger_p_cont, hunger_p_bal = 8, 5
-        elif hl == "low":
-            hunger_p_cont, hunger_p_bal = 3, 2
-
-    continuity = "—"
-    if wakeups != "—" and awake_fmt != "—":
-        try:
-            w_cnt = float(wakeups)
-            a_m = float(oura.get("awake_mins") if oura.get("awake_mins") is not None else 0)
-            c = 100.0 - (w_cnt * 8.0)
-            if a_m > 20:
-                c -= (a_m - 20) * 0.5
-            if lat_mins is not None and lat_mins != "—" and float(lat_mins) > 10:
-                c -= (float(lat_mins) - 10) * 0.5
-            if restfulness != "—":
-                c += (float(restfulness) - 70) * 0.3
-            c -= hunger_p_cont
-            continuity = str(round(max(0, min(100, c))))
-        except Exception:
-            pass
-
-    restoration = "—"
-    if deep_pct != "—" and rem_pct != "—" and hrv != "—" and low_hr != "—":
-        try:
-            deep_pts = min(30.0, (float(deep_pct) / 20.0) * 30.0)
-            rem_pts = min(25.0, (float(rem_pct) / 20.0) * 25.0)
-            hrv_pts = min(25.0, (float(hrv) / 80.0) * 25.0)
-            hr_pts = max(0.0, min(20.0, (60.0 - float(low_hr)) * 2.0))
-            restoration = str(round(max(0, min(100, deep_pts + rem_pts + hrv_pts + hr_pts))))
-        except Exception:
-            pass
-
-    balanced = "—"
-    tot_hrs = o_dash.get("total_sleep_hours")
-    if not tot_hrs and oura.get("total_sleep_seconds"):
-        tot_hrs = round(oura["total_sleep_seconds"] / 3600.0, 1)
-    if eff != "—" and tot_hrs and wakeups != "—" and hrv != "—":
-        try:
-            eff_pts = (float(eff) / 100.0) * 30.0
-            dur_pts = min(25.0, (float(tot_hrs) / 8.0) * 25.0)
-            wake_pts = max(0.0, 25.0 - (float(wakeups) * 3.5))
-            hrv_pts = min(20.0, (float(hrv) / 75.0) * 20.0)
-            b = eff_pts + dur_pts + wake_pts + hrv_pts - hunger_p_bal
-            balanced = str(round(max(0, min(100, b))))
-        except Exception:
-            pass
+    # Use the 2-tier custom scores from _calc_custom_scores_py (matching dashboard)
+    total_weighted = custom.get("total_weighted") if custom.get("total_weighted") is not None else "—"
+    total_bottleneck = custom.get("total_bottleneck") if custom.get("total_bottleneck") is not None else "—"
+    total_personal = custom.get("total_personal") if custom.get("total_personal") is not None else "—"
+    continuity = custom.get("continuity") if custom.get("continuity") is not None else "—"
+    restoration = custom.get("restoration") if custom.get("restoration") is not None else "—"
 
     traz_col = f"{med.get('trazodone_mg')} mg" if med.get("trazodone_mg") is not None else "—"
     quet_col = f"{med.get('quetiapine_mg')} mg" if med.get("quetiapine_mg") is not None else "—"
@@ -1157,9 +1110,11 @@ def format_sleep_status_reply(text: str, gemini_key: str, token: str) -> Optiona
         f"- Trazodone: {traz_col}\n"
         f"- Seroquel: {quet_col}\n"
         f"- Sleep Score: {sleep_score}\n"
+        f"- Total (Weighted): {total_weighted}\n"
+        f"- Total (Bottleneck): {total_bottleneck}\n"
+        f"- Total (Personal): {total_personal}\n"
         f"- Continuity: {continuity}\n"
         f"- Restoration: {restoration}\n"
-        f"- Balanced: {balanced}\n"
         f"- Time Taken: {med_time}\n"
         f"- Bedtime: {bedtime_str}\n"
         f"- Sleep Time: {sleep_time_str}\n"
@@ -1410,7 +1365,11 @@ def get_dashboard_html(gemini_key: str) -> str:
         inject_parts.append(f"const CLOUD_OURA = {json.dumps(state['oura_cache'])};")
     raw_garmin = files.get("data/garmin_cache.json")
     if raw_garmin:
-        inject_parts.append(f"const CLOUD_GARMIN = {raw_garmin};")
+        try:
+            json.loads(raw_garmin)
+            inject_parts.append(f"const CLOUD_GARMIN = {raw_garmin};")
+        except Exception:
+            pass
     if inject_parts:
         inject_js = "<script>" + " ".join(inject_parts) + "</script>"
         html = html.replace("<script>", f"{inject_js}\n  <script>", 1)
