@@ -254,7 +254,6 @@
           <button class="sub-pill" id="pillNutrition" onclick="switchHealthSubtab('nutrition')">Nutrition</button>
           <button class="sub-pill" id="pillLabs" onclick="switchHealthSubtab('labs')">Labs</button>
           <button class="sub-pill" id="pillInsights" onclick="switchHealthSubtab('insights')">Insights</button>
-          <button class="sub-pill" id="pillInsights2" onclick="switchHealthSubtab('insights2')">Insights 2</button>
           <button class="sub-pill" id="pillDates" onclick="switchHealthSubtab('dates')">Notes</button>
         </div>
       </div>
@@ -340,20 +339,19 @@
     }
 
     function updateHealthSubtabPills(subtab) {
-      activeHealthSubtab = (subtab === "garmin_workouts" || subtab === "garmin_daily" || subtab === "nutrition" || subtab === "labs" || subtab === "insights" || subtab === "insights2" || subtab === "merged" || subtab === "dates") ? subtab : (subtab === "garmin" ? "garmin_workouts" : "oura");
+      activeHealthSubtab = (subtab === "garmin_workouts" || subtab === "garmin_daily" || subtab === "nutrition" || subtab === "labs" || subtab === "insights" || subtab === "merged" || subtab === "dates") ? subtab : (subtab === "garmin" ? "garmin_workouts" : "oura");
       document.getElementById("pillOura").classList.toggle("active", activeHealthSubtab === "oura");
       if (document.getElementById("pillGarminWorkouts")) document.getElementById("pillGarminWorkouts").classList.toggle("active", activeHealthSubtab === "garmin_workouts");
       if (document.getElementById("pillGarminDaily")) document.getElementById("pillGarminDaily").classList.toggle("active", activeHealthSubtab === "garmin_daily");
       if (document.getElementById("pillNutrition")) document.getElementById("pillNutrition").classList.toggle("active", activeHealthSubtab === "nutrition");
       if (document.getElementById("pillLabs")) document.getElementById("pillLabs").classList.toggle("active", activeHealthSubtab === "labs");
       if (document.getElementById("pillInsights")) document.getElementById("pillInsights").classList.toggle("active", activeHealthSubtab === "insights");
-      if (document.getElementById("pillInsights2")) document.getElementById("pillInsights2").classList.toggle("active", activeHealthSubtab === "insights2");
       if (document.getElementById("pillDates")) document.getElementById("pillDates").classList.toggle("active", activeHealthSubtab === "dates");
     }
 
     function buildHealthUrl(subtab) {
       const base = URLS.health;
-      if (subtab === "garmin_workouts" || subtab === "garmin_daily" || subtab === "nutrition" || subtab === "labs" || subtab === "insights" || subtab === "insights2" || subtab === "merged" || subtab === "dates") {
+      if (subtab === "garmin_workouts" || subtab === "garmin_daily" || subtab === "nutrition" || subtab === "labs" || subtab === "insights" || subtab === "merged" || subtab === "dates") {
         return base + (base.includes("?") ? "&" : "?") + "subtab=" + subtab;
       }
       if (subtab === "garmin") {
@@ -406,7 +404,7 @@
     }
 
     function switchHealthSubtab(subtab) {
-      const normalized = (subtab === "garmin_workouts" || subtab === "garmin_daily" || subtab === "nutrition" || subtab === "labs" || subtab === "insights" || subtab === "insights2" || subtab === "merged" || subtab === "dates") ? subtab : (subtab === "garmin" ? "garmin_workouts" : "oura");
+      const normalized = (subtab === "garmin_workouts" || subtab === "garmin_daily" || subtab === "nutrition" || subtab === "labs" || subtab === "insights" || subtab === "merged" || subtab === "dates") ? subtab : (subtab === "garmin" ? "garmin_workouts" : "oura");
       updateHealthSubtabPills(normalized);
       switchTab("health");
 
