@@ -256,6 +256,7 @@
           <button class="sub-pill" id="pillInsights" onclick="switchHealthSubtab('insights')">Insights</button>
           <button class="sub-pill" id="pillDates" onclick="switchHealthSubtab('dates')">Notes</button>
           <button class="sub-pill" id="pillStepsQa" onclick="switchHealthSubtab('steps_qa')">Steps Analysis</button>
+          <button class="sub-pill" id="pillYesterday" onclick="switchHealthSubtab('yesterday')">Yesterday</button>
         </div>
       </div>
 
@@ -331,7 +332,7 @@
     const URLS = getBaseUrls();
     const loadedTabs = { health: false, lifting: false, architecture: false, interviews: false, flashcards: false };
     let activeTab = "health";
-    let activeHealthSubtab = "oura";
+    let activeHealthSubtab = "yesterday";
     let activeInterviewCompany = "hippo";
 
     function updateEnvBadge() {
@@ -348,7 +349,7 @@
     }
 
     function updateHealthSubtabPills(subtab) {
-      activeHealthSubtab = (subtab === "garmin_workouts" || subtab === "garmin_daily" || subtab === "nutrition" || subtab === "labs" || subtab === "insights" || subtab === "merged" || subtab === "dates" || subtab === "steps_qa") ? subtab : (subtab === "garmin" ? "garmin_workouts" : "oura");
+      activeHealthSubtab = (subtab === "garmin_workouts" || subtab === "garmin_daily" || subtab === "nutrition" || subtab === "labs" || subtab === "insights" || subtab === "merged" || subtab === "dates" || subtab === "steps_qa" || subtab === "yesterday") ? subtab : (subtab === "garmin" ? "garmin_workouts" : "oura");
       document.getElementById("pillOura").classList.toggle("active", activeHealthSubtab === "oura");
       if (document.getElementById("pillGarminWorkouts")) document.getElementById("pillGarminWorkouts").classList.toggle("active", activeHealthSubtab === "garmin_workouts");
       if (document.getElementById("pillGarminDaily")) document.getElementById("pillGarminDaily").classList.toggle("active", activeHealthSubtab === "garmin_daily");
@@ -357,11 +358,12 @@
       if (document.getElementById("pillInsights")) document.getElementById("pillInsights").classList.toggle("active", activeHealthSubtab === "insights");
       if (document.getElementById("pillDates")) document.getElementById("pillDates").classList.toggle("active", activeHealthSubtab === "dates");
       if (document.getElementById("pillStepsQa")) document.getElementById("pillStepsQa").classList.toggle("active", activeHealthSubtab === "steps_qa");
+      if (document.getElementById("pillYesterday")) document.getElementById("pillYesterday").classList.toggle("active", activeHealthSubtab === "yesterday");
     }
 
     function buildHealthUrl(subtab) {
       const base = URLS.health;
-      if (subtab === "garmin_workouts" || subtab === "garmin_daily" || subtab === "nutrition" || subtab === "labs" || subtab === "insights" || subtab === "merged" || subtab === "dates" || subtab === "steps_qa") {
+      if (subtab === "garmin_workouts" || subtab === "garmin_daily" || subtab === "nutrition" || subtab === "labs" || subtab === "insights" || subtab === "merged" || subtab === "dates" || subtab === "steps_qa" || subtab === "yesterday") {
         return base + (base.includes("?") ? "&" : "?") + "subtab=" + subtab;
       }
       if (subtab === "garmin") {
@@ -414,7 +416,7 @@
     }
 
     function switchHealthSubtab(subtab) {
-      const normalized = (subtab === "garmin_workouts" || subtab === "garmin_daily" || subtab === "nutrition" || subtab === "labs" || subtab === "insights" || subtab === "merged" || subtab === "dates" || subtab === "steps_qa") ? subtab : (subtab === "garmin" ? "garmin_workouts" : "oura");
+      const normalized = (subtab === "garmin_workouts" || subtab === "garmin_daily" || subtab === "nutrition" || subtab === "labs" || subtab === "insights" || subtab === "merged" || subtab === "dates" || subtab === "steps_qa" || subtab === "yesterday") ? subtab : (subtab === "garmin" ? "garmin_workouts" : "oura");
       updateHealthSubtabPills(normalized);
       switchTab("health");
 
@@ -463,6 +465,10 @@
         updateHealthSubtabPills("insights");
         return "health";
       }
+      if (qSub === "yesterday" || injected === "yesterday" || qTab === "yesterday" || hash === "yesterday") {
+        updateHealthSubtabPills("yesterday");
+        return "health";
+      }
       if (qSub === "merged" || injected === "merged" || qTab === "merged" || hash === "merged") {
         updateHealthSubtabPills("merged");
         return "health";
@@ -491,7 +497,7 @@
       if (qTab === "architecture" || injected === "architecture" || hash === "architecture" || path.includes("architecture")) {
         return "architecture";
       }
-      updateHealthSubtabPills("insights");
+      updateHealthSubtabPills("yesterday");
       return "health";
     }
 
